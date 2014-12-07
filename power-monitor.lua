@@ -17,6 +17,7 @@ file = require("filesystem")
 gpu = component.gpu
  
 --loading area
+term.clear()
 print("Checking for config files")
  
 if file.exists("/usr/power-monitor/scale") then

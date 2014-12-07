@@ -200,7 +200,7 @@ while true do
     buffer(banner)
     buffer("Currently monitoring ".. total_units .. " units")
     buffer("")
-    buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["capacity"] .. "/" .. powerdb["total"]["stored"] .."]")
+    buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
     buffer("")
      
     for lid in pairs(powerdb) do

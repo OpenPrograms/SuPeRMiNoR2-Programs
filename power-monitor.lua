@@ -81,8 +81,7 @@ function pad(str, len)
 end
 
 function percent_gen_db(powerdb, uid)
-  tmp = pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"])
-  return tmp.."%"
+  return pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"]) .. "%"
 end
 
 function readPower(proxy, ltype)

@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = 1.1
+version = 1.3
 
 --config
 startup_delay = 2 --How long to wait after startup before clearing the screen
@@ -8,6 +8,9 @@ banner = "SuPeR Power Monitoring Systems v"..version --Banner
 display_precision = 1
 display_units = false
 id = 1 --ID (Not in use yet, will be for networked monitoring)
+glasses_link = false
+glasses = nil
+glasses_connected = false
  
 component = require("component")
 term = require("term")
@@ -19,33 +22,57 @@ gpu = component.gpu
 print("Checking for config files")
  
 if file.exists("/usr/power-monitor/scale") then
-print("Loading config file scale")
-f = io.open("/usr/power-monitor/scale")
-scale = f:read()
-f:close()
+    print("Loading config file scale")
+    f = io.open("/usr/power-monitor/scale")
+    scale = f:read()
+    f:close()
 end
  
 if file.exists("/usr/power-monitor/banner") then
-print("Loading config file banner")
-f = io.open("/usr/power-monitor/banner")
-banner = f:read()
-f:close()
+    print("Loading config file banner")
+    f = io.open("/usr/power-monitor/banner")
+    banner = f:read()
+    f:close()
 end
  
 if file.exists("/usr/power-monitor/id") then
-print("Loading config file id")
-f = io.open("/usr/power-monitor/id")
-id = f:read()
-f:close()
+    print("Loading config file id")
+    f = io.open("/usr/power-monitor/id")
+    id = f:read()
+    f:close()
 end
  
 if file.exists("/usr/power-monitor/startup_delay") then
-print("Loading config file startup_delay")
-f = io.open("/usr/power-monitor/startup_delay")
-startup_delay = f:read() + 0
-f:close()
+    print("Loading config file startup_delay")
+    f = io.open("/usr/power-monitor/startup_delay")
+    startup_delay = f:read() + 0
+    f:close()
 end
- 
+
+if file.exists("/usr/power-monitor/glasses_link") then
+    print("Loading config file glasses_link")
+    f = io.open("/usr/power-monitor/glasses_link")
+    glasses_link = f:read()
+    f:close()
+end
+
+if glasses_link ~= false then
+    print("Load glasses block")
+    glasses = component.proxy(component.get(glasses_link))
+    glasses.removeAll()
+    glasses_text = glasses.addTextLabel()
+    glasses_text.setText("Loading.")
+    os.sleep(0.4)
+    glasses_connected = true
+    glasses_text.setColor(.37, .83, .03)
+    glasses_text.setText("Loading..")
+    os.sleep(0.4)
+    glasses_text.setPosition(2, 2)
+    glasses_text.setText("Loading...")
+    os.sleep(0.6)
+    print(glasses.getBindPlayers())
+end
+
 print("Loaded all config files")
  
 function round(num, idp)
@@ -144,7 +171,14 @@ w, h = gpu.maxResolution()
 gpu.setResolution(w / scale, h / scale)
  
 print("Scanning for energy storage units")
+if glasses_connected then
+    glasses_text.setText("Scanning.")
+end
 mlist, total_capacity, total_units = scan()
+
+if glasses_connected then
+    glasses_text.setText("Found "..total_units)
+end
 
 print("Found ".. total_units .. " storage unit[s]")
 print("Total capacity detected: "..total_capacity)
@@ -167,6 +201,10 @@ while true do
      
     term.clear()
     text_buffer = ""
+
+    if glasses_connected then
+        glasses_text.setText(percent_gen_db(powerdb, "total"))
+    end
 
     buffer(banner)
     buffer("Currently monitoring ".. total_units .. " units")

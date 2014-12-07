@@ -1,13 +1,13 @@
 --Made by SuPeRMiNoR2
-version = 0.9
+version = 1.0
 
 --config
 startup_delay = 2 --How long to wait after startup before clearing the screen
 scale = 1 --Screen scale, 1 does not affect it, 2 doubles the size
 banner = "SuPeR Power Monitoring Systems v"..version --Banner
-id = 1 --ID (Not in use yet, will be for networked monitoring)
 display_precision = 1
 display_units = false
+id = 1 --ID (Not in use yet, will be for networked monitoring)
  
 component = require("component")
 term = require("term")

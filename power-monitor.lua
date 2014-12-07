@@ -8,8 +8,6 @@ banner = "SuPeR Power Monitoring Systems v"..version --Banner
 display_precision = 1
 display_units = false
 id = 1 --ID (Not in use yet, will be for networked monitoring)
-glasses_link = false
-glasses = nil
 glasses_connected = false
  
 component = require("component")
@@ -47,30 +45,6 @@ if file.exists("/usr/power-monitor/startup_delay") then
     f = io.open("/usr/power-monitor/startup_delay")
     startup_delay = f:read() + 0
     f:close()
-end
-
-if file.exists("/usr/power-monitor/glasses_link") then
-    print("Loading config file glasses_link")
-    f = io.open("/usr/power-monitor/glasses_link")
-    glasses_link = f:read()
-    f:close()
-end
-
-if glasses_link ~= false then
-    print("Load glasses block")
-    glasses = component.proxy(component.get(glasses_link))
-    glasses.removeAll()
-    glasses_text = glasses.addTextLabel()
-    glasses_text.setText("Loading.")
-    os.sleep(0.4)
-    glasses_connected = true
-    glasses_text.setColor(.37, .83, .03)
-    glasses_text.setText("Loading..")
-    os.sleep(0.4)
-    glasses_text.setPosition(2, 2)
-    glasses_text.setText("Loading...")
-    os.sleep(0.6)
-    print(glasses.getBindPlayers())
 end
 
 print("Loaded all config files")
@@ -148,6 +122,22 @@ function scan()
                 c, s = readPower(t, ltype)
                 total_capacity = total_capacity + c
             end
+        end
+        if ctype == "glasses" then
+            print("Detected glasses block, loading")
+            glasses = component.proxy(address)
+            glasses.removeAll()
+            glasses_text = glasses.addTextLabel()
+            glasses_text.setText("Loading.")
+            os.sleep(0.4)
+            glasses_connected = true
+            glasses_text.setColor(.37, .83, .03)
+            glasses_text.setText("Loading..")
+            os.sleep(0.4)
+            glasses_text.setPosition(2, 2)
+            glasses_text.setText("Loading...")
+            os.sleep(0.6)
+            --print(glasses.getBindPlayers())
         end
     end
     total_units = unit_id - 1

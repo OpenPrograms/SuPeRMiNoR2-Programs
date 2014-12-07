@@ -48,6 +48,15 @@ if file.exists("/usr/power-monitor/startup_delay") then
     f:close()
 end
 
+if file.exists("/usr/power-monitor/display_units") then
+    print("Loading config file display_units")
+    f = io.open("/usr/power-monitor/display_units")
+    tmp = f:read()
+    if tmp == "yes" then display_units = true end
+    if tmp == "no" then display_units = false end
+    f:close()
+end
+
 print("Loaded all config files")
  
 function round(num, idp)

@@ -110,6 +110,9 @@ function getPower()
         ltype = mlist[uid]["type"]
         lname = mlist[uid]["name"]
         c, s = readPower(proxy, ltype)
+        if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
+            s = c
+        end
         total_stored = total_stored + s
         powerdb[uid] = {capacity=c, stored=s, name=lname}
     end  

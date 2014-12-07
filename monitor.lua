@@ -127,6 +127,10 @@ function scan()
 	return mlist, total_capacity, total_units
 end
 
+function buffer(text)
+	text_buffer = text_buffer .. text .. "\n"
+end
+
 supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
 tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
 tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
@@ -148,15 +152,27 @@ print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..startup_delay)
 os.sleep(startup_delay + 0)
  
+loops = 0
 while true do
-	powerdb = getPower()
+	loops = loops + 1
+	if loops == 50 then
+		loops = 0
+		scan()
+	end
+	success, powerdb = pcall(getPower)
+	if success == false then
+		scan()
+		powerdb = getPower()
+	end
 	 
 	term.clear()
-	print(banner)
-	print("Currently monitoring ".. total_units .. " units")
-	print()
-	print("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["capacity"] .. "/" .. powerdb["total"]["stored"] .."]")
-	print()
+	text_buffer = ""
+
+	buffer(banner)
+	buffer("Currently monitoring ".. total_units .. " units")
+	buffer("")
+	buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["capacity"] .. "/" .. powerdb["total"]["stored"] .."]")
+	buffer("")
 	 
 	for lid in pairs(powerdb) do
 		if lid ~= "total" then
@@ -167,9 +183,9 @@ while true do
 			if display_units == false then output = first_half .. second_half end
 			if display_units == true then output = first_half .. middle .. second_half end
 
-			print(output)
+			buffer(output)
 		end
 	end
-	 
-	os.sleep(0.5)
+	print(text_buffer)
+	os.sleep(0.2)
 end

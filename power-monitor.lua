@@ -123,7 +123,7 @@ function scan()
                 total_capacity = total_capacity + c
             end
         end
-        if ctype == "glasses" then
+        if ctype == "glasses" and glasses_connected == false then
             print("Detected glasses block, loading")
             glasses = component.proxy(address)
             glasses.removeAll()

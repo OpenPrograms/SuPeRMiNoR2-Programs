@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = 1.0
+version = 1.1
 
 --config
 startup_delay = 2 --How long to wait after startup before clearing the screen
@@ -18,31 +18,31 @@ gpu = component.gpu
 --loading area
 print("Checking for config files")
  
-if file.exists("conf/scale") then
+if file.exists("/usr/power-monitor/scale") then
 print("Loading config file scale")
-f = io.open("conf/scale")
+f = io.open("/usr/power-monitor/scale")
 scale = f:read()
 f:close()
 end
  
-if file.exists("conf/banner") then
+if file.exists("/usr/power-monitor/banner") then
 print("Loading config file banner")
-f = io.open("conf/banner")
+f = io.open("/usr/power-monitor/banner")
 banner = f:read()
 f:close()
 end
  
-if file.exists("conf/id") then
+if file.exists("/usr/power-monitor/id") then
 print("Loading config file id")
-f = io.open("conf/id")
+f = io.open("/usr/power-monitor/id")
 id = f:read()
 f:close()
 end
  
-if file.exists("conf/startup_delay") then
+if file.exists("/usr/power-monitor/startup_delay") then
 print("Loading config file startup_delay")
-f = io.open("conf/startup_delay")
-startup_delay = f:read()
+f = io.open("/usr/power-monitor/startup_delay")
+startup_delay = f:read() + 0
 f:close()
 end
  

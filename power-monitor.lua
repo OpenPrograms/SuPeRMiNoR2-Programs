@@ -203,7 +203,7 @@ while true do
   success, powerdb = pcall(getPower)
   if success == false then
     scan()
-    powerdb = getPower()
+    powerdb = {total= {stored=1, capacity=1}}
   end
    
   term.clear()
@@ -211,7 +211,10 @@ while true do
   total = pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"])
 
   if glasses_connected then
-    glasses_text.setText(percent_gen_db(powerdb, "total"))
+    if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
+    if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
+    if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
+    glasses_text.setText("["..total_units.."] "..total.."%")
   end
 
   buffer(banner)

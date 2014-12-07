@@ -206,7 +206,7 @@ while true do
     for lid in pairs(powerdb) do
         if lid ~= "total" then
             first_half = pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-            middle = pad(" [".. powerdb[lid]["capacity"] .. "/" .. powerdb[lid]["stored"] .. "] ", 30)
+            middle = pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
             second_half = " ["..powerdb[lid]["name"].."]"
 
             if display_units == false then output = first_half .. second_half end

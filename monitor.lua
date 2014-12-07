@@ -1,11 +1,5 @@
 --Made by SuPeRMiNoR2
 version = 0.9
-supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
-tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
-tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
-tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
-mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
-name="CESU"}, batbox={type=1, name="BatBox"}, capacitor_bank={type=2, name="Capacitor Bank"}}  
 
 --config
 startup_delay = 2 --How long to wait after startup before clearing the screen
@@ -132,6 +126,13 @@ function scan()
 	total_units = unit_id - 1
 	return mlist, total_capacity, total_units
 end
+
+supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
+tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
+tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
+tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
+mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
+name="CESU"}, batbox={type=1, name="BatBox"}, capacitor_bank={type=2, name="Capacitor Bank"}}  
  
 --Program
 print("Applying scale of " .. scale)

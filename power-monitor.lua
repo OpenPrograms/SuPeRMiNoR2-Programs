@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = 1.3
+version = 1.4
 
 --config
 startup_delay = 2 --How long to wait after startup before clearing the screen

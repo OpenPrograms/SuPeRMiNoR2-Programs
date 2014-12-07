@@ -72,6 +72,7 @@ function pgen(stored, capacity)
   tmp = stored / capacity
   tmp = tmp * 100
   tmp = nround(tmp, display_precision)
+  return tmp
 end
 
 function pad(str, len)

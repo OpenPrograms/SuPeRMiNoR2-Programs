@@ -60,8 +60,8 @@ end
 print("Loaded all config files")
  
 function round(num, idp)
-  local mult = 10^(idp or 0)
-  return math.floor(num * mult + 0.5) / mult
+    local mult = 10^(idp or 0)
+    return math.floor(num * mult + 0.5) / mult
 end
  
 function nround(what, precision)
@@ -72,52 +72,52 @@ function pgen(stored, capacity)
   tmp = stored / capacity
   tmp = tmp * 100
   tmp = nround(tmp, display_precision)
-  return tmp.."%"
 end
 
 function pad(str, len)
-    char = " "
-    if char == nil then char = ' ' end
-    return str .. string.rep(char, len - #str)
+  char = " "
+  if char == nil then char = ' ' end
+  return str .. string.rep(char, len - #str)
 end
 
 function percent_gen_db(powerdb, uid)
-return pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"])
+  tmp = pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"])
+  return tmp.."%"
 end
 
 function readPower(proxy, ltype)
-    capacity = 0
-    stored = 0
-     
-    if ltype == 1 then
-        capacity = proxy.getCapacity()
-        stored = proxy.getStored()
-    end
-     
-    if ltype == 2 then
-        capacity = proxy.getMaxEnergyStored()
-        stored = proxy.getEnergyStored()
-    end
+  capacity = 0
+  stored = 0
+   
+  if ltype == 1 then
+      capacity = proxy.getCapacity()
+      stored = proxy.getStored()
+  end
+   
+  if ltype == 2 then
+      capacity = proxy.getMaxEnergyStored()
+      stored = proxy.getEnergyStored()
+  end
 
-    return capacity, stored
+  return capacity, stored
 end
 
 function getPower()
-    total_stored = 0
-    powerdb = {}
-    for uid in pairs(mlist) do
-        proxy = mlist[uid]["proxy"]
-        ltype = mlist[uid]["type"]
-        lname = mlist[uid]["name"]
-        c, s = readPower(proxy, ltype)
-        if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
-            s = c
-        end
-        total_stored = total_stored + s
-        powerdb[uid] = {capacity=c, stored=s, name=lname}
-    end  
-    powerdb["total"] = {capacity=total_capacity, stored=total_stored}
-    return powerdb
+  total_stored = 0
+  powerdb = {}
+  for uid in pairs(mlist) do
+      proxy = mlist[uid]["proxy"]
+      ltype = mlist[uid]["type"]
+      lname = mlist[uid]["name"]
+      c, s = readPower(proxy, ltype)
+      if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
+          s = c
+      end
+      total_stored = total_stored + s
+      powerdb[uid] = {capacity=c, stored=s, name=lname}
+  end  
+  powerdb["total"] = {capacity=total_capacity, stored=total_stored}
+  return powerdb
 end
 
 function scan()
@@ -142,14 +142,17 @@ function scan()
             glasses.removeAll()
             glasses_text = glasses.addTextLabel()
             glasses_text.setText("Loading.")
-            os.sleep(0.4)
+            os.sleep(0.8)
             glasses_connected = true
             glasses_text.setColor(.37, .83, .03)
             glasses_text.setText("Loading..")
-            os.sleep(0.4)
+            os.sleep(0.8)
             glasses_text.setPosition(2, 2)
             glasses_text.setText("Loading...")
-            os.sleep(0.6)
+            os.sleep(0.8)
+            glasses_text.setScale(1)
+            glasses_text.setText("Loading....")
+            os.sleep(1)
             --print(glasses.getBindPlayers())
         end
     end
@@ -191,42 +194,44 @@ os.sleep(startup_delay + 0)
  
 loops = 0
 while true do
-    loops = loops + 1
-    if loops == 50 then
-        loops = 0
-        scan()
-    end
-    success, powerdb = pcall(getPower)
-    if success == false then
-        scan()
-        powerdb = getPower()
-    end
-     
-    term.clear()
-    text_buffer = ""
+  loops = loops + 1
+  if loops == 50 then
+    loops = 0
+    scan()
+  end
 
-    if glasses_connected then
-        glasses_text.setText(percent_gen_db(powerdb, "total"))
+  success, powerdb = pcall(getPower)
+  if success == false then
+    scan()
+    powerdb = getPower()
+  end
+   
+  term.clear()
+  text_buffer = ""
+  total = pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"])
+
+  if glasses_connected then
+    glasses_text.setText(percent_gen_db(powerdb, "total"))
+  end
+
+  buffer(banner)
+  buffer("Currently monitoring ".. total_units .. " units")
+  buffer("")
+  buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
+  buffer("")
+   
+  for lid in pairs(powerdb) do
+    if lid ~= "total" then
+      first_half = pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
+      middle = pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+      second_half = " ["..powerdb[lid]["name"].."]"
+
+      if display_units == false then output = first_half .. second_half end
+      if display_units == true then output = first_half .. middle .. second_half end
+
+      buffer(output)
     end
-
-    buffer(banner)
-    buffer("Currently monitoring ".. total_units .. " units")
-    buffer("")
-    buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
-    buffer("")
-     
-    for lid in pairs(powerdb) do
-        if lid ~= "total" then
-            first_half = pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-            middle = pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
-            second_half = " ["..powerdb[lid]["name"].."]"
-
-            if display_units == false then output = first_half .. second_half end
-            if display_units == true then output = first_half .. middle .. second_half end
-
-            buffer(output)
-        end
-    end
-    print(text_buffer)
-    os.sleep(0.2)
+  end
+  print(text_buffer)
+  os.sleep(0.2)
 end

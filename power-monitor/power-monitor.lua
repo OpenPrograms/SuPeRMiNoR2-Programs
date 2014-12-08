@@ -19,6 +19,9 @@ superlib_version = superlib.getVersion()
 versions = superlib.checkVersions()
 
 print(versions)
+os.sleep(2)
+versions()
+
 if versions == nil then print("Error checking versions.") end
 if versions ~= nil then
   if versions["superlib"] ~= superlib_version then print("An update is available for superlib") os.sleep(2) end

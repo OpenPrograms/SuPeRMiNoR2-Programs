@@ -1,4 +1,4 @@
-local version = "0.4"
+local version = "0.4.1"
 
 local m = {}
 
@@ -31,9 +31,9 @@ function m.getVersion()
 end
 
 function m.checkVersions()
-  response = downloadRaw("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/versions.lua")
+  response = downloadFile("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/versions.lua", "/tmp/versions.lua")
   if response ~= nil then 
-    versions = loadstring(response)()
+    versions = loadfile("/tmp/versions.lua")()
   end
   return response
 end

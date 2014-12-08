@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = "1.4.6"
+version = "1.4.7"
 supported_config_version = "0.1"
 
 local component = require("component")
@@ -17,10 +17,12 @@ local internet = require("internet")
 print("Checking for updates...")
 superlib_version = superlib.getVersion()
 versions = superlib.checkVersions()
+
+print(versions)
 if versions == nil then print("Error checking versions.") end
 if versions ~= nil then
-  if versions["superlib"] ~= superlib_version then print("An update is available for superlib") end
-  if versions["power-monitor"] ~= version then print("An update is available for power-monitor") end
+  if versions["superlib"] ~= superlib_version then print("An update is available for superlib") os.sleep(2) end
+  if versions["power-monitor"] ~= version then print("An update is available for power-monitor") os.sleep(2) end
 end
 
 if fs.exists("/usr/power-monitor.config") == false then

@@ -1,4 +1,4 @@
-local version = "0.3"
+local version = "0.4"
 
 local m = {}
 
@@ -24,6 +24,18 @@ end
 
 local function downloadFile(url, path)
   return wget("-fq",url,path)
+end
+
+function m.getVersion()
+  return version
+end
+
+function m.checkVersions()
+  response = downloadRaw("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/versions.lua")
+  if response ~= nil then 
+    versions = loadstring(response)()
+  end
+  return response
 end
 
 function m.downloadFile(url, path)

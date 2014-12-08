@@ -1,6 +1,6 @@
 --Made by SuPeRMiNoR2
-version = "1.4.8"
-supported_config_version = "0.1"
+version = "1.4.9"
+supported_config_version = "0.2"
 
 local component = require("component")
 local term = require("term")
@@ -37,10 +37,17 @@ if fs.exists("/usr/power-monitor.config") == false then
 end
 
 local config = loadfile("/usr/power-monitor.config")()
+if config.config_version ~= supported_config_version then 
+  print("Warning, The configuration file has a unsupported version number.")
+  print("You shoud save your old settings and delete the config file.")
+  print("The new version will be downloaded on next startup.")
+  print("If you do not do this, the program may not work.")
+  print("Waiting 15 seconds...")
+  os.sleep(15)
+end
 
---states
+--States
 glasses_connected = false
-
 
 function percent_gen_db(powerdb, uid)
   return superlib.pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"], config.display_precision) .. "%"
@@ -177,7 +184,11 @@ while true do
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_text.setText("["..total_units.."] "..total.."%")
+    glasses_buffer = "["..total_units.."] "..total.."%"
+    if config.glasses_banner ~= false then
+      glasses_buffer = config.glasses_banner .. glasses_buffer
+    end
+    glasses_text.setText(glasses_buffer)
   end
 
   if config.banner ~= false then

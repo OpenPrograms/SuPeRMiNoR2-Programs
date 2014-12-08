@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = "1.4.9"
+version = "1.5.0"
 supported_config_version = "0.2"
 
 local component = require("component")
@@ -184,7 +184,7 @@ while true do
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_buffer = "["..total_units.."] "..total.."%"
+    glasses_buffer = total.."%" .. " ["..total_units.."]"
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
     end

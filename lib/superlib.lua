@@ -1,4 +1,4 @@
-local version = 0.2
+local version = "0.3"
 
 local m = {}
 
@@ -44,6 +44,19 @@ end
 
 function m.round(what, precision)
    return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
+end
+
+function m.pgen(stored, capacity, precision)
+  tmp = stored / capacity
+  tmp = tmp * 100
+  tmp = m.round(tmp, precision)
+  return tmp
+end
+
+function m.pad(str, len)
+  char = " "
+  if char == nil then char = ' ' end
+  return str .. string.rep(char, len - #str)
 end
 
 function oldround(num, idp)

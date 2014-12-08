@@ -1,5 +1,6 @@
 --Made by SuPeRMiNoR2
-version = "1.4.2"
+version = "1.4.3"
+supported_config_version = "0.1"
 
 local component = require("component")
 local term = require("term")
@@ -14,28 +15,22 @@ end
 
 local internet = require("internet")
 
+if fs.exists("/usr/power-monitor.config") == false then
+  print("Downloading config file to /usr/power-monitor.config")
+  result = superlib.downloadFile("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config", "/usr/power-monitor.config")
+  if result == false then 
+    io.stderr:write("Error downloading the config file")
+  end
+end
+
+local config = loadfile("/usr/power-monitor.config")()
+
 --states
 glasses_connected = false
- 
-function nround(what, precision)
-   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
-end
- 
-function pgen(stored, capacity, precision)
-  tmp = stored / capacity
-  tmp = tmp * 100
-  tmp = nround(tmp, precision)
-  return tmp
-end
 
-function pad(str, len)
-  char = " "
-  if char == nil then char = ' ' end
-  return str .. string.rep(char, len - #str)
-end
 
 function percent_gen_db(powerdb, uid)
-  return pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"], display_precision) .. "%"
+  return superlib.pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"], config.display_precision) .. "%"
 end
 
 function readPower(proxy, ltype)
@@ -126,9 +121,9 @@ name="CESU"}, batbox={type=1, name="BatBox"}, capacitor_bank={type=2, name="Capa
  
 --Program
 term.clear()
-print("Applying scale of " .. scale)
+print("Applying scale of " .. config.scale)
 w, h = gpu.maxResolution()
-gpu.setResolution(w / scale, h / scale)
+gpu.setResolution(w / config.scale, h / config.scale)
  
 print("Scanning for energy storage units")
 if glasses_connected then
@@ -143,8 +138,8 @@ end
 print("Found ".. total_units .. " storage unit[s]")
 print("Total capacity detected: "..total_capacity)
 print("Press ctrl + alt + c to close the program")
-print("Waiting startup delay of: "..startup_delay)
-os.sleep(startup_delay + 0)
+print("Waiting startup delay of: "..config.startup_delay)
+os.sleep(config.startup_delay + 0)
  
 loops = 0
 while true do
@@ -162,7 +157,8 @@ while true do
    
   term.clear()
   text_buffer = ""
-  total = pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"], 2)
+
+  total = superlib.pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"], 2)
 
   if glasses_connected then
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
@@ -171,7 +167,9 @@ while true do
     glasses_text.setText("["..total_units.."] "..total.."%")
   end
 
-  buffer(banner)
+  if config.banner ~= false then
+    buffer(config.banner)
+  end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
   buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
@@ -179,12 +177,12 @@ while true do
    
   for lid in pairs(powerdb) do
     if lid ~= "total" then
-      first_half = pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-      middle = pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+      first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
+      middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
       second_half = " ["..powerdb[lid]["name"].."]"
 
-      if display_units == false then output = first_half .. second_half end
-      if display_units == true then output = first_half .. middle .. second_half end
+      if config.display_units == false then output = first_half .. second_half end
+      if config.display_units == true then output = first_half .. middle .. second_half end
 
       buffer(output)
     end

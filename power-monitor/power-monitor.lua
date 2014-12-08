@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = "1.4.7"
+version = "1.4.8"
 supported_config_version = "0.1"
 
 local component = require("component")
@@ -7,6 +7,9 @@ local term = require("term")
 local fs = require("filesystem")
 local superlib = require("superlib")
 local gpu = component.gpu
+
+term.clear()
+print("Loading SuPeRMiNoR2's power-monitor version "..version)
 
 if not component.isAvailable("internet") then
   io.stderr:write("This program requires an internet card to run.")
@@ -22,7 +25,7 @@ versions = superlib.checkVersions()
 if versions == nil then print("Error checking versions.") end
 if versions ~= nil then
   if versions["superlib"] ~= superlib_version then print("An update is available for superlib") os.sleep(2) end
-  if versions["power-monitor"] ~= version then print("An update is available for power-monitor") os.sleep(2) end
+  if versions["powermonitor"] ~= version then print("An update is available for power-monitor") os.sleep(2) end
 end
 
 if fs.exists("/usr/power-monitor.config") == false then

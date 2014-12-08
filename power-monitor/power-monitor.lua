@@ -14,13 +14,10 @@ if not component.isAvailable("internet") then
 end
 
 local internet = require("internet")
+
 print("Checking for updates...")
 superlib_version = superlib.getVersion()
 versions = superlib.checkVersions()
-
-print(versions)
-os.sleep(2)
-versions()
 
 if versions == nil then print("Error checking versions.") end
 if versions ~= nil then

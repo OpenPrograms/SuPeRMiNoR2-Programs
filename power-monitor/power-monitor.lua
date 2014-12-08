@@ -1,21 +1,68 @@
 --Made by SuPeRMiNoR2
-version = "1.4.2"
+version = "1.4.1"
 
-local component = require("component")
-local term = require("term")
-local fs = require("filesystem")
-local superlib = require("superlib")
-local gpu = component.gpu
-
-if not component.isAvailable("internet") then
-  io.stderr:write("This program requires an internet card to run.")
-  return
+--config
+startup_delay = 2 --How long to wait after startup before clearing the screen
+scale = 1 --Screen scale, 1 does not affect it, 2 doubles the size
+banner = "SuPeR Power Monitoring Systems v"..version --Banner
+display_precision = 1
+display_units = false
+id = 1 --ID (Not in use yet, will be for networked monitoring)
+glasses_connected = false
+ 
+component = require("component")
+term = require("term")
+file = require("filesystem")
+ 
+gpu = component.gpu
+ 
+--loading area
+term.clear()
+print("Checking for config files")
+ 
+if file.exists("/usr/power-monitor/scale") then
+    print("Loading config file scale")
+    f = io.open("/usr/power-monitor/scale")
+    scale = f:read()
+    f:close()
+end
+ 
+if file.exists("/usr/power-monitor/banner") then
+    print("Loading config file banner")
+    f = io.open("/usr/power-monitor/banner")
+    banner = f:read()
+    f:close()
+end
+ 
+if file.exists("/usr/power-monitor/id") then
+    print("Loading config file id")
+    f = io.open("/usr/power-monitor/id")
+    id = f:read()
+    f:close()
+end
+ 
+if file.exists("/usr/power-monitor/startup_delay") then
+    print("Loading config file startup_delay")
+    f = io.open("/usr/power-monitor/startup_delay")
+    startup_delay = f:read() + 0
+    f:close()
 end
 
-local internet = require("internet")
+if file.exists("/usr/power-monitor/display_units") then
+    print("Loading config file display_units")
+    f = io.open("/usr/power-monitor/display_units")
+    tmp = f:read()
+    if tmp == "yes" then display_units = true end
+    if tmp == "no" then display_units = false end
+    f:close()
+end
 
---states
-glasses_connected = false
+print("Loaded all config files")
+ 
+function round(num, idp)
+    local mult = 10^(idp or 0)
+    return math.floor(num * mult + 0.5) / mult
+end
  
 function nround(what, precision)
    return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
@@ -125,7 +172,6 @@ mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1,
 name="CESU"}, batbox={type=1, name="BatBox"}, capacitor_bank={type=2, name="Capacitor Bank"}}  
  
 --Program
-term.clear()
 print("Applying scale of " .. scale)
 w, h = gpu.maxResolution()
 gpu.setResolution(w / scale, h / scale)

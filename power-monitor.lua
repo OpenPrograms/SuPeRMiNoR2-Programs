@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = "1.4.3"
+version = "1.4.4"
 supported_config_version = "0.1"
 
 local component = require("component")

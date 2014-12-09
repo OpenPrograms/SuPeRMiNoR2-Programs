@@ -64,7 +64,7 @@ function m.lookup(name)
   found = false
   found_name = nil
   modem.open(43)
-  cbroadcast({action="lookup", name=name})
+  cbroadcast({action="lookup", name=name, tunnel=true, broadcast=true})
   e, _, address, port, distance, message = event.pull(5, "modem_message") 
   modem.close(43)
   result, message = decode(message)
@@ -82,7 +82,7 @@ function m.lookup(name)
 end
 
 function m.register(name)
-  cbroadcast({action="register", name=name})
+  cbroadcast({action="register", name=name, tunnel=true, broadcast=true})
   --add ack
 end
 
@@ -101,21 +101,30 @@ function m.server()
   while true do
   e, _, address, port, distance, message = event.pull("modem_message") 
   result, message = decode(message)
-  if result then
+    if result then
 
-  if message.action == "register" then
-    print("Registering "..message.name.." to "..address)
-    register(message.name, address)
+      if message.action == "register" then
+        if message.tunneled then
+          print("Detected tunnel")
+          address = message.from
+        print("Registering "..message.name.." to "..address)
+        register(message.name, address)
+      end
+
+      if message.action == "lookup" then
+        n = lookup(message.name)
+        print(address.. " Looked up "..message.name)
+        if message.tunneled then
+          print("Detected tunnel")
+          send(address, {action="lookup", response=n, tunnel=true, to=message.from})
+        else 
+          send(address, {action="lookup", response=n})
+        end
+      end
+      
+    end
   end
 
-  if message.action == "lookup" then
-   n = lookup(message.name)
-   print(address.. " Looked up "..message.name)
-   send(address, {action="lookup", response=n})
-  end
-
-  end
-  end
 end
 
 return m

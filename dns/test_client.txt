@@ -1,0 +1,40 @@
+fs = require("filesystem")
+serial = require("serialization")
+component = require("component")
+event = require("event")
+modem = component.modem
+ 
+function decode(data)
+status, result = pcall(serial.unserialize, data)
+if status then
+ return result
+else
+ return false
+end
+end
+ 
+function encode(data)
+return serial.serialize(data)
+end
+
+function send(addr, data)
+modem.send(addr, 42, encode(data))
+end
+
+function broadcast(data)
+modem.broadcast(42, encode(data))
+end
+
+--------------------------------------------
+
+modem.open(43)
+broadcast({action="register", name="TestClient"})
+os.sleep(1)
+broadcast({action="lookup", name="TestClient"})
+
+e, _, address, port, distance, message = event.pull(5, "modem_message") 
+message = decode(message)
+
+if message.action == "lookup" then
+ print(message.response)
+end

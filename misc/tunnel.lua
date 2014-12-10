@@ -35,11 +35,11 @@ print("Tunnel server started")
 
 while true do
   e, _, address, port, distance, message = event.pull("modem_message")
-  --result, message = decode(message)
-  result = true
+  realmsg = message
+  result, message = decode(message)
   if result then
     if port == 0 then
-      print("Received message on tunnel "..message)
+      print("Received message on tunnel "..realmsg)
       if message.broadcast then
         broadcast(message.port, message)
       else
@@ -48,8 +48,10 @@ while true do
     end
 
     if port ~= 0 then
-      print("Received message on modem "..message)
-      if message.tunnel then
+      print(address, port, distance, message)
+      print(result)
+      print("Received message on modem "..realmsg)
+      if message.tunnel == true then        
         print("Forwarding")
         message.from = address       
         message.port = port

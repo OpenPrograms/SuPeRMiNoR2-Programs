@@ -33,6 +33,15 @@ function _lookup(name)
 return m.dns_table[name]
 end
 
+function _reverse(name)
+return m.rdns[name]
+end
+
+function reverse(name)
+result, addr = pcall(_lookup, name)
+if result then return addr else return false end
+end
+
 function lookup(name)
 result, addr = pcall(_lookup, name)
 if result then return addr else return false end
@@ -88,7 +97,7 @@ end
 
 function m.server()
   print("Starting Super DNS Server")
-  if fs.exists("/dns-table") then
+  if fs.exists("dsad/dns-table") then
     result, tmp = decode(read_file("/dns-table"))
     if result and tmp ~= false then
       print("Loaded dns table from file")
@@ -98,15 +107,12 @@ function m.server()
   end
 
   modem.open(42)
-  while true do
-  e, _, address, port, distance, message = event.pull("modem_message") 
-  result, message = decode(message)
-    if result then
 
+  while true do
+    e, _, address, port, distance, message = event.pull("modem_message")
+    result, message = decode(message)
+    if result then
       if message.action == "register" then
-        if message.tunneled then
-          print("Detected tunnel")
-          address = message.from
         print("Registering "..message.name.." to "..address)
         register(message.name, address)
       end
@@ -114,17 +120,18 @@ function m.server()
       if message.action == "lookup" then
         n = lookup(message.name)
         print(address.. " Looked up "..message.name)
-        if message.tunneled then
-          print("Detected tunnel")
-          send(address, {action="lookup", response=n, tunnel=true, to=message.from})
-        else 
-          send(address, {action="lookup", response=n})
-        end
+        send(address, {action="lookup", response=n})
       end
-      
-    end
-  end
 
+      if message.action == "reverse" then
+        n = lookup(message.name)
+        print(address.. " Reverse looked up "..message.name)
+        send(address, {action="reverse", response=n})
+      end 
+
+    end
+
+  end
 end
 
 return m

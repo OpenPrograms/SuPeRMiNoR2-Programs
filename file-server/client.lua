@@ -44,10 +44,10 @@ end
 function getMessage()
   while true do
     modem.open(81)
-    print("wating for server message")
-    e, localAddress, address, port, distance, message = event.pull(5, "modem_message")
+    e, localAddress, address, port, distance, message = event.pull(60, "modem_message")
     modem.close(81)
-    print("Got data from server.")
+    --print("Got data from server.")
+    --print(message)
     return decode(message)
   end
 end
@@ -55,15 +55,20 @@ end
 function getFile(serverpath, path)
   msg = {action="get", data=serverpath}
   print("Requesting file "..serverpath)
-  send(msg)
+  send(server_addr, 80, msg)
   result, msg = getMessage()
 
   if result then
     if msg.action == "get" then
       print("Writing file "..path)
-      f = fs.open(path, "w")
-      f:write(msg.data)
-      f:close()
+      folder = fs.path(path)
+      if fs.exists(folder) == false then
+        fs.makeDirectory(folder)
+      end
+      fd, er = io.open(path, "wb")
+      if fd == nil then print(er) end
+      fd:write(msg.data)
+      fd:close()
     end
   end
 end
@@ -77,14 +82,14 @@ server_addr = dns.lookup(server)
 print("Server address "..server_addr)
 
 print("Getting list of files.")
-send({action="list"})
+send(server_addr, 80, {action="list"})
 result, msg = getMessage()
 print("Downloading all files")
 
 if result then
   for i, name in pairs(msg["data"]) do
   realname = fs.concat("/dl", name)
-  getFile(tcp, name, realname)
+  getFile(name, realname)
   os.sleep(1)
   end
 end

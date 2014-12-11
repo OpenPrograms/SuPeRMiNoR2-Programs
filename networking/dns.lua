@@ -83,11 +83,7 @@ function m.lookup(name)
      found_name = message.response
     end
   end
-  if found then
-    return found_name
-  else
-    return false
-  end
+  return found, found_name
 end
 
 function m.register(name)

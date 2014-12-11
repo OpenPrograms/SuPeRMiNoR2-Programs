@@ -1,0 +1,13 @@
+NAME
+  super-dns, basic dns server
+  
+METHODS
+  dns.register(name)
+    registers your computers modem address to name
+
+  dns.lookup(name)
+    use like:
+    result, addr = dns.lookup(name)
+    result will be true if it finds the address
+    addr will be the address it found
+   

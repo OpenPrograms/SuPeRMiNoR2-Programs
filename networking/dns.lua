@@ -74,7 +74,7 @@ function m.get(port, timeout)
 	timeout = timeout or 5
 	result = false
 	modem.open(port)
-	e, _, address, port, distance, message = event.pull(timeout, "modem_message")
+	e, _, address, _port_, distance, message = event.pull(timeout, "modem_message")
 	modem.close(port)
 
 	if e ~= nil then 
@@ -83,6 +83,16 @@ function m.get(port, timeout)
 	end
 
 	return result, address, message, r, data
+end
+
+function m.send(port, data, tunnel)
+	tunnel = tunnel or true
+    if tunnel then
+        --add a decode here, and add the port to the data going out
+        modem.broadcast(100, data) --I might work on making the tunnel stuff more advanced, so it wont need broadcasts
+        --That would make it more complicated, and easier to break though.
+    end
+    modem.send(port, data)
 end
     
 function m.lookup(name)

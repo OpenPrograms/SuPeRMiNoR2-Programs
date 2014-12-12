@@ -1,22 +1,12 @@
-local component = require("component")
-local term = require("term")
 local superlib = require("superlib")
+local term = require("term")
 local keyboard = require("keyboard")
 local event = require("event")
+local m = {}
 
-if component.isAvailable("abstract_bus") == false then
-	error("This program requires an abstact bus card.")
-end
-ab = component.abstract_bus
 lastmenu = false
 
 menu = {}
-menu[1] = {addr="Dehsetcro Atacpra Silulf", name="Nether"}
-menu[2] = {name="SuPeRMiNoR2's Base", addr="Sileston Uspraac Breigon"}
-
-function dial(addr)
-	ab.send(0xFFFF, {action="dial", address=addr})
-end
 
 function rendermenu(mt)
 	term.clear()
@@ -36,10 +26,14 @@ function updatemenu(mt, sel)
 	term.write("["..sel.."] ("..mt[sel]["name"]..")")
 end
 
-function menuloop(mt)
-	rendermenu(mt)
+function m.addItem(name, data)
+	menu[#menu + 1] = {name=name, data=data}
+end
+
+function m.getSelection()
+	rendermenu(menu)
 	sel = 1
-	updatemenu(mt, sel)
+	updatemenu(menu, sel)
 
 	while true do
 		e, r, t, key = event.pull("key_down")
@@ -64,19 +58,6 @@ function menuloop(mt)
 		if key == keyboard.keys.q then
 			return false
 		end
-
 		updatemenu(mt, sel)
-
 	end
-end
-
-while true do
-	addr = menuloop(menu)
-	term.clear()
-	print("You selected "..addr)
-	if addr ~= false then
-		dial(addr)
-	end
-	os.sleep(0.5)
-
 end

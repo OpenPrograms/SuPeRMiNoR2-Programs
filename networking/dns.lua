@@ -69,6 +69,22 @@ end
 
 m.dns_addr = false
 
+function m.get(port, timeout)
+	--Is this even tested? Bitch it might not be
+	timeout = timeout or 5
+	result = false
+	modem.open(port)
+	e, _, address, port, distance, message = event.pull(timeout, "modem_message")
+	modem.close(port)
+
+	if e ~= nil then 
+		result = true
+		r, data = decode(message)
+	end
+
+	return result, address, message, r, data
+end
+    
 function m.lookup(name)
   found = false
   found_name = nil

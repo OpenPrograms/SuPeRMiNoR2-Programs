@@ -30,7 +30,7 @@ end
 function rendermenu(mt)
 	term.clear()
 	for i=1, #mt do
-		print(" "..i.."  ("..mt[i]["name"]..")")
+		print(" "..i.."  "..mt[i]["name"].." ("..m[i]["addr"]..")")
 	end
 end
 
@@ -38,11 +38,11 @@ function updatemenu(mt, sel)
 	if lastmenu ~= false then
 		term.setCursor(1, lastmenu)
 		term.clearLine()
-		term.write(" "..lastmenu.."  ("..mt[lastmenu]["name"]..")")
+		term.write(" "..lastmenu.."  "..mt[lastmenu]["name"].." ("..mt[lastmenu]["addr"]..")")
 	end
 	term.setCursor(1, sel)
 	term.clearLine()
-	term.write("["..sel.."] ("..mt[sel]["name"]..")")
+	term.write("["..sel.."] "..mt[sel]["name"].."("..mt[sel]["addr"]..")")
 end
 
 function menuloop(mt)

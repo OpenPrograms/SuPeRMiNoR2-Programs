@@ -3,6 +3,7 @@ local term = require("term")
 local superlib = require("superlib")
 local keyboard = require("keyboard")
 local event = require("event")
+local serial = require("serialization")
 
 if component.isAvailable("abstract_bus") == false then
 	error("This program requires an abstact bus card.")
@@ -10,9 +11,17 @@ end
 ab = component.abstract_bus
 lastmenu = false
 
-menu = {}
-menu[1] = {addr="Dehsetcro Atacpra Silulf", name="Nether"}
-menu[2] = {name="SuPeRMiNoR2's Base", addr="Sileston Uspraac Breigon"}
+function decode(data)
+status, result = pcall(serial.unserialize, data)
+return status, result
+end
+ 
+function encode(data)
+return serial.serialize(data)
+end
+
+t = superlib.download("http://superminor2.net/mc/stargates.lua")
+_, menu = decode(t)
 
 function dial(addr)
 	ab.send(0xFFFF, {action="dial", address=addr})

@@ -76,11 +76,8 @@ function m.get(port, timeout)
 	modem.open(port)
 	e, _, address, _port_, distance, message = event.pull(timeout, "modem_message")
 	modem.close(port)
-
-	if e ~= nil then 
-		result = true
-		r, data = decode(message)
-	end
+	result = true
+	r, data = decode(message)
 
 	return result, address, message, r, data
 end
@@ -114,11 +111,16 @@ end
 
 function m.register(name)
   cbroadcast({action="register", name=name, tunnel=true, broadcast=true})
-  --add ack
+  result, addr, m, dr, de = m.get(43)
+  if dr then
+  	if de.name == name then
+  		return false
+  end
+  return true
 end
 
 function m.server()
-  print("Starting Super DNS Server")
+  print("Starting DNS Server")
   if fs.exists("dsad/dns-table") then
     result, tmp = decode(read_file("/dns-table"))
     if result and tmp ~= false then
@@ -137,6 +139,7 @@ function m.server()
       if message.action == "register" then
         print("Registering "..message.name.." to "..address)
         register(message.name, address)
+        send(address, {action="register", name=message.name})
       end
 
       if message.action == "lookup" then

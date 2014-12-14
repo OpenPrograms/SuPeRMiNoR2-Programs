@@ -37,11 +37,11 @@ function m.checkVersions()
 end
 
 function m.downloadFile(url, path)
-local success, response = pcall(downloadFile, url, path)
-  if not success then
-    return nil
-  end
-  return response
+  local success, response = pcall(downloadFile, url, path)
+    if not success then
+      return nil
+    end
+    return response
 end
 
 function m.download(url)
@@ -53,7 +53,7 @@ function m.download(url)
 end
 
 function m.round(what, precision)
-   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
+ return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 end
 
 function m.pgen(stored, capacity, precision)
@@ -70,8 +70,17 @@ function m.pad(str, len)
 end
 
 function oldround(num, idp)
-    local mult = 10^(idp or 0)
-    return math.floor(num * mult + 0.5) / mult
+  local mult = 10^(idp or 0)
+  return math.floor(num * mult + 0.5) / mult
+end
+
+function m.decode(data)
+  status, result = pcall(serial.unserialize, data)
+  return status, result
+end
+ 
+function m.encode(data)
+  return serial.serialize(data)
 end
 
 return m

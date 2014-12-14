@@ -30,7 +30,7 @@ end
 function rendermenu(mt)
 	term.clear()
 	for i=1, #mt do
-		print(" "..i.."  "..mt[i]["name"].." ("..m[i]["addr"]..")")
+		print(" "..i.."  "..mt[i]["name"].." ("..mt[i]["addr"]..")")
 	end
 end
 

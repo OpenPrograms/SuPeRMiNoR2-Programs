@@ -61,3 +61,5 @@ function m.getSelection()
 		updatemenu(mt, sel)
 	end
 end
+
+return m

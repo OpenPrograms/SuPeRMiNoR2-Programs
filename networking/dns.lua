@@ -72,11 +72,15 @@ m.dns_addr = false
 function m.get(port, timeout)
   --Is this even tested? Bitch it might not be
   timeout = timeout or 5
-  result = false
   modem.open(port)
   e, _, address, _port_, distance, message = event.pull(timeout, "modem_message")
   modem.close(port)
-  result = true
+  if e ~= nil then
+    result = true
+  else
+    result = false
+  end
+
   r, data = decode(message)
 
   return result, address, message, r, data
@@ -111,13 +115,13 @@ end
 
 function m.register(name)
   cbroadcast({action="register", name=name, tunnel=true, broadcast=true})
-  result, addr, m, dr, de = m.get(43)
-  if dr then
-    if de.name == name then
-      return true
-    end
-  end
-  return false
+  -- result, addr, m, dr, de = m.get(43)
+  -- if dr then
+  --   if de.name == name then
+  --     return true
+  --   end
+  -- end
+  -- return false
 end
 
 function m.server()

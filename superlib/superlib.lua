@@ -1,12 +1,13 @@
 local version = "0.4.5"
-
 local m = {}
 
 local component = require("component")
 if not component.isAvailable("internet") then
-  io.stderr:write("This program requires an internet card to run.")
+  error("This program requires an internet card to run.")
   return
 end
+
+local serial = require("serialization")
 local internet = require("internet")
 local wget = loadfile("/bin/wget.lua")
 
@@ -26,14 +27,14 @@ local function downloadFile(url, path)
   return wget("-fq",url,path)
 end
 
-function m.getVersion()
+function m.getVersion() --For getting the version of superlib without making an internet request
   return version
 end
 
 function m.checkVersions()
   response = downloadFile("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/versions.lua", "/tmp/versions.lua")
-  versions = loadfile("/tmp/versions.lua")()
-  return versions
+  versions = loadfile("/tmp/versions.lua")() --The () are needed
+  return versions, version
 end
 
 function m.downloadFile(url, path)

@@ -3,7 +3,6 @@ local term = require("term")
 local superlib = require("superlib")
 local keyboard = require("keyboard")
 local event = require("event")
-local serial = require("serialization")
 
 if component.isAvailable("abstract_bus") == false then
   error("This program requires an abstact bus card.")
@@ -12,7 +11,7 @@ ab = component.abstract_bus
 lastmenu = false
 
 t = superlib.download("http://superminor2.net/mc/stargates.lua")
-_, menu = decode(t)
+_, menu = superlib.decode(t)
 
 function dial(addr)
   ab.send(0xFFFF, {action="dial", address=addr})
@@ -33,7 +32,7 @@ function updatemenu(mt, sel)
   end
   term.setCursor(1, sel)
   term.clearLine()
-  term.write("["..sel.."] "..mt[sel]["name"].."("..mt[sel]["addr"]..")")
+  term.write("["..sel.."] "..mt[sel]["name"].." ("..mt[sel]["addr"]..")")
 end
 
 function menuloop(mt)

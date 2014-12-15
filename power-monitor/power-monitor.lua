@@ -1,6 +1,6 @@
 --Made by SuPeRMiNoR2
-version = "1.5.1"
-supported_config_version = "0.2"
+version = "1.5.2"
+supported_config_version = "0.3"
 
 local component = require("component")
 local term = require("term")
@@ -50,7 +50,7 @@ end
 local config = loadfile("/usr/power-monitor.config")()
 if config.config_version ~= supported_config_version then 
   print("Warning, The configuration file has a unsupported version number.")
-  print("You shoud save your old settings and delete the config file.")
+  print("You should save your old settings and delete the config file.")
   print("The new version will be downloaded on next startup.")
   print("If you do not do this, the program may not work.")
   print("Waiting 15 seconds...")
@@ -223,5 +223,5 @@ while true do
     end
   end
   print(text_buffer)
-  os.sleep(0.2)
+  os.sleep(config.loop_speed)
 end

@@ -70,20 +70,20 @@ end
 m.dns_addr = false
 
 function m.get(port, timeout)
-	--Is this even tested? Bitch it might not be
-	timeout = timeout or 5
-	result = false
-	modem.open(port)
-	e, _, address, _port_, distance, message = event.pull(timeout, "modem_message")
-	modem.close(port)
-	result = true
-	r, data = decode(message)
+  --Is this even tested? Bitch it might not be
+  timeout = timeout or 5
+  result = false
+  modem.open(port)
+  e, _, address, _port_, distance, message = event.pull(timeout, "modem_message")
+  modem.close(port)
+  result = true
+  r, data = decode(message)
 
-	return result, address, message, r, data
+  return result, address, message, r, data
 end
 
 function m.send(port, data, tunnel)
-	tunnel = tunnel or true
+  tunnel = tunnel or true
     if tunnel then
         --add a decode here, and add the port to the data going out
         modem.broadcast(100, data) --I might work on making the tunnel stuff more advanced, so it wont need broadcasts
@@ -113,10 +113,11 @@ function m.register(name)
   cbroadcast({action="register", name=name, tunnel=true, broadcast=true})
   result, addr, m, dr, de = m.get(43)
   if dr then
-  	if de.name == name then
-  		return false
+    if de.name == name then
+      return true
+    end
   end
-  return true
+  return false
 end
 
 function m.server()

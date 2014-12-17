@@ -14,6 +14,7 @@ t = superlib.download("http://superminor2.net/mc/stargates.lua")
 _, menu = superlib.decode(t)
 
 function dial(addr)
+  ab.send(0xFFFF, {action="disconnect"})
   ab.send(0xFFFF, {action="dial", address=addr})
 end
 

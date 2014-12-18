@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-version = "1.5.2"
+version = "1.5.3"
 supported_config_version = "0.3"
 
 local component = require("component")
@@ -61,7 +61,9 @@ end
 glasses_connected = false
 
 function percent_gen_db(powerdb, uid)
-  return superlib.pgen(powerdb[uid]["stored"], powerdb[uid]["capacity"], config.display_precision) .. "%"
+  storedPower = powerdb[uid]["stored"]
+  powerCapacity = powerdb[uid]["capacity"]
+  return superlib.pgen(storedPower, powerCapacity, config.display_precision) .. "%"
 end
 
 function readPower(proxy, ltype)
@@ -69,13 +71,13 @@ function readPower(proxy, ltype)
   stored = 0
    
   if ltype == 1 then
-      capacity = proxy.getCapacity()
-      stored = proxy.getStored()
+    capacity = proxy.getCapacity()
+    stored = proxy.getStored()
   end
    
   if ltype == 2 then
-      capacity = proxy.getMaxEnergyStored()
-      stored = proxy.getEnergyStored()
+    capacity = proxy.getMaxEnergyStored()
+    stored = proxy.getEnergyStored()
   end
 
   return capacity, stored
@@ -85,62 +87,62 @@ function getPower()
   total_stored = 0
   powerdb = {}
   for uid in pairs(mlist) do
-      proxy = mlist[uid]["proxy"]
-      ltype = mlist[uid]["type"]
-      lname = mlist[uid]["name"]
-      c, s = readPower(proxy, ltype)
-      if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
-          s = c
-      end
-      total_stored = total_stored + s
-      powerdb[uid] = {capacity=c, stored=s, name=lname}
+    proxy = mlist[uid]["proxy"]
+    ltype = mlist[uid]["type"]
+    lname = mlist[uid]["name"]
+    c, s = readPower(proxy, ltype)
+    if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
+        s = c
+    end
+    total_stored = total_stored + s
+    powerdb[uid] = {capacity=c, stored=s, name=lname}
   end  
   powerdb["total"] = {capacity=total_capacity, stored=total_stored}
   return powerdb
 end
 
 function scan()
-    unit_id = 1
-    mlist = {}
-    total_capacity = 0
-    for address, ctype in component.list() do
-        for stype in pairs(supported_types) do
-            if stype == ctype then
-                t = component.proxy(address)
-                ltype = supported_types[stype]["type"]
-                name = supported_types[stype]["name"]
-                mlist[unit_id] = {address=address, proxy=t, type=ltype, name=name}
-                unit_id = unit_id + 1
-                c, s = readPower(t, ltype)
-                total_capacity = total_capacity + c
-            end
-        end
-        if ctype == "glasses" and glasses_connected == false then
-            print("Detected glasses block, loading")
-            glasses = component.proxy(address)
-            glasses.removeAll()
-            glasses_text = glasses.addTextLabel()
-            glasses_text.setText("Loading.")
-            --os.sleep(0.8)
-            glasses_connected = true
-            glasses_text.setColor(.37, .83, .03)
-            glasses_text.setText("Loading..")
-            --os.sleep(0.8)
-            glasses_text.setPosition(2, 2)
-            glasses_text.setText("Loading...")
-            --os.sleep(0.8)
-            glasses_text.setScale(1)
-            glasses_text.setText("Loading....")
-            --os.sleep(1)
-            --print(glasses.getBindPlayers())
-        end
+  unit_id = 1
+  mlist = {}
+  total_capacity = 0
+  for address, ctype in component.list() do
+    for stype in pairs(supported_types) do
+      if stype == ctype then
+        t = component.proxy(address)
+        ltype = supported_types[stype]["type"]
+        name = supported_types[stype]["name"]
+        mlist[unit_id] = {address=address, proxy=t, type=ltype, name=name}
+        unit_id = unit_id + 1
+        c, s = readPower(t, ltype)
+        total_capacity = total_capacity + c
+      end
     end
-    total_units = unit_id - 1
-    return mlist, total_capacity, total_units
+    if ctype == "glasses" and glasses_connected == false then
+      print("Detected glasses block, loading")
+      glasses = component.proxy(address)
+      glasses.removeAll()
+      glasses_text = glasses.addTextLabel()
+      glasses_text.setText("Loading.")
+      --os.sleep(0.8)
+      glasses_connected = true
+      glasses_text.setColor(.37, .83, .03)
+      glasses_text.setText("Loading..")
+      --os.sleep(0.8)
+      glasses_text.setPosition(2, 2)
+      glasses_text.setText("Loading...")
+      --os.sleep(0.8)
+      glasses_text.setScale(1)
+      glasses_text.setText("Loading....")
+      --os.sleep(1)
+      --print(glasses.getBindPlayers())
+    end
+  end
+  total_units = unit_id - 1
+  return mlist, total_capacity, total_units
 end
 
 function buffer(text)
-    text_buffer = text_buffer .. text .. "\n"
+  text_buffer = text_buffer .. text .. "\n"
 end
 
 supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
@@ -158,12 +160,12 @@ gpu.setResolution(w / config.scale, h / config.scale)
  
 print("Scanning for energy storage units")
 if glasses_connected then
-    glasses_text.setText("Scanning.")
+  glasses_text.setText("Scanning.")
 end
 mlist, total_capacity, total_units = scan()
 
 if glasses_connected then
-    glasses_text.setText("Found "..total_units)
+  glasses_text.setText("Found "..total_units)
 end
 
 print("Found ".. total_units .. " storage unit[s]")
@@ -189,7 +191,11 @@ while true do
   term.clear()
   text_buffer = ""
 
-  total = superlib.pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"], 2)
+  if total_units == 0 then
+    total = 0
+  else
+    total = superlib.pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"], 2)
+  end
 
   if glasses_connected then
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
@@ -207,7 +213,7 @@ while true do
   end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
-  buffer("Total".. ": ".. percent_gen_db(powerdb, "total") .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
+  buffer("Total".. ": ".. total .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
   buffer("")
    
   for lid in pairs(powerdb) do
@@ -223,5 +229,9 @@ while true do
     end
   end
   print(text_buffer)
-  os.sleep(config.loop_speed)
+  if total_units == 0 then
+    os.sleep(10)
+  else
+    os.sleep(config.loop_speed)
+  end
 end

@@ -187,8 +187,7 @@ while true do
     scan()
     powerdb = {total= {stored=1, capacity=1}}
   end
-   
-  term.clear()
+  
   text_buffer = ""
 
   if total_units == 0 then
@@ -228,6 +227,7 @@ while true do
       buffer(output)
     end
   end
+  term.clear()
   print(text_buffer)
   if total_units == 0 then
     os.sleep(10)

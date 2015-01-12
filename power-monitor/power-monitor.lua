@@ -181,6 +181,7 @@ capacitor_bank={type=2, name="Capacitor Bank"}}
  
 --Program
 term.clear()
+print("SuPeRMiNoR2's Power Monitor version: "..version)
 print("Applying scale of " .. config.scale)
 w, h = gpu.maxResolution()
 gpu.setResolution(w / config.scale, h / config.scale)
@@ -196,7 +197,6 @@ if glasses_connected then
   os.sleep(1)
 end
 
-print("SuPeRMiNoR2's Power Monitor version: "..version)
 print("Found ".. total_units .. " storage unit[s]")
 print("Total capacity detected: "..total_capacity)
 print("Press ctrl + alt + c to close the program")

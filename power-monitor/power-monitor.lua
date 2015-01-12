@@ -1,5 +1,5 @@
 --Made by SuPeRMiNoR2
-local version = "1.5.4"
+local version = "1.5.5"
 local supported_config_version = "0.3"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/usr/power-monitor.config"
@@ -171,7 +171,7 @@ local function buffer(text)
   text_buffer = text_buffer .. text .. "\n"
 end
 
-local supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
+supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
 tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
 tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
 tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
@@ -202,21 +202,14 @@ print("Total capacity detected: "..total_capacity)
 print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))
- 
-loops = 0
+
 while true do
   text_buffer = ""
-
-  loops = loops + 1
-  if loops == 50 then
-    loops = 0
-    mlist, total_capacity, total_units = scan()
-  end
 
   success, powerdb, total_stored = pcall(getPower)
   if success == false then
     mlist, total_capacity, total_units = scan()
-    powerdb = {total= {stored=1, capacity=1}}
+    powerdb, total_stored = getPower()
   end
 
   if total_units == 0 then

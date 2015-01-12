@@ -1,6 +1,8 @@
 --Made by SuPeRMiNoR2
-version = "1.5.3"
-supported_config_version = "0.3"
+local version = "1.5.4"
+local supported_config_version = "0.3"
+local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
+local config_path = "/usr/power-monitor.config"
 
 local component = require("component")
 local term = require("term")
@@ -12,7 +14,7 @@ term.clear()
 print("Loading SuPeRMiNoR2's power-monitor version "..version)
 
 if not component.isAvailable("internet") then
-  io.stderr:write("This program requires an internet card to run.")
+  error("This program requires an internet card to run.")
   return
 end
 
@@ -33,76 +35,99 @@ print("Checking for updates...")
 superlib_version = superlib.getVersion()
 versions = superlib.checkVersions()
 
-if versions == nil then print("Error checking versions.") end
-if versions ~= nil then
-  if versions["superlib"] ~= superlib_version then print("An update is available for superlib") os.sleep(2) end
-  if versions["powermonitor"] ~= version then print("An update is available for power-monitor") os.sleep(2) end
+if versions == nil then 
+  print("Error checking versions.")
+else
+  if versions["superlib"] ~= superlib_version then 
+    print("An update is available for superlib")
+    os.sleep(2) 
+  end
+  if versions["powermonitor"] ~= version then 
+    print("An update is available for power-monitor")
+    os.sleep(2) 
+  end
 end
 
 if fs.exists("/usr/power-monitor.config") == false then
-  print("Downloading config file to /usr/power-monitor.config")
-  result = superlib.downloadFile("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config", "/usr/power-monitor.config")
+  print("Downloading config file to "..config_path)
+  result = superlib.downloadFile(default_config_url, config_path)
   if result == false then 
-    io.stderr:write("Error downloading the config file")
+    error("Error downloading the config file")
   end
 end
 
 local config = loadfile("/usr/power-monitor.config")()
+
 if config.config_version ~= supported_config_version then 
   print("Warning, The configuration file has a unsupported version number.")
   print("You should save your old settings and delete the config file.")
   print("The new version will be downloaded on next startup.")
   print("If you do not do this, the program may not work.")
-  print("Waiting 15 seconds...")
-  os.sleep(15)
+  print("Waiting 10 seconds...")
+  os.sleep(10)
 end
 
 --States
-glasses_connected = false
+local glasses_connected = false
 
-function percent_gen_db(powerdb, uid)
+local function percent_gen_db(powerdb, uid)
   storedPower = powerdb[uid]["stored"]
   powerCapacity = powerdb[uid]["capacity"]
   return superlib.pgen(storedPower, powerCapacity, config.display_precision) .. "%"
 end
 
-function readPower(proxy, ltype)
+local function readCapacity(proxy, ltype)
   capacity = 0
   stored = 0
    
   if ltype == 1 then
     capacity = proxy.getCapacity()
-    stored = proxy.getStored()
   end
    
   if ltype == 2 then
     capacity = proxy.getMaxEnergyStored()
+  end
+
+  return capacity
+end
+
+local function readStored(proxy, ltype)
+  stored = 0
+   
+  if ltype == 1 then
+    stored = proxy.getStored()
+  end
+   
+  if ltype == 2 then
     stored = proxy.getEnergyStored()
   end
 
-  return capacity, stored
+  return stored
 end
 
-function getPower()
-  total_stored = 0
-  powerdb = {}
+local function getPower()
+  local total_stored = 0
+  local powerdb = {}
+
   for uid in pairs(mlist) do
     proxy = mlist[uid]["proxy"]
     ltype = mlist[uid]["type"]
     lname = mlist[uid]["name"]
-    c, s = readPower(proxy, ltype)
+    c = mlist[uid]["capacity"]
+    -- c, s = readPower(proxy, ltype) --Switching to reading just stored, and useing the db for max capacity (Will slow down updates of capacitor max energy changes)
+    s = readStored(proxy, ltype)
     if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
         s = c
     end
     total_stored = total_stored + s
     powerdb[uid] = {capacity=c, stored=s, name=lname}
   end  
-  powerdb["total"] = {capacity=total_capacity, stored=total_stored}
-  return powerdb
+  --powerdb["total"] = {capacity=total_capacity, stored=total_stored}
+  return powerdb, total_stored
 end
 
-function scan()
-  unit_id = 1
+local function scan()
+  local unit_id = 1
   mlist = {}
   total_capacity = 0
   for address, ctype in component.list() do
@@ -111,9 +136,10 @@ function scan()
         t = component.proxy(address)
         ltype = supported_types[stype]["type"]
         name = supported_types[stype]["name"]
-        mlist[unit_id] = {address=address, proxy=t, type=ltype, name=name}
+        c = readCapacity(t, ltype)
+        mlist[unit_id] = {address=address, proxy=t, type=ltype, name=name, capacity=c} --New feature: Store max capacity in database to avoid reading it each loop.
+                                                                              --This will slow down updating of things like capacitors which can change their size.
         unit_id = unit_id + 1
-        c, s = readPower(t, ltype)
         total_capacity = total_capacity + c
       end
     end
@@ -141,16 +167,17 @@ function scan()
   return mlist, total_capacity, total_units
 end
 
-function buffer(text)
+local function buffer(text)
   text_buffer = text_buffer .. text .. "\n"
 end
 
-supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
+local supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
 tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
 tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
 tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
 mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
-name="CESU"}, batbox={type=1, name="BatBox"}, capacitor_bank={type=2, name="Capacitor Bank"}}  
+name="CESU"}, batbox={type=1, name="BatBox"}, 
+capacitor_bank={type=2, name="Capacitor Bank"}}  
  
 --Program
 term.clear()
@@ -166,34 +193,36 @@ mlist, total_capacity, total_units = scan()
 
 if glasses_connected then
   glasses_text.setText("Found "..total_units)
+  os.sleep(1)
 end
 
+print("SuPeRMiNoR2's Power Monitor version: "..version)
 print("Found ".. total_units .. " storage unit[s]")
 print("Total capacity detected: "..total_capacity)
 print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
-os.sleep(config.startup_delay + 0)
+os.sleep(tonumber(config.startup_delay))
  
 loops = 0
 while true do
+  text_buffer = ""
+
   loops = loops + 1
   if loops == 50 then
     loops = 0
-    scan()
+    mlist, total_capacity, total_units = scan()
   end
 
-  success, powerdb = pcall(getPower)
+  success, powerdb, total_stored = pcall(getPower)
   if success == false then
-    scan()
+    mlist, total_capacity, total_units = scan()
     powerdb = {total= {stored=1, capacity=1}}
   end
-  
-  text_buffer = ""
 
   if total_units == 0 then
     total = 0
   else
-    total = superlib.pgen(powerdb["total"]["stored"], powerdb["total"]["capacity"], 2)
+    total = superlib.pgen(total_stored, total_capacity, 2)
   end
 
   if glasses_connected then
@@ -212,26 +241,27 @@ while true do
   end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
-  buffer("Total".. ": ".. total .." [".. powerdb["total"]["stored"] .. "/" .. powerdb["total"]["capacity"] .."]")
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."]")
   buffer("")
    
   for lid in pairs(powerdb) do
-    if lid ~= "total" then
-      first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-      middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
-      second_half = " ["..powerdb[lid]["name"].."]"
+    first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
+    middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+    second_half = " ["..powerdb[lid]["name"].."]"
 
-      if config.display_units == false then output = first_half .. second_half end
-      if config.display_units == true then output = first_half .. middle .. second_half end
+    if config.display_units == false then output = first_half .. second_half end
+    if config.display_units == true then output = first_half .. middle .. second_half end
 
-      buffer(output)
-    end
+    buffer(output)
   end
+
   term.clear()
   print(text_buffer)
+
   if total_units == 0 then
     os.sleep(10)
   else
     os.sleep(config.loop_speed)
   end
+
 end

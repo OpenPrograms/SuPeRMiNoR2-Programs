@@ -111,7 +111,7 @@ function m.addItem(name, data)
 end
 
 function m.clearMenu()
-menu = {}
+  menu = {}
 end
 
 function m.runMenu()

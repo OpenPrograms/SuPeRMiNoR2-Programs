@@ -1,5 +1,6 @@
 --Very Beta Minesweeper
 --Based off of http://pastebin.com/WJuZjJzr
+local version = "0.2"
 
 local math = require("math")
 local computer = require("computer")
@@ -14,7 +15,7 @@ w = w / 2
 h = h / 2
 gpu.setResolution(w, h)
 
-difficulty = 0.1
+difficulty = 0.05
 
 local colors = {white=0xFFFFFF, green=0x00FF00, yellow=0xFFCC00, red=0xFF0000, lightGray=0xCCCCCC, black=0x000000}
 
@@ -24,24 +25,19 @@ colors["defaultFG"] = gpu.getForeground()
 math.randomseed(computer.freeMemory() + computer.uptime() + computer.totalMemory())
 start = computer.uptime()
 
-function click(x, y)
-  if g[x][y] == 2 then
-    gpu.setForeground(colors.red)
-    term.write("X")
-    os.sleep(1)
-    for i=1,w do
-      for j=1,h do
-        if g[i][j] == 2 then
-          term.setCursor(i, j)
-          term.write("X")
-        end
-      end
-    end
-    os.sleep(10)
-    term.clear()
-    return
-  end
+function printCentered(text)
+textl = string.len(text)
+middle = w - textl
+starting_point = middle / 2
+cx, cy = term.getCursor()
+term.setCursor(starting_point, cy)
+print(text)
+end
 
+printCentered("Testing 123")
+os.sleep(5)
+
+function click(x, y)
   if g[x][y] ~= 1 then
     return
   end
@@ -117,35 +113,60 @@ function game()
   gpu.setBackground(colors.black)
   
   while clears > 0 do
-    local event, _, x, y, lr, user = event.pull("touch")
+    local e, _, x, y, lr, user = event.pull("touch")
+      if g[x][y] == 2 then
+        gpu.setForeground(colors.red)
+        term.setCursor(x, y)
+        term.write("X")
+        os.sleep(1)
+        for i=1,w do
+          for j=1,h do
+            if g[i][j] == 2 then
+              term.setCursor(i, j)
+              term.write("X")
+            end
+          end
+        end
+        -- Game Over Section
+        local e = event.pull() --Wait for any input
+        break
+      end
     click(x,y)
     os.sleep(0)
   end
 
-  start = computer.uptime()-start
-  term.clear()
-  gpu.setForeground(colors.green)
-  print("Well done!")
-  print("Time: "..time(start))
-  for i=1,w do
-    for j=1,h do
-      term.setCursor(i, j)
-      if g[i][j] == 2 then
-        term.write("O")
-      else
-        term.write(" ")
+  if clears == 0 then
+    start = computer.uptime()-start
+    term.clear()
+    gpu.setForeground(colors.green)
+    print("Well done!")
+    print("Time: "..time(start))
+    for i=1,w do
+      for j=1,h do
+        term.setCursor(i, j)
+        if g[i][j] == 2 then
+          term.write("O")
+        else
+          term.write(" ")
+        end
       end
     end
+    gpu.setForeground(colors.yellow)
+    term.setCursor(w/2-4, h/2+1)
+    term.write(" Well done! ")
+    term.setCursor(1, 1)
+    term.write("Time: "..time(start))
+  else
+    gpu.setForeground(colors.red)
+    term.clear()
+    print("You lost!")
+    print("Press any key to continue...")
+    local e = event.pull()
   end
-  gpu.setForeground(colors.yellow)
-  term.setCursor(w/2-4, h/2+1)
-  term.write(" Well done! ")
-  term.setCursor(1, 1)
-  term.write("Time: "..time(start))
 end
 
 -- Program starts
-print("Hold Ctrl+Alt+C to terminate if stuck\n")
+print("Hold Ctrl+Alt+C to terminate if stuck")
 os.sleep(1)
 while true do
   game()
@@ -158,5 +179,3 @@ while true do
     break
   end
 end
-
-print("Bye bye...")

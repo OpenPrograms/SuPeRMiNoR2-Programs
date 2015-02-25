@@ -34,8 +34,10 @@ term.setCursor(starting_point, cy)
 print(text)
 end
 
-printCentered("Testing 123")
-os.sleep(5)
+term.clear()
+printCentered("SuPeRMiNoR2's Minesweeper")
+printCentered("Alpha Version")
+os.sleep(2)
 
 function click(x, y)
   if g[x][y] ~= 1 then

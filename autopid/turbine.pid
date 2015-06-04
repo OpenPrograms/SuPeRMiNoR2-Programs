@@ -13,7 +13,7 @@ sensor = turbine.getRotorSpeed
 target = 1800
 
 --extra property to enable efficient idling with inductor==false
-inductor = "auto"
+inductor = true
 
 --use inductor = "auto" to enable an on / off controller to only engage the inductor when it is needed
 inductor_auto = {
@@ -41,7 +41,7 @@ actuator = {
     end
 
     --efficiency
-    local finishedStartup = value < turbine.getFluidFlowRateMaxMax()-5
+    local finishedStartup = turbine.getRotorSpeed() > target - 100
     if inductor == "auto" then
       local currentEnergy = inductor_auto.sensor()
       if inductor_auto.state then
@@ -51,7 +51,14 @@ actuator = {
       end
       turbine.setInductorEngaged(inductor_auto.state and finishedStartup)
     else
-      turbine.setInductorEngaged(inductor and finishedStartup)
+      if turbine.getEnergyStored() < 900000 and finishedStartup == true then
+        turbine.setInductorEngaged(true)
+      else
+        turbine.setInductorEngaged(false)
+      end
+      if turbine.getRotorSpeed() > target + 100 then
+        turbine.setInductorEngaged(true)
+      end
     end
     turbine.setFluidFlowRateMax(value)
   end,

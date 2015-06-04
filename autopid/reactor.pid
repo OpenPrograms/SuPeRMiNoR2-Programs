@@ -1,3 +1,9 @@
+local component = require("component")
+
+--extra property for direct reactor access
+print("Binding to address: "..address)
+reactor = component.proxy(address)
+
 if reactor.isActivelyCooled() then
   sensor = reactor.getHotFluidAmount
   target = reactor.getHotFluidAmountMax() / 2

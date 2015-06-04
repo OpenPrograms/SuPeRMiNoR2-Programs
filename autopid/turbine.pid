@@ -26,18 +26,16 @@ inductor_auto = {
 maxSafeRPM = 2000
 restartRPM = 1700
 
-turbineState = true
-
 actuator = {
   set = function(value)
     --safety
-    if turbine.getRotorSpeed() > maxSafeRPM then
+    if turbine.getRotorSpeed() > maxSafeRPM and turbine.getActive == true then
       log("Shutdown!")
       turbine.setActive(false)
-      turbuneState = false
       value = 0
     end
-    if turbine.getRotorSpeed() < restartRPM and turbineState == false then
+    if turbine.getRotorSpeed() < restartRPM and turbine.getActive == false then
+      log("Restarting!")
       turbine.setActive(true)
     end
 

@@ -1,5 +1,9 @@
 local component = require("component")
 
+function log(message)
+  print("["..id.."] "..message)
+end
+
 --extra property for direct reactor access
 print("["..id.."] Binding to address: "..address)
 reactor = component.proxy(address)
@@ -29,13 +33,13 @@ resumeFuelTemp = 350
 
 actuator = {
   set = function(value)
-    if reactor.getFuelTemperature() > maxSafeFuelTemp then
-      --Emergency shutdown!
+    if reactor.getFuelTemperature() > maxSafeFuelTemp and reactor.getActive() == true then
+      log("Shutdown!")
       reactor.setActive(false)
       value = 100
     end
-    if reactor.getFuelTemperature() < resumeFuelTemp then
-      --Resume
+    if reactor.getFuelTemperature() < resumeFuelTemp and reactor.getActive() == false then
+      log("Restarting!")
       reactor.setActive(true)
     end
 

@@ -5,6 +5,7 @@ print("["..id.."] Binding to address: "..address)
 reactor = component.proxy(address)
 
 if reactor.isActivelyCooled() then
+  print("["..id.."] I am actively cooled.")
   sensor = reactor.getHotFluidAmount
   target = reactor.getHotFluidAmountMax() / 2
   factors = {
@@ -13,6 +14,7 @@ if reactor.isActivelyCooled() then
     d = -6/target,
   }
 else
+  print("["..id.."] I am passively cooled.")
   sensor = reactor.getEnergyStored
   target = 5000000--reactor.getEnergyStoredMax() / 2
   factors = {
@@ -35,7 +37,6 @@ actuator = {
     if reactor.getFuelTemperature() < resumeFuelTemp then
       --Resume
       reactor.setActive(true)
-      value = 100
     end
 
     reactor.setAllControlRodLevels(value)

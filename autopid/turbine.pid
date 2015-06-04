@@ -1,7 +1,7 @@
 local component = require("component")
 
 --extra property for direct turbine access
-print("Binding to address: "+address)
+print("Binding to address: "..address)
 turbine = component.proxy(address)
 
 sensor = turbine.getRotorSpeed

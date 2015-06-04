@@ -53,6 +53,9 @@ actuator = {
       turbine.setInductorEngaged(inductor and finishedStartup)
     end
     turbine.setFluidFlowRateMax(value)
+    if value == 0 then
+      turbine.setInductorEngaged(true)
+    end
   end,
   get = turbine.getFluidFlowRateMax,
   min = 0,

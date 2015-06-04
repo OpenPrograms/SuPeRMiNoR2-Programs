@@ -1,0 +1,1 @@
+print("auto was renamed to autopid, please type that name instead.")

@@ -1,0 +1,33 @@
+NAME
+  autopid - Finds and adds br reactors and turbines to the PID program automaticly.
+  
+SYNOPSIS
+  autopid [options] FILES... or IDs...
+  autopid --target ID [value]
+  
+DESCRIPTION
+  Just run autopid, it will find all your reactors and turbines and add them to pid.
+  
+OPTIONS
+  Extra options.
+  --monitor
+    Shows info on all running machines. (WIP)
+  
+  --start
+    scans for and starts reactors and turbines (the default) (WIP)
+
+  --stop
+    stops all scanned machines and removes them from pid (WIP)
+    
+  --pause
+    pauses pid controller (warning, this could let things overheat / overspin) (WIP)
+  
+  --resume
+    resumes control from pause (WIP)
+    
+EXAMPLES
+  autopid
+    scans for machines and starts them and adds them to pid.
+    
+  autopid --monitor
+    Start monitor screen

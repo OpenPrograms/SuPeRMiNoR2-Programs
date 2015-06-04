@@ -17,9 +17,8 @@ local function loadFile(file, cid, address, type)
     __newindex=controller,
   })
   --load and execute the file
-  print("Injecting address: "..address)
   controller.address = address
-
+  controller.id = cid
   assert(loadfile(file, "t",env))()
   --initialize the controller
 

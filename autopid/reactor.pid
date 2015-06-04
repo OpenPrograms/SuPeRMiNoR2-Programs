@@ -1,7 +1,7 @@
 local component = require("component")
 
 --extra property for direct reactor access
-print("Binding to address: "..address)
+print("["..id.."] Binding to address: "..address)
 reactor = component.proxy(address)
 
 if reactor.isActivelyCooled() then

@@ -1,7 +1,11 @@
 local component = require("component")
 
+function log(message)
+  print("["..id.."] "..message")
+end
+
 --extra property for direct turbine access
-print("["..id.."] Binding to address: "..address)
+log("Binding to address: "..address)
 turbine = component.proxy(address)
 
 sensor = turbine.getRotorSpeed
@@ -22,18 +26,21 @@ inductor_auto = {
 maxSafeRPM = 2000
 restartRPM = 1700
 
+turbineState = true
+
 actuator = {
   set = function(value)
     --safety
     if turbine.getRotorSpeed() > maxSafeRPM then
-      --Emergency shutdown!
+      log("Shutdown!")
       turbine.setActive(false)
+      turbuneState = false
       value = 0
     end
-    if turbine.getRotorSpeed() < restartRPM then
-      --Restart
+    if turbine.getRotorSpeed() < restartRPM and turbineState == false then
       turbine.setActive(true)
     end
+    
     --efficiency
     local finishedStartup = value < turbine.getFluidFlowRateMaxMax()-5
     if inductor == "auto" then

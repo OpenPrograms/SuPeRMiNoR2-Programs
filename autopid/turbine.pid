@@ -33,7 +33,6 @@ actuator = {
     if turbine.getRotorSpeed() < restartRPM then
       --Restart
       turbine.setActive(true)
-      value = 0
     end
     --efficiency
     local finishedStartup = value < turbine.getFluidFlowRateMaxMax()-5

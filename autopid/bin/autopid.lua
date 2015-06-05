@@ -1,9 +1,10 @@
-local version = "0.1.1.2"
+local version = "0.1.2.1"
 
 local pid = require("pid")
 local component = require("component")
 local superlib = require("superlib")
 local shell = require("shell")
+local autopid = require("autopidlib")
 
 loadedControllers = {}
 
@@ -17,48 +18,6 @@ if versions.autopid ~= version then
   sleep(2)
 end
 
-local function loadFile(file, cid, address, type)
-  local controller={}
-  local env=setmetatable({},{
-    __index=function(_,k)
-      local value=controller[k]
-      if value~=nil then
-        return value
-      end
-      return _ENV[k]
-    end,
-    __newindex=controller,
-  })
-  
-  controller.autopid = true
-  controller.address = address
-  controller.id = cid
-  controller.log = log
-  controller.type = type
-
-  loadedControllers[#loadedControllers + 1] = cid
-
-  assert(loadfile(file, "t",env))()
-
-  return pid.new(controller, cid, true)
-end
-
-local function scan()
-  for address, type in component.list() do
-    if type == "br_turbine" then
-      turbines = turbines + 1
-      print("Detected turbine #"..tostring(turbines).." address: "..address)
-      loadFile("/usr/autopid/turbine.apid", "turbine"..tostring(turbines), address, type)
-    end 
-
-    if type == "br_reactor" then
-      reactors = reactors + 1
-      print("Detected reactor #"..tostring(reactors).." address: "..address)
-      loadFile("/usr/autopid/reactor.apid", "reactor"..tostring(reactors), address, type)
-    end
-  end
-end
-
 local function main(parameters, options)
   if #options == 0 then
     print([[
@@ -70,21 +29,14 @@ Usage: autopid [option] files or ids...
 ]])
   end
   
-  local pidObjects = pid.dump()
-  
   if options.scan or options.s then
     print("Scanning for machines.")
-    scan()
+    autopid.scan()
 
   elseif options.shutdown then
-    print("Searching for machines to shutdown (Reactors are not supported for now)")
-    for _, controller in pairs(pidObjects) do
-      if controller.type == "br_turbine" then
-        print(string.format("Shutting down %s", controller.id))
-        controller.shutdown()
-        pid.remove(controller.id)
-      end
-    end
+    print("Searching for machines to shutdown")
+    autopid.shutdown()
+  end
 
   elseif options.debug then
     --operation "debug" displays the given controllers

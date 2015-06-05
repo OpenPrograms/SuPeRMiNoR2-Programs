@@ -5,6 +5,8 @@ local component = require("component")
 local superlib = require("superlib")
 local shell=require("shell")
 
+local parameters, options = shell.parse(...)
+
 loadedControllers = {}
 
 versions = superlib.checkVersions()
@@ -96,5 +98,4 @@ Usage: autopid [option] files or ids...
 end
 
 --parseing parameters and executing main function
-local parameters, options = shell.parse(...)
 return main(parameters, options)

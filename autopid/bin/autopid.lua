@@ -60,24 +60,27 @@ local function scan()
 end
 
 local function main(parameters, options)
-  if #parameters == 0 then
+  if #options == 0 then
     print([[
 Usage: autopid [option] files or ids...
   option     what it does
   [none]       shows this
-  --scan       scans and starts all controllers
+  --scan (-s)      scans and starts all controllers
   --shutdown      removes everything from pid and stops it
 ]])
   end
   
   local pidObjects = pid.dump()
   
-  if options.scan then
+  if options.scan or options.s then
+    print("Scanning for machines.")
     scan()
 
   elseif options.shutdown then
+    print("Searching for machines to shutdown (Reactors are not supported for now)")
     for _, controller in pairs(pidObjects) do
       if controller.type == "br_turbine" then
+        printf("Shutting down %s", controller.id)
         controller.shutdown()
         pid.remove(controller.id)
       end

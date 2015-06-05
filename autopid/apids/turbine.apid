@@ -10,23 +10,11 @@ function log(message)
 end
 
 --extra property for direct turbine access
-log("Binding to address: "..address)
 turbine = component.proxy(address)
 turbine.setActive(true)
 
 sensor = turbine.getRotorSpeed
 target = 1800
-
---extra property to enable efficient idling with inductor==false
-inductor = true
-
---use inductor = "auto" to enable an on / off controller to only engage the inductor when it is needed
-inductor_auto = {
-  sensor = turbine.getEnergyStored,
-  min = 500000,
-  max = 500000,
-  state = true,
-}
 
 --extra property for emergency shutdown
 maxSafeRPM = 2000
@@ -35,7 +23,7 @@ restartRPM = 1700
 status = {}
 status.eshutdown = false
 
-function shutdown()
+local function shutdown()
   turbine.setActive(false)
   turbine.setFluidFlowRateMax(0)
   turbine.setInductorEngaged(true)

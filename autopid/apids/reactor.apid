@@ -10,11 +10,16 @@ function log(message)
 end
 
 --extra property for direct reactor access
-log("Binding to address: "..address)
 reactor = component.proxy(address)
 
+maxSafeFuelTemp = 2000
+resumeFuelTemp = 135
+
+status = {}
+status.eshutdown = false
+
 if reactor.isActivelyCooled() then
-  log("I am actively cooled.")
+  status.activeCooling = true
   sensor = reactor.getHotFluidAmount
   target = reactor.getHotFluidAmountMax() / 2
   factors = {
@@ -23,7 +28,7 @@ if reactor.isActivelyCooled() then
     d = -6/target,
   }
 else
-  log("I am passively cooled.")
+  status.activeCooling = false
   sensor = reactor.getEnergyStored
   target = 5000000--reactor.getEnergyStoredMax() / 2
   factors = {
@@ -33,22 +38,39 @@ else
   }
 end
 
-maxSafeFuelTemp = 2000
-resumeFuelTemp = 135
+status.coolantMax = reactor.getCoolantAmountMax()
+status.hotFluidMax = reactor.getHotFluidAmountMax()
+
+local function shutdown()
+  reactor.setActive(false)
+  reactor.setAllControlRodLevels(100)
+end
 
 actuator = {
   set = function(value)
-    fuelTemperature = reactor.getFuelTemperature()
-    active = reactor.getActive()
+    local fuelTemperature = reactor.getFuelTemperature()
+    local isActive = reactor.getActive()
 
-    if fuelTemperature > maxSafeFuelTemp and active == true then
-      log("Shutdown!")
+    if fuelTemperature > maxSafeFuelTemp and isActive == true then
+      status.eshutdown = true
       reactor.setActive(false)
       value = 100
     end
-    if fuelTemperature < resumeFuelTemp and active == false then
-      log("Restarting!")
+    if fuelTemperature < resumeFuelTemp and isActive == false then
+      status.eshutdown = false
       reactor.setActive(true)
+    end
+
+    status.active = isActive
+    status.fuelTemperature = fuelTemperature
+    status.controlRodLevel = value
+    status.coolant = reactor.getCoolantAmount()
+    status.hotFluid = reactor.getHotFluidAmount()
+
+    if status.activeCooling then
+      status.rate = reactor.getHotFluidProducedLastTick()
+    else
+      status.rate = reactor.getEnergyProducedLastTick()
     end
 
     reactor.setAllControlRodLevels(value)

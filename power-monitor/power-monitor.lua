@@ -2,7 +2,7 @@
 local version = "1.5.9"
 local supported_config_version = "0.7"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
-local config_path = "/usr/power-monitor.config"
+local config_path = "/etc/power-monitor.config"
 
 local component = require("component")
 local term = require("term")
@@ -38,7 +38,7 @@ else
   end
 end
 
-if fs.exists("/usr/power-monitor.config") == false then
+if fs.exists(config_path) == false then
   print("Downloading config file to "..config_path)
   result = superlib.downloadFile(default_config_url, config_path)
   if result == false then 

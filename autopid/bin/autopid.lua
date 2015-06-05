@@ -3,7 +3,7 @@ local version = "0.1.1.2"
 local pid = require("pid")
 local component = require("component")
 local superlib = require("superlib")
-local shell=require("shell")
+local shell = require("shell")
 
 loadedControllers = {}
 
@@ -80,7 +80,7 @@ Usage: autopid [option] files or ids...
     print("Searching for machines to shutdown (Reactors are not supported for now)")
     for _, controller in pairs(pidObjects) do
       if controller.type == "br_turbine" then
-        printf("Shutting down %s", controller.id)
+        print(string.format("Shutting down %s", controller.id))
         controller.shutdown()
         pid.remove(controller.id)
       end

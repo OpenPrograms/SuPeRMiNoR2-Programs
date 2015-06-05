@@ -31,7 +31,7 @@ local function loadFile(file, cid, address, type)
   controller.log = log
   controller.type = type
 
-  loadedControllers[#loadedControllers + 1] = cid
+  controllers[#controllers + 1] = cid
 
   assert(loadfile(file, "t",env))()
 

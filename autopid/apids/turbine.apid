@@ -19,6 +19,7 @@ target = 1800
 --extra property for emergency shutdown
 maxSafeRPM = 2000
 restartRPM = 1700
+overspeedClamp = 25
 
 status = {}
 status.eshutdown = false
@@ -71,25 +72,30 @@ actuator = {
       status.inductor_msg = "Waiting for turbine to reach target"
     end
 
-    if turbine.getRotorSpeed() > target + 100 then
+    --This will waste some power, but should help prevent the turbines
+    --being stuck at higher speeds then intended. It should only ever be 
+    --activated if the energy buffer is full and the turbine has no load to slow
+    --it down
+    if turbine.getRotorSpeed() > target + overspeedClamp then
       turbine.setInductorEngaged(true)
       status.inductor = true
       status.inductor_msg = "Trying to slow down"
     end
     
-    status.flowRateMax = value
     turbine.setFluidFlowRateMax(value)
+    status.flowRateMax = value
     status.inputTank = turbine.getInputAmount()
     status.energyProduced = turbine.getEnergyProducedLastTick()
     status.flowRate = turbine.getFluidFlowRate()
 
-    if status.flowRate < status.flowRateMax + 25 then
+    if status.flowRate + 10 > status.flowRateMax then --the +10 is to avoid jitter
       status.enoughSteam = true
     end
 
-    if status.flowRate > status.flowRateMax + 25 then
+    if status.flowRate + 10 < status.flowRateMax then
       status.enoughSteam = false
     end
+    
   end,
 
   get = turbine.getFluidFlowRateMax,

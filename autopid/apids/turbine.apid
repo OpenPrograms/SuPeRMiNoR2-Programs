@@ -5,6 +5,10 @@ if autopid ~= true then
 end
 assert(autopid)
 
+function log(message)
+  print("["..id.."] "..message)
+end
+
 --extra property for direct turbine access
 log("Binding to address: "..address)
 turbine = component.proxy(address)

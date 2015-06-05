@@ -10,10 +10,6 @@ if versions.autopid ~= version then
   sleep(2)
 end
 
-function log(message)
-  print("["..id.."] "..message)
-end
-
 local function loadFile(file, cid, address, type)
   local controller={}
   --custom environment

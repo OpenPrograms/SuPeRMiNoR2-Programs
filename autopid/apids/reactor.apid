@@ -5,13 +5,17 @@ if autopid ~= true then
 end
 assert(autopid)
 
+function log(message)
+  print("["..id.."] "..message)
+end
+
 --extra property for direct reactor access
-print("["..id.."] Binding to address: "..address)
+log("Binding to address: "..address)
 reactor = component.proxy(address)
 reactor.setActive(true)
 
 if reactor.isActivelyCooled() then
-  print("["..id.."] I am actively cooled.")
+  log("I am actively cooled.")
   sensor = reactor.getHotFluidAmount
   target = reactor.getHotFluidAmountMax() / 2
   factors = {
@@ -20,7 +24,7 @@ if reactor.isActivelyCooled() then
     d = -6/target,
   }
 else
-  print("["..id.."] I am passively cooled.")
+  log("I am passively cooled.")
   sensor = reactor.getEnergyStored
   target = 5000000--reactor.getEnergyStoredMax() / 2
   factors = {
@@ -35,12 +39,15 @@ resumeFuelTemp = 350
 
 actuator = {
   set = function(value)
-    if reactor.getFuelTemperature() > maxSafeFuelTemp and reactor.getActive() == true then
+    fuelTemperature = reactor.getFuelTemperature()
+    active = reactor.getActive()
+
+    if fuelTemperature > maxSafeFuelTemp and active == true then
       log("Shutdown!")
       reactor.setActive(false)
       value = 100
     end
-    if reactor.getFuelTemperature() < resumeFuelTemp and reactor.getActive() == false then
+    if fuelTemperature < resumeFuelTemp and active == false then
       log("Restarting!")
       reactor.setActive(true)
     end

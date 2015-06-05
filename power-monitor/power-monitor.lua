@@ -1,6 +1,6 @@
 --Made by SuPeRMiNoR2
-local version = "1.5.7"
-local supported_config_version = "0.5"
+local version = "1.5.8"
+local supported_config_version = "0.6"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/usr/power-monitor.config"
 
@@ -169,7 +169,7 @@ end
 local function calculate_rate(last, current)
   rate = current - last
   if config.estimate_ticks == true then
-    ticks_per_loop = config.loop_speed * 20
+    ticks_per_loop = config.loop_speed * config.ticks_scaler
     rate = rate / ticks_per_loop
     rate = superlib.round(rate, 0)
   end
@@ -233,7 +233,7 @@ while true do
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_buffer = "["..total_units.."] " .. total.."% " .. total_rate
+    glasses_buffer = "["..total_units.."] " .. total.."% " .. total_rate .. "/t"
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
     end
@@ -245,7 +245,7 @@ while true do
   end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ".. total_rate)
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ".. total_rate.."/t")
   buffer("")
    
   for lid in pairs(powerdb) do

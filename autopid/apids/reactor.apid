@@ -1,8 +1,9 @@
 local component = require("component")
 
-function log(message)
-  print("["..id.."] "..message)
+if autopid ~= true then
+  print("This is a special pid file, it needs to be run from autopid.")
 end
+assert(autopid)
 
 --extra property for direct reactor access
 print("["..id.."] Binding to address: "..address)

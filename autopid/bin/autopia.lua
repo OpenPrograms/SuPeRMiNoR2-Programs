@@ -1,5 +1,18 @@
+local version = "0.0.2"
+
 pid = require("pid")
 component = require("component")
+superlib = require("superlib")
+
+versions = superlib.checkVersions()
+if versions.autopid ~= version then
+  print("There is an update availible for autopid!")
+  sleep(2)
+end
+
+function log(message)
+  print("["..id.."] "..message)
+end
 
 local function loadFile(file, cid, address, type)
   local controller={}
@@ -17,8 +30,10 @@ local function loadFile(file, cid, address, type)
     __newindex=controller,
   })
   --load and execute the file
+  controller.autopid = True
   controller.address = address
   controller.id = cid
+  controller.log = log
   assert(loadfile(file, "t",env))()
   --initialize the controller
 

@@ -46,7 +46,7 @@ if fs.exists(config_path) == false then
   end
 end
 
-local config = loadfile("/usr/power-monitor.config")()
+local config = loadfile(config_path)()
 
 if config.config_version ~= supported_config_version then 
   print("Warning, The configuration file has a unsupported version number.")

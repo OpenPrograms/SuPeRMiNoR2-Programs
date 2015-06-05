@@ -32,48 +32,88 @@ inductor_auto = {
 maxSafeRPM = 2000
 restartRPM = 1700
 
+status = {}
+status.eshutdown = false
+
+function shutdown()
+  turbine.setActive(false)
+  turbine.setFluidFlowRateMax(0)
+  turbine.setInductorEngaged(true)
+end
+
 actuator = {
   set = function(value)
-    --safety
-    if turbine.getRotorSpeed() > maxSafeRPM and turbine.getActive == true then
-      log("Shutdown!")
+    local isActive = turbine.getActive()
+    local rotorSpeed = turbine.getRotorSpeed()
+    local energyStored = turbine.getEnergyStored()
+
+    status.active = isActive
+    status.rotorSpeed = rotorSpeed
+    
+    if rotorSpeed > maxSafeRPM and isActive == true then
+      status.eshutdown = true
       turbine.setActive(false)
       value = 0
     end
-    if turbine.getRotorSpeed() < restartRPM and turbine.getActive == false then
-      log("Restarting!")
+
+    if rotorSpeed < restartRPM and isActive == false then
+      status.eshutdown = false
       turbine.setActive(true)
     end
 
-    --efficiency
-    local finishedStartup = turbine.getRotorSpeed() > target - 100
-    if inductor == "auto" then
-      local currentEnergy = inductor_auto.sensor()
-      if inductor_auto.state then
-        inductor_auto.state = currentEnergy < inductor_auto.max
-      else
-        inductor_auto.state = currentEnergy < inductor_auto.min
-      end
-      turbine.setInductorEngaged(inductor_auto.state and finishedStartup)
+    local finishedStartup = rotorSpeed > target - 100
+    status.finishedStartup = finishedStartup
+
+    if energyStored < 900000 and finishedStartup == true then
+      turbine.setInductorEngaged(true)
+      status.inductor = true
+      status.inductor_msg = "Energy Buffer Low"
     else
-      if turbine.getEnergyStored() < 900000 and finishedStartup == true then
-        turbine.setInductorEngaged(true)
-      else
-        turbine.setInductorEngaged(false)
-      end
-      if turbine.getRotorSpeed() > target + 100 then
-        turbine.setInductorEngaged(true)
-      end
+      turbine.setInductorEngaged(false)
+      status.inductor = false
     end
+
+    if energyStored < 900000 then
+      status.inductor = false
+      status.inductor_msg = "Energy Buffer Full"
+    end
+
+    if finishedStartup == false then
+      status.inductor = false
+      status.inductor_msg = "Waiting for turbine to reach target"
+    end
+
+    if turbine.getRotorSpeed() > target + 100 then
+      turbine.setInductorEngaged(true)
+      status.inductor = true
+      status.inductor_msg = "Trying to slow down"
+    end
+    
+    status.flowRateMax = value
     turbine.setFluidFlowRateMax(value)
+    status.inputTank = turbine.getInputAmount()
+    status.energyProduced = turbine.getEnergyProducedLastTick()
+    status.flowRate = turbine.getFluidFlowRate()
+
+    if status.flowRate < status.flowRateMax + 25 then
+      status.enoughSteam = true
+    end
+
+    if status.flowRate > status.flowRateMax + 25 then
+      status.enoughSteam = false
+    end
   end,
+
   get = turbine.getFluidFlowRateMax,
   min = 0,
   max = turbine.getFluidFlowRateMaxMax,
+
 }
+
 factors = {
   p = 10,
   i = 0.4,
   d = 1,
 }
+
 frequency = 4

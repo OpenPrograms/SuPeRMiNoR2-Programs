@@ -206,6 +206,9 @@ end
 function pid.get(id)
   return registry[id]
 end
+function pid.dump()
+  return registry
+end
 --stops and removes the pid controller with the given id
 function pid.remove(id)
   local oldController = registry[id]

@@ -171,6 +171,7 @@ local function calculate_rate(last, current)
   if config.estimate_ticks == true then
     ticks_per_loop = config.loop_speed * 20
     rate = rate / ticks_per_loop
+    rate = superlib.round(rate, 0)
   end
   return tostring(rate)
 end  
@@ -232,7 +233,7 @@ while true do
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_buffer = "["..total_units.."]" .. total.."% " .. total_rate
+    glasses_buffer = "["..total_units.."] " .. total.."% " .. total_rate
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
     end

@@ -30,7 +30,7 @@ local function loadFile(file, cid, address, type)
     __newindex=controller,
   })
   --load and execute the file
-  controller.autopid = True
+  controller.autopid = true
   controller.address = address
   controller.id = cid
   controller.log = log

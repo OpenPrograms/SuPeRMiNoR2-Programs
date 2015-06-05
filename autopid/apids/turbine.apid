@@ -23,7 +23,7 @@ restartRPM = 1700
 status = {}
 status.eshutdown = false
 
-local function shutdown()
+function shutdown()
   turbine.setActive(false)
   turbine.setFluidFlowRateMax(0)
   turbine.setInductorEngaged(true)

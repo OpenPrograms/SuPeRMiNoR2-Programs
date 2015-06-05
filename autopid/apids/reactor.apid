@@ -41,7 +41,7 @@ end
 status.coolantMax = reactor.getCoolantAmountMax()
 status.hotFluidMax = reactor.getHotFluidAmountMax()
 
-local function shutdown()
+function shutdown()
   reactor.setActive(false)
   reactor.setAllControlRodLevels(100)
 end

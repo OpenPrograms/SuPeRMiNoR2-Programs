@@ -36,7 +36,6 @@ Usage: autopid [option] files or ids...
   elseif options.shutdown then
     print("Searching for machines to shutdown")
     autopid.shutdown()
-  end
 
   elseif options.debug then
     --operation "debug" displays the given controllers

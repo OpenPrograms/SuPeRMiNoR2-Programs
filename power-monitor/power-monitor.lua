@@ -1,6 +1,6 @@
 --Made by SuPeRMiNoR2
-local version = "1.5.5"
-local supported_config_version = "0.3"
+local version = "1.5.6"
+local supported_config_version = "0.4"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/usr/power-monitor.config"
 
@@ -148,18 +148,13 @@ local function scan()
       glasses = component.proxy(address)
       glasses.removeAll()
       glasses_text = glasses.addTextLabel()
-      glasses_text.setText("Loading.")
-      --os.sleep(0.8)
+      glasses_text.setText("Loading...")
       glasses_connected = true
       glasses_text.setColor(.37, .83, .03)
-      glasses_text.setText("Loading..")
-      --os.sleep(0.8)
-      glasses_text.setPosition(2, 2)
-      glasses_text.setText("Loading...")
-      --os.sleep(0.8)
       glasses_text.setScale(1)
-      glasses_text.setText("Loading....")
-      --os.sleep(1)
+      glasses_text.setPosition(config.glasses_xoffset, config.glasses_yoffset)
+      glasses_text.setText("Loading...")
+      
       --print(glasses.getBindPlayers())
     end
   end
@@ -170,6 +165,11 @@ end
 local function buffer(text)
   text_buffer = text_buffer .. text .. "\n"
 end
+
+local function calculate_rate(last, current)
+  rate = current - last
+  return tostring(rate)
+end  
 
 supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
 tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
@@ -203,6 +203,9 @@ print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))
 
+total_last_amount = 0
+total_rate = 0
+
 while true do
   text_buffer = ""
 
@@ -218,11 +221,14 @@ while true do
     total = superlib.pgen(total_stored, total_capacity, 2)
   end
 
+  total_rate = calculate_rate(total_last_amount, total_stored)
+  total_last_amount = total_stored
+
   if glasses_connected then
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_buffer = total.."%" .. " ["..total_units.."]"
+    glasses_buffer = total.."% " .. total_rate .. " ["..total_units.."]"
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
     end
@@ -234,7 +240,7 @@ while true do
   end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."]")
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ".. total_rate)
   buffer("")
    
   for lid in pairs(powerdb) do

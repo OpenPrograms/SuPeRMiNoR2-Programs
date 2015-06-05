@@ -9,6 +9,7 @@ local term = require("term")
 local fs = require("filesystem")
 local gpu = component.gpu
 local wget = loadfile("/bin/wget.lua")
+local superlib = require("superlib")
 
 term.clear()
 print("Loading SuPeRMiNoR2's power-monitor version "..version)
@@ -19,17 +20,6 @@ if not component.isAvailable("internet") then
 end
 
 local internet = require("internet")
-
-if fs.exists("/usr/lib") == false then
-  fs.makeDirectory("/usr/lib")
-end
-
-if fs.exists("/usr/lib/superlib.lua") == false then
-  print("Downloading superlib to /usr/lib/superlib.lua")
-  wget("-fq","https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/superlib/superlib.lua", "/usr/lib/superlib.lua")
-end
-
-local superlib = require("superlib")
 
 print("Checking for updates...")
 superlib_version = superlib.getVersion()

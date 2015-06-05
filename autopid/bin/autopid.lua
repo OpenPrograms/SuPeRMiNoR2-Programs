@@ -58,6 +58,7 @@ local function scan()
       print("Detected reactor #"..tostring(reactors).." address: "..address)
       loadFile("/usr/autopid/reactor.apid", "reactor"..tostring(reactors), address, type)
     end
+  end
 end
 
 local function main(parameters, options)

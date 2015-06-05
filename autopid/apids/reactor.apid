@@ -12,7 +12,6 @@ end
 --extra property for direct reactor access
 log("Binding to address: "..address)
 reactor = component.proxy(address)
-reactor.setActive(true)
 
 if reactor.isActivelyCooled() then
   log("I am actively cooled.")
@@ -35,7 +34,7 @@ else
 end
 
 maxSafeFuelTemp = 2000
-resumeFuelTemp = 350
+resumeFuelTemp = 135
 
 actuator = {
   set = function(value)

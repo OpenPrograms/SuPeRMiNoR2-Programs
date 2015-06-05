@@ -76,8 +76,9 @@ Usage: autopid [option] files or ids...
     scan()
 
   elseif options.shutdown then
-    for _, controller in ipairs(pidObjects) do
-      controller.shutdown()
+    for _, controller in pairs(pidObjects) do
+      if controller.type == "br_turbine" then
+      controller.shutdown() end
       pid.remove(controller.id)
     end
 

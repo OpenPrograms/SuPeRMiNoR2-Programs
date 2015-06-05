@@ -1,6 +1,6 @@
 --Made by SuPeRMiNoR2
-local version = "1.5.8"
-local supported_config_version = "0.6"
+local version = "1.5.9"
+local supported_config_version = "0.7"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/usr/power-monitor.config"
 
@@ -208,7 +208,7 @@ print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))
 
-total_last_amount = 0
+total_last_amount = false
 total_rate = 0
 
 while true do
@@ -226,6 +226,10 @@ while true do
     total = superlib.pgen(total_stored, total_capacity, 2)
   end
 
+  if total_last_amount == false then
+    total_last_amount == total_stored
+  end
+
   total_rate = calculate_rate(total_last_amount, total_stored)
   total_last_amount = total_stored
 
@@ -233,7 +237,8 @@ while true do
     if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
     if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
     if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
-    glasses_buffer = "["..total_units.."] " .. total.."% " .. total_rate .. "/t"
+    glasses_buffer = "["..total_units.."] " .. total.."% ~" .. total_rate .. "/t"
+
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
     end
@@ -245,7 +250,7 @@ while true do
   end
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ".. total_rate.."/t")
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
   buffer("")
    
   for lid in pairs(powerdb) do

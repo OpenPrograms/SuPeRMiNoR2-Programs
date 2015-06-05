@@ -5,8 +5,6 @@ local component = require("component")
 local superlib = require("superlib")
 local shell=require("shell")
 
-local parameters, options = shell.parse(...)
-
 loadedControllers = {}
 
 versions = superlib.checkVersions()
@@ -38,7 +36,7 @@ local function loadFile(file, cid, address, type)
   controller.log = log
   controller.type = type
 
-  loadedControllers[loadedControllers + 1] = cid
+  loadedControllers[#loadedControllers + 1] = cid
 
   assert(loadfile(file, "t",env))()
 
@@ -70,12 +68,11 @@ Usage: autopid [option] files or ids...
   --scan       scans and starts all controllers
   --shutdown      removes everything from pid and stops it
 ]])
-    return
   end
   
   local pidObjects={}
 
-  for _,name in ipairs(loadedControllers) do
+  for _,name in ipairs(pid.dump()) do
     local pcontroller = pid.get(id)
     pidObjects[#pidObjects + 1] = pcontroller
     print(pcontroller.id)
@@ -86,7 +83,6 @@ Usage: autopid [option] files or ids...
 
   elseif options.shutdown then
     for _, controller in ipairs(pidObjects) do
-      controller:stop()
       controller.shutdown()
       pid.remove(controller.id)
     end
@@ -99,4 +95,5 @@ Usage: autopid [option] files or ids...
 end
 
 --parseing parameters and executing main function
+local parameters, options = shell.parse(...)
 return main(parameters, options)

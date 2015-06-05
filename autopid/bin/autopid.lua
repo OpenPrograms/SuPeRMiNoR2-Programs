@@ -1,8 +1,9 @@
-local version = "0.1.1.1"
+local version = "0.1.1.2"
 
-pid = require("pid")
-component = require("component")
-superlib = require("superlib")
+local pid = require("pid")
+local component = require("component")
+local superlib = require("superlib")
+local shell=require("shell")
 
 loadedControllers = {}
 

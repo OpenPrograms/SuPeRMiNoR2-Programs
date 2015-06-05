@@ -26,7 +26,7 @@ end
 
 if fs.exists("/usr/lib/superlib.lua") == false then
   print("Downloading superlib to /usr/lib/superlib.lua")
-  wget("-fq","https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/lib/superlib.lua", "/usr/lib/superlib.lua")
+  wget("-fq","https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/superlib/superlib.lua", "/usr/lib/superlib.lua")
 end
 
 local superlib = require("superlib")

@@ -227,7 +227,7 @@ while true do
   end
 
   if total_last_amount == false then
-    total_last_amount == total_stored
+    total_last_amount = total_stored
   end
 
   total_rate = calculate_rate(total_last_amount, total_stored)

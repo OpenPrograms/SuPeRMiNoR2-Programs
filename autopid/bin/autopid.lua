@@ -70,13 +70,7 @@ Usage: autopid [option] files or ids...
 ]])
   end
   
-  local pidObjects={}
-
-  for _,name in ipairs(pid.dump()) do
-    local pcontroller = pid.get(id)
-    pidObjects[#pidObjects + 1] = pcontroller
-    print(pcontroller.id)
-  end
+  local pidObjects = pid.dump()
   
   if options.scan then
     scan()

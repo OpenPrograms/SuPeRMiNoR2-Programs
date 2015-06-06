@@ -16,7 +16,8 @@ Usage: autopid [option] files or ids...
   option     what it does
   [none]       shows this
   --scan (-s)      scans and starts all controllers
-  --shutdown      removes everything from pid and stops it
+  --shutdown       removes everything from pid and stops it
+  --restart (-r)   deactivate all, remove from pid, then scan again. (add new things?)
 ]])
   end
   
@@ -27,6 +28,12 @@ Usage: autopid [option] files or ids...
   elseif options.shutdown then
     print("Searching for machines to shutdown")
     autopid.shutdown()
+
+  elseif options.restart or options.r then
+    print("Stopping and restarting.")
+    autopid.shutdown()
+    autopid.scan()
+    print("Done.")
 
   elseif options.debug then
     --operation "debug" displays the given controllers

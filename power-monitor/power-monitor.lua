@@ -259,8 +259,10 @@ while true do
 
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
-    line = string.format("[%s] | Active: %s | Rotor Speed: %s | Power Gen: %s", cid, status.active, status.rotorSpeed, status.energyProduced)
-    buffer(line)
+    if cobj.type == "br_turbine" then
+      line = string.format("[%s] | Active: %s | Rotor Speed: %s | Power Gen: %s", cid, status.active, superlib.round(status.rotorSpeed, 1), status.energyProduced)
+      buffer(line)
+    end
   end
 
   term.clear()

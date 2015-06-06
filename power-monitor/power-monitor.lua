@@ -266,7 +266,7 @@ while true do
     local status = cobj.status
     if cobj.type == "br_turbine" then
       line = string.format("[%s] | Active: %s | Rotor Speed: %s | Power Gen: %s", pad(cid, 2), pad(status.active, 1), 
-        pad(round(status.rotorSpeed, 1), 1), pad(round(status.energyProduced, 1), 1)
+        pad(round(status.rotorSpeed, 1), 1), pad(round(status.energyProduced, 1), 1))
       buffer(line)
     end
   end

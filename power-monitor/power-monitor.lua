@@ -262,7 +262,7 @@ while true do
 
   buffer(" ")
 
-  for cid, cobj in pairs(controllers.sort()) do
+  for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
       line = string.format("[%s] | Active: %s | Rotor Speed: %s | Power Gen: %s", pad(cid, 2), pad(status.active, 1), 

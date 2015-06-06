@@ -70,6 +70,7 @@ end
 m.pgen = m.percent_gen --Compat
 
 function m.pad(str, len)
+  str = tostring(str)
   char = " "
   if char == nil then char = ' ' end
   return str .. string.rep(char, len - #str)

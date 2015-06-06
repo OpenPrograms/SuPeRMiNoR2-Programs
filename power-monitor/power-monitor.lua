@@ -10,6 +10,7 @@ local fs = require("filesystem")
 local gpu = component.gpu
 local wget = loadfile("/bin/wget.lua")
 local superlib = require("superlib")
+local autopid = require("autopidlib")
 
 term.clear()
 print("Loading SuPeRMiNoR2's power-monitor version "..version)
@@ -204,6 +205,8 @@ total_rate = 0
 while true do
   text_buffer = ""
 
+  controllers = autopid.dump()
+
   success, powerdb, total_stored = pcall(getPower)
   if success == false then
     mlist, total_capacity, total_units = scan()
@@ -252,6 +255,12 @@ while true do
     if config.display_units == true then output = first_half .. middle .. second_half end
 
     buffer(output)
+  end
+
+  for cid, cobj in pairs(controllers) do
+    local status = cobj.status
+    line = string.format("[%s] | Active: %s | Rotor Speed: %s | Power Gen: %s", cid, status.active, status.rotorSpeed, status.energyProduced)
+    buffer(line)
   end
 
   term.clear()

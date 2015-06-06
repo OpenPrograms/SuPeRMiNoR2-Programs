@@ -6,17 +6,8 @@ local superlib = require("superlib")
 local shell = require("shell")
 local autopid = require("autopidlib")
 
-loadedControllers = {}
-
-versions = superlib.checkVersions()
-
 turbines = 0
 reactors = 0
-
-if versions.autopid ~= version then
-  print("There is an update availible for autopid!")
-  sleep(2)
-end
 
 local function main(parameters, options)
   if #options == 0 then

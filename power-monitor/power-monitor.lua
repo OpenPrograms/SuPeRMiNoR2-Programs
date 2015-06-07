@@ -278,6 +278,8 @@ while true do
     end
   end
 
+  buffer("+----+--------+-------+------------+-------+")
+
   buffer(" ")
   buffer(string.format("Total Turbine Generation: %s", round(total_turbine_rate, 0)))
 

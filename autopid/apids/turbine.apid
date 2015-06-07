@@ -59,16 +59,13 @@ actuator = {
       status.inductor_msg = "Energy Buffer Low"
     else
       turbine.setInductorEngaged(false)
-      status.inductor = false
     end
 
     if energyStored > 900000 then
-      status.inductor = false
       status.inductor_msg = "Energy Buffer Full"
     end
 
     if finishedStartup == false then
-      status.inductor = false
       status.inductor_msg = "Waiting for turbine to reach target"
     end
 
@@ -78,7 +75,6 @@ actuator = {
     --it down
     if turbine.getRotorSpeed() > target + overspeedClamp then
       turbine.setInductorEngaged(true)
-      status.inductor = true
       status.inductor_msg = "Trying to slow down"
     end
     
@@ -87,6 +83,7 @@ actuator = {
     status.inputTank = turbine.getInputAmount()
     status.energyProduced = turbine.getEnergyProducedLastTick()
     status.flowRate = turbine.getFluidFlowRate()
+    status.inductor = turbine.getInductorEngaged()
 
     if status.flowRate + 10 > status.flowRateMax then --the +10 is to avoid jitter
       status.enoughSteam = true

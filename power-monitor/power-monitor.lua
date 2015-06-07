@@ -264,14 +264,14 @@ while true do
 
   total_turbine_rate = 0
 
-  buffer("+------+--------+-------+")
-  buffer("|  ID  | Active | Speed |")
-  buffer("-------+--------+-------+")
+  buffer("+----+--------+-------+")
+  buffer("| ID | Active | Speed |")
+  buffer("+----+--------+-------+")
 
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
-      line = string.format("| %s | %s | %s | %s |", pad(string.sub(cid, 7), 2), pad(status.active, 1), 
+      line = string.format("| %s | %s | %s | %s |", pad(string.sub(cid, 8), 2), pad(status.active, 1), 
         pad(round(status.rotorSpeed, 1), 7), pad(round(status.energyProduced, 1), 1))
         total_turbine_rate = total_turbine_rate + status.energyProduced
       buffer(line)

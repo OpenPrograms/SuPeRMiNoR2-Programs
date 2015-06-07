@@ -13,6 +13,7 @@ local term = require("term")
 local keyboard = require("keyboard")
 local event = require("event")
 local wget = loadfile("/bin/wget.lua")
+local string = require("string")
 
 local function downloadRaw(url)
   local sContent = ""
@@ -83,6 +84,15 @@ end
  
 function m.encode(data)
   return serial.serialize(data)
+end
+
+function m.split(str,sep)
+    local array = {}
+    local reg = string.format("([^%s]+)",sep)
+    for mem in string.gmatch(str,reg) do
+        table.insert(array, mem)
+    end
+    return array
 end
 
 --Menu Section

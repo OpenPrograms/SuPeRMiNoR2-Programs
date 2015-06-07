@@ -2,20 +2,21 @@ local version = "0.4.6"
 local m = {}
 
 local component = require("component")
-if not component.isAvailable("internet") then
-  error("This program requires an internet card to run.")
-  return
-end
-
 local serial = require("serialization")
 local internet = require("internet")
 local term = require("term")
 local keyboard = require("keyboard")
 local event = require("event")
-local wget = loadfile("/bin/wget.lua")
+local io = require("io")
 local string = require("string")
+local wget = loadfile("/bin/wget.lua")
+
+if component.isAvailable("internet") then
+  internet = true
+end
 
 local function downloadRaw(url)
+  assert(internet)
   local sContent = ""
   local result, response = pcall(internet.request, url)
   if not result then
@@ -28,6 +29,7 @@ local function downloadRaw(url)
 end
 
 local function downloadFile(url, path)
+  assert(internet)
   return wget("-fq",url,path)
 end
 
@@ -36,12 +38,14 @@ function m.getVersion() --For getting the version of superlib without making an 
 end
 
 function m.checkVersions()
+  assert(internet)
   response = downloadFile("https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/versions.lua", "/tmp/versions.lua")
   versions = loadfile("/tmp/versions.lua")() --The () are needed
   return versions, version
 end
 
 function m.downloadFile(url, path)
+  assert(internet)
   local success, response = pcall(downloadFile, url, path)
     if not success then
       return nil
@@ -71,7 +75,7 @@ end
 
 m.pgen = m.percent_gen --Compat
 
-function m.pad(str, len)
+function m.pad(str, len) --Use the default text library's pad function instead
   str = tostring(str)
   char = " "
   if char == nil then char = ' ' end
@@ -157,6 +161,7 @@ function m.runMenu()
     updatemenu(menu, sel)
   end
 end
+
 --------------------------
 
 return m

@@ -272,7 +272,7 @@ while true do
     local status = cobj.status
     if cobj.type == "br_turbine" then
       line = string.format("| %s |  %s | %s | %s RF/t |", pad(string.sub(cid, 8), 2), pad(status.active, 5), 
-        pad(round(status.rotorSpeed, 0), 5), pad(round(status.energyProduced, 1), 9))
+        pad(round(status.rotorSpeed, 0), 5), pad(round(status.energyProduced, 0), 6))
         total_turbine_rate = total_turbine_rate + status.energyProduced
       buffer(line)
     end

@@ -62,7 +62,7 @@ actuator = {
       status.inductor = false
     end
 
-    if energyStored < 900000 then
+    if energyStored > 900000 then
       status.inductor = false
       status.inductor_msg = "Energy Buffer Full"
     end

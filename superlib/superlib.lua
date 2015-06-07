@@ -58,7 +58,8 @@ function m.download(url)
 end
 
 function m.round(what, precision)
- return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
+  if precision == nil then precision = 0 end
+  return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 end
 
 function m.percent_gen(stored, capacity, precision)

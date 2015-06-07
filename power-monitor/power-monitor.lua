@@ -275,7 +275,7 @@ while true do
   end
 
   buffer(" ")
-  buffer(string.format("Total Turbine Generation: %s", total_last_amount))
+  buffer(string.format("Total Turbine Generation: %s", total_turbine_rate))
 
   term.clear()
   print(text_buffer)

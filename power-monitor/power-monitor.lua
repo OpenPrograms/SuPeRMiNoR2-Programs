@@ -260,12 +260,10 @@ while true do
     buffer(output)
   end
 
-  buffer(" ")
   term.clear()
+  print(text_buffer)
 
   total_turbine_rate = 0
-
-  print(text_buffer)
 
   tabledata = {{"ID", "Active", "Speed", "Coils", "Energy Gen"}}
 
@@ -279,6 +277,20 @@ while true do
   end
 
   superlib.rendertable(tabledata)
+
+  print("")
+
+  tabledata = {{"ID", "Active", "Core", "Steam Gen"}}
+
+  for cid, cobj in pairs(controllers) do
+    local status = cobj.status
+    if cobj.type == "br_reactor" and status.activeCooling then
+        table.insert(tabledata, {string.sub(cid, 8) , status.active, round(status.fuelTemperature)})
+        total_turbine_rate = total_turbine_rate + status.energyProduced
+    end
+  end
+
+
 
   print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
 

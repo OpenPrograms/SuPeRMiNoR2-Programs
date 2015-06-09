@@ -107,7 +107,7 @@ function m.rendertable(tabledata)
 
   for _, row in ipairs(result) do
     for col, value in ipairs(row) do
-      m[col] = math.max(m[col] or 1, tostring(value):len())
+      m[col] = math.max(m[col] or 1, string.len(tostring(value)))
     end
   end
    

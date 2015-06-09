@@ -100,6 +100,33 @@ function m.split(str,sep)
     return array
 end
 
+function m.rendertable(tabledata)
+  cols = #tabledata[1]
+
+  for _, row in ipairs(result) do
+    for col, value in ipairs(row) do
+      m[col] = math.max(m[col] or 1, value:len())
+    end
+  end
+   
+  io.write("+")
+  for i=1, cols do
+  io.write(string.rep("-", m[i] + 2) .. "+")
+  end
+  io.write("\n")
+   
+  titlebar = true
+   
+  for _, row in ipairs(result) do  
+    for col, value in ipairs(row) do
+      io.write("| " .. text.padRight(value, m[col] + 1))
+    end
+    io.write("\n")
+    titlebar = false
+  end
+
+end
+
 --Menu Section
 lastmenu = false
 menu = {}

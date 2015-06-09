@@ -261,30 +261,23 @@ while true do
   end
 
   buffer(" ")
+  term.clear()
 
   total_turbine_rate = 0
 
-  buffer("+----+--------+-------+------------+-------+")
-  buffer("| ID | Active | Speed | Energy Gen | Coils |") --7
-  buffer("+----+--------+-------+------------+-------+")
+  print(text_buffer)
+
+  tabledata = {"ID", "Active", "Speed", "Energy Gen", "Coils"}
 
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
-      line = string.format("| %s |  %s | %s | %s RF/t | %s |", pad(string.sub(cid, 8), 2), pad(status.active, 5), 
-        pad(round(status.rotorSpeed, 0), 5), pad(round(status.energyProduced, 0), 5), pad(status.inductor, 5))
+        insert(tabledata, cid, status.active, round(status.rotorSpeed, 0), round(status.energyProduced, 0), status.inductor)
         total_turbine_rate = total_turbine_rate + status.energyProduced
-      buffer(line)
     end
   end
 
-  buffer("+----+--------+-------+------------+-------+")
-
-  buffer(" ")
-  buffer(string.format("Total Turbine Generation: %s", round(total_turbine_rate, 0)))
-
-  term.clear()
-  print(text_buffer)
+  print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
 
   if total_units == 0 then
     os.sleep(10)

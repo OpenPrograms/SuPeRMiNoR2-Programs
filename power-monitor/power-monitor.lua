@@ -83,8 +83,8 @@ local function readCapacity(proxy, ltype)
   end
 
   if ltype == 3 then
-    t = proxy.getMaxEnergyStored()
-    stored = t * .4 --J to RF conversion
+    pts = proxy.getMaxEnergyStored()
+    capacity = pts * .4 --J to RF conversion
   end
 
   return capacity
@@ -102,8 +102,8 @@ local function readStored(proxy, ltype)
   end
 
   if ltype == 3 then
-    t = proxy.getEnergyStored()
-    stored = t * .4 --J to RF conversion
+    pts = proxy.getEnergyStored()
+    stored = pts * .4 --J to RF conversion
   end
 
   return stored

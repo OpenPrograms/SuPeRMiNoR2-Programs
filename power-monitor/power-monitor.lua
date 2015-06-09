@@ -82,6 +82,11 @@ local function readCapacity(proxy, ltype)
     capacity = proxy.getMaxEnergyStored()
   end
 
+  if ltype == 3 then
+    t = proxy.getMaxEnergyStored()
+    stored = t * .4 --J to RF conversion
+  end
+
   return capacity
 end
 
@@ -94,6 +99,11 @@ local function readStored(proxy, ltype)
    
   if ltype == 2 then
     stored = proxy.getEnergyStored()
+  end
+
+  if ltype == 3 then
+    t = proxy.getEnergyStored()
+    stored = t * .4 --J to RF conversion
   end
 
   return stored
@@ -176,7 +186,7 @@ tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"},
 tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
 mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
 name="CESU"}, batbox={type=1, name="BatBox"}, 
-capacitor_bank={type=2, name="Capacitor Bank"}}  
+capacitor_bank={type=2, name="Capacitor Bank"}, mekanism_machine={type=2, name="Mekanism Block"}}  
  
 --Program
 term.clear()

@@ -186,7 +186,7 @@ tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"},
 tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
 mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
 name="CESU"}, batbox={type=1, name="BatBox"}, 
-capacitor_bank={type=2, name="Capacitor Bank"}, mekanism_machine={type=2, name="Mekanism Block"}}  
+capacitor_bank={type=2, name="Capacitor Bank"}, mekanism_machine={type=3, name="Mekanism Block"}}  
  
 --Program
 term.clear()

@@ -244,13 +244,10 @@ while true do
   if config.banner ~= false then
     buffer(config.banner)
   end
-  
+
   term.clear()
 
   buffer("Currently monitoring ".. total_units .. " units")
-  buffer("")
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
-  buffer("")
 
   print(text_buffer) text_buffer = ""
 
@@ -291,6 +288,8 @@ while true do
 
   print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
   print("")
+
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
    
   for lid in pairs(powerdb) do
     first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)

@@ -56,7 +56,7 @@ actuator = {
     if energyStored < 900000 and finishedStartup == true then
       turbine.setInductorEngaged(true)
       status.inductor = true
-      status.inductor_msg = "Buffer Low"
+      status.inductor_msg = "Generating Power [Normal]"
     else
       turbine.setInductorEngaged(false)
     end
@@ -85,11 +85,11 @@ actuator = {
     status.flowRate = turbine.getFluidFlowRate()
     status.inductor = turbine.getInductorEngaged()
 
-    if status.flowRate + 10 > status.flowRateMax then --the +10 is to avoid jitter
+    if status.flowRate + 30 > status.flowRateMax then --the +30 is to avoid jitter
       status.enoughSteam = true
     end
 
-    if status.flowRate + 10 < status.flowRateMax then
+    if status.flowRate + 30 < status.flowRateMax then
       status.enoughSteam = false
     end
     

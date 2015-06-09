@@ -276,6 +276,7 @@ while true do
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end
+  superlib.rendertable(tabledata)
 
   print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
 

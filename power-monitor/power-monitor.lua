@@ -209,7 +209,7 @@ if glasses_connected then
 end
 
 print("Found ".. total_units .. " storage unit[s]")
-print("Total capacity detected: "..comma(total_capacity))
+print("Total capacity detected: "..pretty(total_capacity))
 print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))

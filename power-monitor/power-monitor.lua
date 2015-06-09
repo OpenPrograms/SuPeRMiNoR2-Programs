@@ -251,8 +251,6 @@ while true do
 
   print(text_buffer) text_buffer = ""
 
-  print("Reactors:")
-
   total_reactor_rate = 0
 
   tabledata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
@@ -265,11 +263,9 @@ while true do
         total_reactor_rate = total_reactor_rate + status.rate
     end
   end
-  superlib.rendertable(tabledata)
-  print(string.format("\nTotal Reactor Generation: %s mB/t", round(total_reactor_rate, 0)))
 
-  print("")
-  print("Turbines:")
+  print(string.format("Reactors Total: %s mB/t\n", round(total_reactor_rate, 0)))
+  superlib.rendertable(tabledata)
 
   total_turbine_rate = 0
 
@@ -284,13 +280,13 @@ while true do
     end
   end
 
+  print(string.format("Turbine Total: %s", round(total_turbine_rate, 0)))
   superlib.rendertable(tabledata)
 
-  print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
   print("")
 
   buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
-   
+  
   for lid in pairs(powerdb) do
     first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
     middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)

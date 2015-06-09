@@ -106,7 +106,7 @@ function m.rendertable(tabledata)
 
   for _, row in ipairs(result) do
     for col, value in ipairs(row) do
-      m[col] = math.max(m[col] or 1, value:len())
+      m[col] = math.max(m[col] or 1, tostring(value):len())
     end
   end
    
@@ -120,7 +120,7 @@ function m.rendertable(tabledata)
    
   for _, row in ipairs(result) do  
     for col, value in ipairs(row) do
-      io.write("| " .. text.padRight(value, m[col] + 1))
+      io.write("| " .. text.padRight(tostring(value), m[col] + 1))
     end
     io.write("\n")
     titlebar = false

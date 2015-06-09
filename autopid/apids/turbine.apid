@@ -56,17 +56,17 @@ actuator = {
     if energyStored < 900000 and finishedStartup == true then
       turbine.setInductorEngaged(true)
       status.inductor = true
-      status.inductor_msg = "Energy Buffer Low"
+      status.inductor_msg = "Buffer Low"
     else
       turbine.setInductorEngaged(false)
     end
 
     if energyStored > 900000 then
-      status.inductor_msg = "Energy Buffer Full"
+      status.inductor_msg = "Buffer Full"
     end
 
     if finishedStartup == false then
-      status.inductor_msg = "Waiting for turbine to reach target"
+      status.inductor_msg = "Waiting for rotors to reach target"
     end
 
     --This will waste some power, but should help prevent the turbines

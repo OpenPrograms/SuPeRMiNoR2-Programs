@@ -264,7 +264,7 @@ while true do
     end
   end
 
-  print(string.format("Reactors Total: %s mB/t\n", round(total_reactor_rate, 0)))
+  print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
   superlib.rendertable(tabledata)
 
   total_turbine_rate = 0
@@ -280,7 +280,7 @@ while true do
     end
   end
 
-  print(string.format("Turbine Total: %s", round(total_turbine_rate, 0)))
+  print(string.format("\nTurbine Total: %s", round(total_turbine_rate, 0)))
   superlib.rendertable(tabledata)
 
   print("")

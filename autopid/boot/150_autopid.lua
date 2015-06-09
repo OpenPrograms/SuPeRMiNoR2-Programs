@@ -8,5 +8,9 @@ status = config:read()
 config:close()
 
 if status == "true" then 
-  autopid.scan()
+  if pcall(autopid.scan) then
+    print("[autopid] done")
+  else
+    print("[autopid] crashed while scanning")
+  end
 end

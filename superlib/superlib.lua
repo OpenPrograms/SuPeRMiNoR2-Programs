@@ -67,7 +67,7 @@ function m.round(what, precision)
   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 end
 
-function format_int(number)
+function m.format_int(number)
 
   local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
 

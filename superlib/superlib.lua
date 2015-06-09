@@ -102,6 +102,7 @@ end
 
 function m.rendertable(tabledata)
   cols = #tabledata[1]
+  result = tabledata
 
   for _, row in ipairs(result) do
     for col, value in ipairs(row) do

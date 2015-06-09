@@ -244,24 +244,35 @@ while true do
   if config.banner ~= false then
     buffer(config.banner)
   end
+  
+  term.clear()
+
   buffer("Currently monitoring ".. total_units .. " units")
   buffer("")
   buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
   buffer("")
-   
-  for lid in pairs(powerdb) do
-    first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-    middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
-    second_half = " ["..powerdb[lid]["name"].."]"
 
-    if config.display_units == false then output = first_half .. second_half end
-    if config.display_units == true then output = first_half .. middle .. second_half end
+  print(text_buffer) text_buffer = ""
 
-    buffer(output)
+  print("Reactors:")
+
+  total_reactor_rate = 0
+
+  tabledata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
+
+  for cid, cobj in pairs(controllers) do
+    local status = cobj.status
+    if cobj.type == "br_reactor" and status.activeCooling then
+        table.insert(tabledata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
+          round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
+        total_reactor_rate = total_reactor_rate + status.rate
+    end
   end
+  superlib.rendertable(tabledata)
+  print(string.format("\nTotal Reactor Generation: %s mB/t", round(total_reactor_rate, 0)))
 
-  term.clear()
-  print(text_buffer)
+  print("")
+  print("Turbines:")
 
   total_turbine_rate = 0
 
@@ -278,20 +289,21 @@ while true do
 
   superlib.rendertable(tabledata)
 
-  print("")
   print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
   print("")
+   
+  for lid in pairs(powerdb) do
+    first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
+    middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+    second_half = " ["..powerdb[lid]["name"].."]"
 
-  tabledata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
+    if config.display_units == false then output = first_half .. second_half end
+    if config.display_units == true then output = first_half .. middle .. second_half end
 
-  for cid, cobj in pairs(controllers) do
-    local status = cobj.status
-    if cobj.type == "br_reactor" and status.activeCooling then
-        table.insert(tabledata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-          round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
-    end
+    buffer(output)
   end
-  superlib.rendertable(tabledata)
+
+  print(text_buffer)
 
   if total_units == 0 then
     os.sleep(10)

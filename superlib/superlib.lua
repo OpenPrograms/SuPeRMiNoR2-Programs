@@ -102,6 +102,7 @@ function m.split(str,sep)
 end
 
 function m.rendertable(tabledata)
+  m = {}
   cols = #tabledata[1]
   result = tabledata
 

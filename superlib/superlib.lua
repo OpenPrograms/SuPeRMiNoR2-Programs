@@ -67,11 +67,26 @@ function m.round(what, precision)
   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 end
 
+function m.format_comma(amount)
+  local formatted = amount
+  while true do  
+    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
+    if (k==0) then
+      break
+    end
+  end
+  return formatted
+end
+
 function m.percent_gen(stored, capacity, precision)
   tmp = stored / capacity
   tmp = tmp * 100
   tmp = m.round(tmp, precision)
   return tmp
+end
+
+function m.pretty(dirtynumber)
+  return m.format_comma(m.round(dirtynumber, 0))
 end
 
 m.pgen = m.percent_gen --Compat

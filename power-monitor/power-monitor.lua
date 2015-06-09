@@ -22,6 +22,8 @@ end
 
 pad = superlib.pad
 round = superlib.round
+comma = superlib.format_comma
+pretty = superlib.pretty
 
 local internet = require("internet")
 
@@ -207,7 +209,7 @@ if glasses_connected then
 end
 
 print("Found ".. total_units .. " storage unit[s]")
-print("Total capacity detected: "..total_capacity)
+print("Total capacity detected: "..comma(total_capacity))
 print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))
@@ -249,7 +251,7 @@ while true do
     if 
       total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) --glasses_text.setScale(2)
     end
-    glasses_buffer = "["..total_units.."] " .. total.."% ~" .. total_rate .. "/t"
+    glasses_buffer = "["..total_units.."] " .. total.."% ~" .. pretty(total_rate) .. "/t"
 
     if config.glasses_banner ~= false then
       glasses_buffer = config.glasses_banner .. glasses_buffer
@@ -291,17 +293,17 @@ while true do
     local status = cobj.status
     if cobj.type == "br_turbine" then
         table.insert(tabledata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
-          pad(round(status.energyProduced, 0), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
+          pad(pretty(status.energyProduced), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end
 
-  print(string.format("\nTurbine Total: %s RF/t", round(total_turbine_rate, 0)))
+  print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
   superlib.rendertable(tabledata)
 
   print("")
 
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. total_rate.."/t")
+  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. pretty(total_rate).."/t")
   
   for lid in pairs(powerdb) do
     first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)

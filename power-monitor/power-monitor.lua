@@ -287,7 +287,8 @@ while true do
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_reactor" and status.activeCooling then
-        table.insert(tabledata, {string.sub(cid, 8) , status.active, round(status.fuelTemperature)})
+        table.insert(tabledata, {string.sub(cid, 8) , status.active, 
+          pad(round(status.fuelTemperature),4) .. "°C", pad(round(status.rate), 5).. "mB/t"}
     end
   end
   superlib.rendertable(tabledata)

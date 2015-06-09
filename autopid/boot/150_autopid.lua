@@ -1,6 +1,13 @@
 autopid = require("autopidlib")
+fs = require("filesystem")
 
 configlocation = "/etc/autopid_autostart.txt"
+
+if fs.exists(configlocation) == false then
+  f = io.open(configlocation, "w")
+  f.write("false")
+  f.close()
+end
 
 config = io.open(configlocation, "r")
 

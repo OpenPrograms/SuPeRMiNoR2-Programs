@@ -86,7 +86,7 @@ function m.percent_gen(stored, capacity, precision)
 end
 
 function m.pretty(dirtynumber)
-  return m.format_comma(m.round(dirtynumber, 0))
+  return m.format_comma(tostring(m.round(dirtynumber, 0)))
 end
 
 m.pgen = m.percent_gen --Compat

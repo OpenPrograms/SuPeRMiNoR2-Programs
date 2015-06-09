@@ -282,13 +282,13 @@ while true do
   print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
   print("")
 
-  tabledata = {{"ID", "Active", "Core", "Steam Gen"}}
+  tabledata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
 
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_reactor" and status.activeCooling then
         table.insert(tabledata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-          pad(round(status.rate), 5).. "mB/t"})
+          pad(round(status.controlRodLevel), 3) .. "%", pad(round(status.rate), 5).. "mB/t"})
     end
   end
   superlib.rendertable(tabledata)

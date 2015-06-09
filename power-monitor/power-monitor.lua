@@ -267,12 +267,12 @@ while true do
 
   print(text_buffer)
 
-  tabledata = {"ID", "Active", "Speed", "Energy Gen", "Coils"}
+  tabledata = {{"ID", "Active", "Speed", "Energy Gen", "Coils"}}
 
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
-        insert(tabledata, cid, status.active, round(status.rotorSpeed, 0), round(status.energyProduced, 0), status.inductor)
+        table.insert(tabledata, {cid, status.active, round(status.rotorSpeed, 0), round(status.energyProduced, 0), status.inductor})
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end

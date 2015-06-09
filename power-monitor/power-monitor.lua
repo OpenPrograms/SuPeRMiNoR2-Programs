@@ -270,7 +270,7 @@ while true do
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
-        table.insert(tabledata, {string.sub(cid, 8) , round(status.rotorSpeed, 0), status.active, 
+        table.insert(tabledata, {string.sub(cid, 8), round(status.rotorSpeed, 0), status.active, 
           pad(round(status.energyProduced, 0), 5) .. " RF/t", status.inductor})
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
@@ -287,8 +287,8 @@ while true do
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_reactor" and status.activeCooling then
-        table.insert(tabledata, {string.sub(cid, 8) , status.active, 
-          pad(round(status.fuelTemperature),4) .. "°C", pad(round(status.rate), 5).. "mB/t"}
+        table.insert(tabledata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
+          pad(round(status.rate), 5).. "mB/t"})
     end
   end
   superlib.rendertable(tabledata)

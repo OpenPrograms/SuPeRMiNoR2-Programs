@@ -67,15 +67,16 @@ function m.round(what, precision)
   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
 end
 
-function m.format_comma(amount)
-  local formatted = amount
-  while true do  
-    formatted, k = string.gsub(formatted, "^(-?%d+)(%d%d%d)", '%1,%2')
-    if (k==0) then
-      break
-    end
-  end
-  return formatted
+function format_int(number)
+
+  local i, j, minus, int, fraction = tostring(number):find('([-]?)(%d+)([.]?%d*)')
+
+  -- reverse the int-string and append a comma to all blocks of 3 digits
+  int = int:reverse():gsub("(%d%d%d)", "%1,")
+
+  -- reverse the int-string back remove an optional comma and put the 
+  -- optional minus and fractional part back
+  return minus .. int:reverse():gsub("^,", "") .. fraction
 end
 
 function m.percent_gen(stored, capacity, precision)
@@ -86,7 +87,7 @@ function m.percent_gen(stored, capacity, precision)
 end
 
 function m.pretty(dirtynumber)
-  return m.format_comma(tostring(m.round(dirtynumber, 0)))
+  return m.format_comma(m.round(dirtynumber, 0))
 end
 
 m.pgen = m.percent_gen --Compat

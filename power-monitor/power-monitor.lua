@@ -279,6 +279,8 @@ while true do
   superlib.rendertable(tabledata)
 
   print("")
+  print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
+  print("")
 
   tabledata = {{"ID", "Active", "Core", "Steam Gen"}}
 
@@ -286,13 +288,9 @@ while true do
     local status = cobj.status
     if cobj.type == "br_reactor" and status.activeCooling then
         table.insert(tabledata, {string.sub(cid, 8) , status.active, round(status.fuelTemperature)})
-        total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end
-
-
-
-  print(string.format("\nTotal Turbine Generation: %s", round(total_turbine_rate, 0)))
+  superlib.rendertable(tabledata)
 
   if total_units == 0 then
     os.sleep(10)

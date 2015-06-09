@@ -275,7 +275,7 @@ while true do
     local status = cobj.status
     if cobj.type == "br_turbine" then
         table.insert(tabledata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
-          pad(round(status.energyProduced, 0), 5) .. " RF/t"}, status.enoughSteam, status.inductor_msg)
+          pad(round(status.energyProduced, 0), 5) .. " RF/t", status.enoughSteam, status.inductor_msg)}
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end

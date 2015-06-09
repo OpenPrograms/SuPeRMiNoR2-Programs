@@ -272,7 +272,7 @@ while true do
   for cid, cobj in pairs(controllers) do
     local status = cobj.status
     if cobj.type == "br_turbine" then
-        table.insert(tabledata, {string.sub(cid, 8) , status.active, round(status.rotorSpeed, 0), round(status.energyProduced, 0), status.inductor})
+        table.insert(tabledata, {string.sub(cid, 8) , status.active, round(status.rotorSpeed, 0), round(status.energyProduced, 0) .. " RF/t", status.inductor})
         total_turbine_rate = total_turbine_rate + status.energyProduced
     end
   end

@@ -240,9 +240,15 @@ while true do
   total_last_amount = total_stored
 
   if glasses_connected then
-    if total > 50 then glasses_text.setColor(.37, .83, .03) glasses_text.setScale(1) end
-    if total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) glasses_text.setScale(1.5) end
-    if total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) glasses_text.setScale(2) end
+    if 
+      total > 50 then glasses_text.setColor(.37, .83, .03) --glasses_text.setScale(1) 
+    end
+    if 
+      total <= 50 and total > 25 then glasses_text.setColor(0.93,0.91,0.09) --glasses_text.setScale(1.5) 
+    end
+    if 
+      total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) --glasses_text.setScale(2)
+    end
     glasses_buffer = "["..total_units.."] " .. total.."% ~" .. total_rate .. "/t"
 
     if config.glasses_banner ~= false then

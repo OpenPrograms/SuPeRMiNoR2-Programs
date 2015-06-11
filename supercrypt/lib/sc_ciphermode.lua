@@ -90,7 +90,7 @@ function public.decryptString(key, data, modeFunction)
 
 		iv = modeFunction(keySched, byteData, iv);
 
-        buffer.addString(decryptedData, string.char(unpack(byteData)));
+        buffer.addString(decryptedData, string.char(table.unpack(byteData)));
     end
 
     return buffer.toString(decryptedData);    

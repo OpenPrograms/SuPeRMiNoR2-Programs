@@ -1,5 +1,4 @@
-require("aeslua");
-local aes = aeslua.aes;
+local aes = require("sc_aes")
 
 function getRandomBits(bits)
     local result = {};

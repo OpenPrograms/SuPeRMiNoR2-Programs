@@ -4,7 +4,7 @@ bit = require("bit32");
 local private = {};
 local public = {};
 
-aeslua.gf = public;
+public = {}
 
 -- private data of gf
 private.n = 0x100;

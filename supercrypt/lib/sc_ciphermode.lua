@@ -23,7 +23,7 @@ function public.encryptString(key, data, modeFunction)
 		
         modeFunction(keySched, byteData, iv);
 
-        buffer.addString(encryptedData, string.char(unpack(byteData)));    
+        buffer.addString(encryptedData, string.char(table.unpack(byteData)));    
     end
     
     return buffer.toString(encryptedData);

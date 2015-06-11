@@ -3,7 +3,7 @@ bit = require("bit32");
 local public = {};
 local private = {};
 
-aeslua.util = public;
+public = {}
 
 --
 -- calculate the parity of one byte

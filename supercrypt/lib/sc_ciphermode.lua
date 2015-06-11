@@ -4,8 +4,6 @@ local buffer = require("sc_buffer");
 
 local public = {};
 
-aeslua.ciphermode = public;
-
 --
 -- Encrypt strings
 -- key - byte array with key

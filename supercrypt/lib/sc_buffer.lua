@@ -1,6 +1,6 @@
 local public = {};
 
-aeslua.buffer = public;
+public = {}
 
 function public.new ()
   return {};

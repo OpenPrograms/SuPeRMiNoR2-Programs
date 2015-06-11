@@ -12,8 +12,6 @@ local util = require("sc_util");
 local public = {};
 local private = {};
 
-aeslua.aes = public;
-
 -- some constants
 public.ROUNDS = "rounds";
 public.KEY_TYPE = "type";

@@ -1,6 +1,6 @@
-require("aeslua");
-local aes = aeslua.aes;
-local util = aeslua.util;
+local aeslua = require("aes")
+local aes = require("sc_aes")
+local util = require("sc_util")
 
 --test vectors
 

@@ -123,4 +123,8 @@ function public.sha256sum(location)
   end
 end
 
+function public.sha256(data)
+    return sha256.sha256(data)
+end
+
 return public

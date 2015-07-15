@@ -303,7 +303,7 @@ while true do
 
   print("")
 
-  buffer("Total".. ": ".. total .." [".. total_stored .. "/" .. total_capacity .."] Rate: ~".. pretty(total_rate).."/t")
+  buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")
   
   for lid in pairs(powerdb) do
     first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)

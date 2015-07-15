@@ -62,9 +62,14 @@ function m.download(url)
   return response
 end
 
-function m.round(what, precision)
+function m.roundold(what, precision)
   if precision == nil then precision = 0 end
   return math.floor(what*math.pow(10,precision)+0.5) / math.pow(10,precision)
+end
+
+function m.round(num, idp)
+ local mult = 10^(idp or 0)
+ return math.floor(num * mult + 0.5) / mult
 end
 
 function m.format_int(number)

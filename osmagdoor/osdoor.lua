@@ -10,25 +10,30 @@ local term = require("term")
 
 local superlib = require("superlib")
 
-dbfile = "authdb.dat"
+dbfile = "/authdb.dat"
 
 writer = component.os_cardwriter
 
-if not filesystem.exists() then
-	db = {pairs = {}, registered = {}, new = {}}
-else
-	f = io.open(dbfile, "r")
-	rdb = f:read()
-	db = serialization.unserialize(rdb)
+function loadDB()
+	if filesystem.exists(dbfile) == false then
+		ldb = {pairs = {}, registered = {}, new = {}}
+	else
+		f = filesystem.open(dbfile, "rb")
+		rdb = f:read(filesystem.size(dbfile))
+		ldb = serialization.unserialize(rdb)
+		f:close()
+	end
+	return ldb
+end
+
+function saveDB(ldb)
+	f = io.open(dbfile, "wb")
+	f:write(serialization.serialize(ldb))
 	f:close()
 end
 
-local function saveDB()
-	f = io.open(dbfile, "w")
-	f:write(serialization.serialize(db))
-	f:close()
-end
-saveDB()
+rdb = loadDB()
+saveDB(rdb)
 
 local function openDoor(door)
 	if door.isopen() == false then
@@ -44,15 +49,18 @@ end
 
 local function toggleDoor(door)
 	door = component.proxy(door)
+	door.toggle()
+	os.sleep(5)
 	openDoor(door)
 	os.sleep(5)
 	closeDoor(door)
 end
 
 local function checkCard(UUID)
+	db = loadDB()
 	for i in ipairs(db["registered"]) do
-		if db["registered"][i] == UUID then
-			return true
+		if db["registered"][i]["uuid"] == UUID then
+			return true, db["registered"]["username"]
 		end
 	end
 	return false
@@ -63,98 +71,112 @@ local function getUser(msg)
 	return io.read()
 end
 
+local function makeCode(l)
+    local s = ""
+    for i = 1, l do
+        s = s .. string.char(math.random(32, 126))
+    end
+    return s
+end
+
 local function registerCard()
+	db = loadDB()
 	print("Registering new card.")
 	cardcode = makeCode(10)
 	title = getUser("Enter the title for the card: ")
 	writer.write(cardcode, title, true)
 	table.insert(db["new"], cardcode)
 	print("The card will be registered to the user who swipes it next.")
+	saveDB(db)
 	os.sleep(1)
 end
 
 local function registerDoor()
+	db = loadDB()
 	freeDoors = {}
 	freeMags = {}
 
 	for address, ctype in component.list() do
 		if ctype == "os_door" then
 			reg = false
-			for raddr in db["pairs"] do
-				if address == db["pairs"]["door"] then
+			for raddr in ipairs(db["pairs"]) do
+				if address == db["pairs"][raddr]["door"] then
 					reg = true
 				end
 			end
 			if not reg then 
-				table.inset(freeDoors, address) 
+				table.insert(freeDoors, address) 
 			end
 		end
 
 		if ctype == "os_magreader" then
 			reg = false
-			for raddr in db["pairs"] do
-				if address == db["pairs"]["mag"] then
+			for raddr in ipairs(db["pairs"]) do
+				if address == db["pairs"][raddr]["mag"] then
 					reg = true
 				end
 			end
 			if not reg then 
-				table.inset(freeMags, address) 
+				table.insert(freeMags, address) 
 			end
 		end
+	end
 
-		print("Please select the door uuid you want to add.")
+	print("Please select the door uuid you want to add.")
+	superlib.clearMenu()
+	for i, d in ipairs(freeDoors) do
+		superlib.addItem(d, d)
+	end
+	superlib.addItem("Cancel", "c")
+	door = superlib.runMenu()
+	print(door)
+	os.sleep(1)
+
+	if door ~= "c" then
+		print("Please select the mag reader uuid you want to pair to the door.")
 		superlib.clearMenu()
-		for i, d in ipairs(freeDoors) do
+		for i, d in ipairs(freeMags) do
 			superlib.addItem(d, d)
 		end
-		superlib.addItem("Cancel", false)
-		door = superlib.runMenu()
+		superlib.addItem("Cancel", "c")
+		mag = superlib.runMenu()
 
-		if not door == false then
-			print("Please select the mag reader uuid you want to pair to the door.")
-			superlib.clearMenu()
-			for i, d in ipairs(freeMags) do
-				superlib.addItem(d, d)
-			end
-			superlib.addItem("Cancel", false)
-			mag = superlib.runMenu()
-
-			if not mag == false then
-				table.insert(db["pairs"], {"door"=door, "mag"=mag})
-			end
-
+		if mag ~= "c" then
+			table.insert(db["pairs"], {door=door, mag=mag})
 		end
-
-
-
 	end
+	saveDB(db)
 end
 
-local function auth(_,addr, playerName, data, UUID, locked)
+function check(maddr, paddr, dooraddr)
+	if maddr == paddr then 
+		print("Opening Door") 
+		toggleDoor(dooraddr) 
+	end
+	if maddr ~= paddr then print("Invalid Door") end
+end
+
+function auth(_,addr, playerName, data, UUID, locked)
+	db = loadDB()
+
 	for i in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
 		if db["new"][i] == data then
-			table.insert(db["registered"], {"username" = playerName, "uuid" = UUID})
+			table.insert(db["registered"], {username=playerName, uuid=UUID})
 			print("Registered card ".. UUID .. " to user ".. playerName)
-			table.remove(db["new"][i])
-			saveDB()
+			table.remove(db["new"], i)
+			saveDB(db)
 		end
 	end
 
-	if checkCard(UUID) then
-		for u in ipairs(db["pairs"]) do
-			if addr == db["pairs"][u]["mag"] then
-				toggleDoor(db["pairs"][u]["door"])
-			end
+	allowed, username = checkCard(UUID)
+	if allowed then
+		for u, d in ipairs(db["pairs"]) do
+			check(addr, d["mag"], d["door"])
 		end
-	end
+	end	
 end
 
-local function makeCode(l)
-        local s = ""
-        for i = 1, l do
-            s = s .. string.char(math.random(32, 126))
-        return s
-end
+
 
 local function menus() 
 	term.clear()
@@ -171,10 +193,13 @@ local function menus()
 	elseif key == "d" then
 		registerDoor()
 	end
+end
 
 function main()
+	event.ignore("magData", auth)
 	event.listen("magData", auth)
 	while true do
 		menus()
 	end
 end
+main()

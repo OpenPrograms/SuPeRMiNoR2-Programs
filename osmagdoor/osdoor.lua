@@ -151,7 +151,6 @@ function check(maddr, paddr, dooraddr, doordb)
 		print("Opening Door "..doordb["name"]) 
 		toggleDoor(dooraddr)
 	end
-	if maddr ~= paddr then print("Invalid Door") end
 end
 
 function auth(_,addr, playerName, data, UUID, locked)

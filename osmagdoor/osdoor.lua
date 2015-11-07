@@ -35,11 +35,23 @@ end
 rdb = loadDB()
 saveDB(rdb)
 
+local function openDoor(door)
+	if door.isOpen() == false then
+		door.toggle()
+	end
+end
+
+local function closeDoor(door)
+	if door.isOpen() == true then
+		door.toggle()
+	end
+end
+
 local function toggleDoor(doorad)
 	door = component.proxy(doorad)
-	door.toggle()
-	os.sleep(5)
-	door.toggle()
+	openDoor(door)
+	os.sleep(2)
+	closeDoor()
 end
 
 local function checkCard(UUID)

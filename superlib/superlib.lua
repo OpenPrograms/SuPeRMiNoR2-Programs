@@ -165,11 +165,11 @@ end
 
 function updatemenu(mt, sel)
   if lastmenu ~= false then
-    term.setCursor(1, lastmenu)
+    term.setCursor(1, lastmenu + 1) --Jump
     term.clearLine()
     term.write(" "..lastmenu.."  "..mt[lastmenu]["name"].." ("..mt[lastmenu]["addr"]..")")
   end
-  term.setCursor(1, sel)
+  term.setCursor(1, sel + 1) --Jump ahead one to skip prompt
   term.clearLine()
   term.write("["..sel.."] "..mt[sel]["name"].." ("..mt[sel]["addr"]..")")
 end

@@ -53,7 +53,7 @@ end
 local function toggleDoor(doorad)
     door = component.proxy(doorad)
     openDoor(door)
-    closeList.insert(closeList, doorad)
+    table.insert(closeList, doorad)
     event.timer(3, closeDoor)
 end
 

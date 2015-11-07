@@ -6,6 +6,7 @@ local filesystem = require("filesystem")
 local keyboard = require("keyboard")
 local string = require("string")
 local math = require("math")
+local term = require("term")
 
 local superlib = require("superlib")
 
@@ -72,7 +73,60 @@ local function registerCard()
 end
 
 local function registerDoor()
-	--present all available (not registered) doors and readers
+	freeDoors = {}
+	freeMags = {}
+
+	for address, ctype in component.list() do
+		if ctype == "os_door" then
+			reg = false
+			for raddr in db["pairs"] do
+				if address == db["pairs"]["door"]
+					reg = true
+				end
+			end
+			if not reg then 
+				table.inset(freeDoors, address) 
+			end
+		end
+
+		if ctype == "os_magreader" then
+			reg = false
+			for raddr in db["pairs"] do
+				if address == db["pairs"]["mag"]
+					reg = true
+				end
+			end
+			if not reg then 
+				table.inset(freeMags, address) 
+			end
+		end
+
+		print("Please select the door uuid you want to add.")
+		superlib.clearMenu()
+		for i, d in ipairs(freeDoors) do
+			superlib.addItem(d, d)
+		end
+		superlib.addItem("Cancel", false)
+		door = superlib.runMenu()
+
+		if not door == false then
+			print("Please select the mag reader uuid you want to pair to the door.")
+			superlib.clearMenu()
+			for i, d in ipairs(freeMags) do
+				superlib.addItem(d, d)
+			end
+			superlib.addItem("Cancel", false)
+			mag = superlib.runMenu()
+
+			if not mag == false then
+				table.insert(db["pairs"], {"door"=door, "mag"=mag})
+			end
+
+		end
+
+
+
+	end
 end
 
 local function auth(_,addr, playerName, data, UUID, locked)
@@ -101,11 +155,16 @@ local function makeCode(l)
         return s
 end
 
-local function actionKeys() --change to superlib menu
-	_, uuid, _, _keyid, user = event.pull("key_down")
-	key = keyboard.keys[keyid]
+local function menus() 
+	term.clear()
 
-	print("Press")
+	print("Super Security System [Beta]")
+	superlib.clearMenu()
+	superlib.addItem("Register a card", "r")
+	superlib.addItem("Register a door", "d")
+
+	key = superlib.runMenu()
+
 	if key == "r" then
 		registerCard()
 	elseif key == "d" then
@@ -115,6 +174,6 @@ local function actionKeys() --change to superlib menu
 function main()
 	event.listen("magData", auth)
 	while true do
-		actionKeys()
+		menus()
 	end
 end

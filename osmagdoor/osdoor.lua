@@ -49,8 +49,6 @@ end
 
 local function toggleDoor(door)
 	door = component.proxy(door)
-	door.toggle()
-	os.sleep(5)
 	openDoor(door)
 	os.sleep(5)
 	closeDoor(door)

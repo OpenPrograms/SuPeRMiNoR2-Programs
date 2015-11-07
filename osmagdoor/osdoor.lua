@@ -15,7 +15,7 @@ dbfile = "authdb.dat"
 writer = component.os_cardwriter
 
 if not filesystem.exists() then
-	db = {"pairs" = {}, "registered" = {}, "new" = {}}
+	db = {pairs = {}, registered = {}, new = {}}
 else
 	f = io.open(dbfile, "r")
 	rdb = f:read()
@@ -61,6 +61,7 @@ end
 local function getUser(msg)
 	io.write(msg)
 	return io.read()
+end
 
 local function registerCard()
 	print("Registering new card.")
@@ -80,7 +81,7 @@ local function registerDoor()
 		if ctype == "os_door" then
 			reg = false
 			for raddr in db["pairs"] do
-				if address == db["pairs"]["door"]
+				if address == db["pairs"]["door"] then
 					reg = true
 				end
 			end
@@ -92,7 +93,7 @@ local function registerDoor()
 		if ctype == "os_magreader" then
 			reg = false
 			for raddr in db["pairs"] do
-				if address == db["pairs"]["mag"]
+				if address == db["pairs"]["mag"] then
 					reg = true
 				end
 			end

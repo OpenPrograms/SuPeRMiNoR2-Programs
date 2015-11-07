@@ -155,8 +155,9 @@ end
 lastmenu = false
 menu = {}
 
-function rendermenu(mt)
+function rendermenu(mt, prompt)
   term.clear()
+  print(prompt)
   for i=1, #mt do
     print(" "..i.."  "..mt[i]["name"].." ("..mt[i]["addr"]..")")
   end
@@ -181,8 +182,8 @@ function m.clearMenu()
   menu = {}
 end
 
-function m.runMenu()
-  rendermenu(menu)
+function m.runMenu(prompt="Select an option")
+  rendermenu(menu, prompt)
   sel = 1
   updatemenu(menu, sel)
 

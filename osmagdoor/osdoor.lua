@@ -122,35 +122,35 @@ local function registerDoor()
 		end
 	end
 
-	print("Please select the door uuid you want to add.")
+	print("")
 	superlib.clearMenu()
 	for i, d in ipairs(freeDoors) do
-		superlib.addItem(d, d)
+		superlib.addItem("Door ", d)
 	end
 	superlib.addItem("Cancel", "c")
-	door = superlib.runMenu()
+	door = superlib.runMenu("Please select the door uuid you want to add.")
 	print(door)
 	os.sleep(1)
 
 	if door ~= "c" then
-		print("Please select the mag reader uuid you want to pair to the door.")
 		superlib.clearMenu()
 		for i, d in ipairs(freeMags) do
-			superlib.addItem(d, d)
+			superlib.addItem("Reader ", d)
 		end
 		superlib.addItem("Cancel", "c")
-		mag = superlib.runMenu()
+		mag = superlib.runMenu("Please select the mag reader uuid you want to pair to the door.")
 
 		if mag ~= "c" then
-			table.insert(db["pairs"], {door=door, mag=mag})
+			name = getUser("Enter the name for this pair: ")
+			table.insert(db["pairs"], {door=door, mag=mag, name=name})
 		end
 	end
 	saveDB(db)
 end
 
-function check(maddr, paddr, dooraddr)
+function check(maddr, paddr, dooraddr, doordb)
 	if maddr == paddr then 
-		print("Opening Door") 
+		print("Opening Door "..doordb["name"]) 
 		toggleDoor(dooraddr) 
 	end
 	if maddr ~= paddr then print("Invalid Door") end
@@ -171,12 +171,10 @@ function auth(_,addr, playerName, data, UUID, locked)
 	allowed, username = checkCard(UUID)
 	if allowed then
 		for u, d in ipairs(db["pairs"]) do
-			check(addr, d["mag"], d["door"])
+			check(addr, d["mag"], d["door"], d)
 		end
 	end	
 end
-
-
 
 local function menus() 
 	term.clear()

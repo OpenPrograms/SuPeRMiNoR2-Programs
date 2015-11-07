@@ -182,7 +182,8 @@ function m.clearMenu()
   menu = {}
 end
 
-function m.runMenu(prompt="Select an option")
+function m.runMenu(prompt)
+  prompt = prompt or "Select an option"
   rendermenu(menu, prompt)
   sel = 1
   updatemenu(menu, sel)

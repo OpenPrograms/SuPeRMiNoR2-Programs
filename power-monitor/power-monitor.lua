@@ -12,6 +12,8 @@ local wget = loadfile("/bin/wget.lua")
 local superlib = require("superlib")
 local autopid = require("autopidlib")
 
+local superlib = require("superlib")
+
 term.clear()
 print("Loading SuPeRMiNoR2's power-monitor version "..version)
 

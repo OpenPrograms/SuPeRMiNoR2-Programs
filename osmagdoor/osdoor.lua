@@ -7,6 +7,8 @@ local keyboard = require("keyboard")
 local string = require("string")
 local math = require("math")
 
+local superlib = require("superlib")
+
 dbfile = "authdb.dat"
 
 writer = component.os_cardwriter

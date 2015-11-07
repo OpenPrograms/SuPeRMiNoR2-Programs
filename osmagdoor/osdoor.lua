@@ -35,23 +35,11 @@ end
 rdb = loadDB()
 saveDB(rdb)
 
-local function openDoor(door)
-	if door.isopen() == false then
-		door.toggle()
-	end
-end
-
-local function closeDoor(door)
-	if door.isopen() then
-		door.toggle()
-	end
-end
-
-local function toggleDoor(door)
-	door = component.proxy(door)
-	openDoor(door)
+local function toggleDoor(doorad)
+	door = component.proxy(doorad)
+	door.toggle()
 	os.sleep(5)
-	closeDoor(door)
+	door.toggle()
 end
 
 local function checkCard(UUID)
@@ -149,7 +137,7 @@ end
 function check(maddr, paddr, dooraddr, doordb)
 	if maddr == paddr then 
 		print("Opening Door "..doordb["name"]) 
-		toggleDoor(dooraddr) 
+		toggleDoor(dooraddr)
 	end
 	if maddr ~= paddr then print("Invalid Door") end
 end

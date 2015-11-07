@@ -41,7 +41,10 @@ local function openDoor(door)
     end
 end
 
-local function closeDoor(door)
+closeList = {}
+local function closeDoor(doorad)
+    doorad = table.remove(closeList, 1)
+    door = component.proxy(doorad)
     if door.isOpen() == true then
         door.toggle()
     end
@@ -50,8 +53,8 @@ end
 local function toggleDoor(doorad)
     door = component.proxy(doorad)
     openDoor(door)
-    os.sleep(2)
-    closeDoor(door)
+    closeList.insert(closeList, doorad)
+    event.timer(3, closeDoor)
 end
 
 local function checkCard(UUID)

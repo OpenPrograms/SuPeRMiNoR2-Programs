@@ -110,7 +110,7 @@ local function registerDoor()
 
     superlib.clearMenu()
     for i, d in ipairs(freeDoors) do
-        superlib.addItem("Door ", d)
+        superlib.addItem("Door: "..d, d)
     end
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door uuid you want to add.")
@@ -118,7 +118,7 @@ local function registerDoor()
     if door ~= "c" then
         superlib.clearMenu()
         for i, d in ipairs(freeMags) do
-            superlib.addItem("Reader ", d)
+            superlib.addItem("Reader: "..d, d)
         end
         superlib.addItem("Cancel", "c")
         mag = superlib.runMenu("Please select the mag reader uuid you want to pair to the door.")

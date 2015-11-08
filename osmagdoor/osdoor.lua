@@ -171,9 +171,9 @@ local function clearCards()
 
 end
 
-function check(maddr, paddr, dooraddr, doordb)
+function check(maddr, paddr, dooraddr, doordb, username)
     if maddr == paddr then 
-        print("Opening Door "..doordb["name"]) 
+        log("Door ".. doordb.name .. " Opened by " .. username .. "'s card")
         toggleDoor(dooraddr)
     end
 end
@@ -193,7 +193,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     allowed, username = checkCard(UUID)
     if allowed then
         for u, d in ipairs(db["pairs"]) do
-            check(addr, d["mag"], d["door"], d)
+            check(addr, d["mag"], d["door"], d, username)
         end
     end 
 end

@@ -39,7 +39,7 @@ saveDB(rdb)
 local function log(logdata)
     f = io.open(logfile, "a")
     f:write(logdata.."\n")
-    f:close
+    f:close()
 end
 
 local function openDoor(door)

@@ -202,6 +202,7 @@ function main()
     while true do
         r = menus()
         if r == "exit" then
+            term.clear()
             break
         end
     end

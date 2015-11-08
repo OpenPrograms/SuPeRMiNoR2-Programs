@@ -79,9 +79,9 @@ end
 function auth(_,addr, playerName, data, UUID, locked)
     db = loadDB()
 
-    for i in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
-        if db["new"][i] == data then
-            table.insert(db["registered"], {username=playerName, uuid=UUID})
+    for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
+        if d["code"] == data then
+            table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"]})
             print("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
             saveDB(db)

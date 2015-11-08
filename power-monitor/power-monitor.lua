@@ -167,7 +167,7 @@ local function scan()
     	t = component.proxy(address)
     	name = t.getName()
     	if name == "" then
-    		name = "Meter #" .. table.getn(slist["rfmeter"]) + 1
+    		name = "Meter #" .. #slist["rfmeter"] + 1
     	end
     	table.insert(slist["rfmeter"], {proxy=t, name=name})
     end
@@ -291,8 +291,11 @@ while true do
     end
   end
 
-  print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
-  superlib.rendertable(tabledata)
+   if #tabledata > 1 then
+	  print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
+	  superlib.rendertable(tabledata)
+	  print("")
+   end
 
   total_turbine_rate = 0
 
@@ -307,17 +310,20 @@ while true do
     end
   end
 
-  print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
-  superlib.rendertable(tabledata)
-
-  print("")
+  if #tabledata > 1 then
+	  print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
+	  superlib.rendertable(tabledata)
+	  print("")
+  end
 
   tabledata = {{"Name", "Average Flow", "Total Counter"}}
   for oid, oob in pairs(slist["rfmeter"]) do
   	table.insert(tabledata, {oob.name, oob.proxy.getAvg(), oob.proxy.getCounterValue()})
   end
-  if table.getn(slist["rfmeter"]) > 0 then
+  if #slist["rfmeter"] > 0 then
+  	print("RF Meters")
   	superlib.rendertable(tabledata)
+  	print("")
   end
 
   buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")

@@ -11,6 +11,7 @@ local term = require("term")
 local superlib = require("superlib")
 
 dbfile = "/authdb.dat"
+logfile = "/authlog.txt"
 
 writer = component.os_cardwriter
 
@@ -34,6 +35,12 @@ end
 
 rdb = loadDB()
 saveDB(rdb)
+
+local function log(logdata)
+    f = io.open(logfile, "a")
+    f:write(logdata.."\n")
+    f:close
+end
 
 local function openDoor(door)
     if door.isOpen() == false then
@@ -82,6 +89,7 @@ end
 
 local function registerCard()
     db = loadDB()
+    term.clear()
     print("Registering new card.")
     cardcode = makeCode(10)
     title = getUser("Enter the title for the card: ")
@@ -123,15 +131,12 @@ local function registerDoor()
         end
     end
 
-    print("")
     superlib.clearMenu()
     for i, d in ipairs(freeDoors) do
         superlib.addItem("Door ", d)
     end
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door uuid you want to add.")
-    print(door)
-    os.sleep(1)
 
     if door ~= "c" then
         superlib.clearMenu()
@@ -142,11 +147,28 @@ local function registerDoor()
         mag = superlib.runMenu("Please select the mag reader uuid you want to pair to the door.")
 
         if mag ~= "c" then
-            name = getUser("Enter the name for this pair: ")
+            term.clear()
+            name = getUser("Enter a name for this pair: ")
             table.insert(db["pairs"], {door=door, mag=mag, name=name})
         end
     end
     saveDB(db)
+end
+
+local function removeDoor()
+
+end
+
+local function removeCard()
+
+end
+
+local function clearCards()
+    fdb = loadDB()
+    for c in db["new"] do
+        table.remove(db["new"], c)
+    end
+
 end
 
 function check(maddr, paddr, dooraddr, doordb)
@@ -189,6 +211,12 @@ local function menus()
         registerCard()
     elseif key == "d" then
         registerDoor()
+    elseif key == "rd" then
+        removeDoor()
+    elseif key == "rc" then
+        removeCard()
+    elseif key == "cc" then
+        clearCards()
     end
 end
 

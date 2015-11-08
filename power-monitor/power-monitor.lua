@@ -12,8 +12,6 @@ local wget = loadfile("/bin/wget.lua")
 local superlib = require("superlib")
 local autopid = require("autopidlib")
 
-local superlib = require("superlib")
-
 term.clear()
 print("Loading SuPeRMiNoR2's power-monitor version "..version)
 
@@ -137,9 +135,10 @@ end
 local function scan()
   local unit_id = 1
   mlist = {}
+  slist = {rfmeter={}}
   total_capacity = 0
   for address, ctype in component.list() do
-    for stype in pairs(supported_types) do
+    for stype in pairs(supported_types) do --Section for standard power storage blocks.
       if stype == ctype then
         t = component.proxy(address)
         ltype = supported_types[stype]["type"]
@@ -151,7 +150,7 @@ local function scan()
         total_capacity = total_capacity + c
       end
     end
-    if ctype == "glasses" and glasses_connected == false then
+    if ctype == "glasses" and glasses_connected == false then --Section for Open Glasses
       print("Detected glasses block, loading")
       glasses = component.proxy(address)
       glasses.removeAll()
@@ -162,9 +161,17 @@ local function scan()
       glasses_text.setScale(1)
       glasses_text.setPosition(config.glasses_xoffset, config.glasses_yoffset)
       glasses_text.setText("Loading...")
-      
-      --print(glasses.getBindPlayers())
     end
+
+    if ctype == "rfmeter" then
+    	t = component.proxy(address)
+    	name = t.getName()
+    	if name == "" then
+    		name = "Meter #" .. table.getn(slist["rfmeter"]) + 1
+    	end
+    	table.insert(slist["rfmeter"], {proxy=t, name=name})
+    end
+
   end
   total_units = unit_id - 1
   return mlist, total_capacity, total_units
@@ -304,6 +311,14 @@ while true do
   superlib.rendertable(tabledata)
 
   print("")
+
+  tabledata = {{"Name", "Average Flow", "Total Counter"}}
+  for oid, oob in pairs(slist["rfmeter"]) do
+  	table.insert(tabledata, {name, oob.getAvg(), oob.getCounterValue()})
+  end
+  if table.getn(slist["rfmeter"]) > 0 then
+  	superlib.rendertable(tabledata)
+  end
 
   buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")
   

@@ -32,9 +32,9 @@ end
 rdb = loadDB()
 saveDB(rdb)
 
-local function log(logdata)
+function log(logdata)
     f = io.open(logfile, "a")
-    f:write(logdata.."\n")
+    f:write(logdata)
     f:close()
 end
 
@@ -71,8 +71,8 @@ end
 
 function check(maddr, paddr, dooraddr, doordb, username)
     if maddr == paddr then 
-        log("Door ".. doordb["name"] .. " Opened by " .. username .. "'s card")
         toggleDoor(dooraddr)
+        log("Door ".. doordb["name"] .. " Opened by " .. username .. "'s card")
     end
 end
 

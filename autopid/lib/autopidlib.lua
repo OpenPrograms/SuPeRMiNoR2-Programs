@@ -54,7 +54,7 @@ end
 function autopid.shutdown()
   for _, controller in pairs(controllers) do
     controller.shutdown()
-    pid.remove(controller)
+    pid.remove(controller, true)
   end
 end
 

@@ -180,6 +180,7 @@ end
 
 function m.clearMenu()
   menu = {}
+  lastmenu = false
 end
 
 function m.runMenu(prompt)

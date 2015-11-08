@@ -1,10 +1,11 @@
 # Power-Monitor
 Install with: `oppm install power-monitor`
+
 Run with: `power-monitor`
 
 Config file located at: `/etc/power-monitor.config`
 
-Currently supports:
+##### Currently supports:
 
 1. EnderIO Capacitors
 2. Thermal Expansion Cells

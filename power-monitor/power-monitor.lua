@@ -315,7 +315,7 @@ while true do
         print("")
     end
 
-    if rfmeterdata > 1 then
+    if #rfmeterdata > 1 then
         print("RF Meters")
         superlib.rendertable(rfmeterdata)
         print("")

@@ -150,7 +150,7 @@ local function removeCard()
     ldb = loadDB()
     superlib.clearMenu()
     for i, d in ipairs(ldb["registered"]) do
-        superlib.addItem(d["username"] .. " ("..d["uuid"]..")", i)
+        superlib.addItem(d["title"] .. " (" ..d["username"] .. ", " .. d["uuid"]..")", i)
     end
     superlib.addItem("Cancel", "c")
     card = superlib.runMenu("Please select the card you want to remove.")

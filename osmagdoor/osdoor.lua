@@ -164,7 +164,7 @@ local function clearCards()
     ldb = loadDB()
     term.clear()
     print("Clearing all unregistered cards...")
-    for c, d in pairs(ldb)["new"] do
+    for c, d in pairs(ldb["new"]) do
         print("Removing card: "..d)
         table.remove(ldb["new"], c)
     end

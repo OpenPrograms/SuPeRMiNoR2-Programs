@@ -279,65 +279,60 @@ while true do
   print(text_buffer) text_buffer = ""
 
   total_reactor_rate = 0
-
-  tabledata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
-
-  for cid, cobj in pairs(controllers) do
-    local status = cobj.status
-    if cobj.type == "br_reactor" and status.activeCooling then
-        table.insert(tabledata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-          round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
-        total_reactor_rate = total_reactor_rate + status.rate
-    end
-  end
-
-   if #tabledata > 1 then
-	  print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
-	  superlib.rendertable(tabledata)
-	  print("")
-   end
-
   total_turbine_rate = 0
 
-  tabledata = {{"ID", "Active", "Coils", "Speed", "Energy Gen", "Steam", "Inductor Status"}}
+  reactordata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
+  turbinedata = {{"ID", "Active", "Coils", "Speed", "Energy Gen", "Steam", "Inductor Status"}}
 
-  for cid, cobj in pairs(controllers) do
-    local status = cobj.status
-    if cobj.type == "br_turbine" then
-        table.insert(tabledata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
-          pad(pretty(status.energyProduced), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
-        total_turbine_rate = total_turbine_rate + status.energyProduced
+    for cid, cobj in pairs(controllers) do
+        local status = cobj.status
+        if cobj.type == "br_reactor" and status.activeCooling then
+            table.insert(reactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
+              round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
+            total_reactor_rate = total_reactor_rate + status.rate
+        end
+        if cobj.type == "br_turbine" then
+            table.insert(turbinedata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
+              pad(pretty(status.energyProduced), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
+            total_turbine_rate = total_turbine_rate + status.energyProduced
+        end
     end
-  end
 
-  if #tabledata > 1 then
-	  print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
-	  superlib.rendertable(tabledata)
-	  print("")
-  end
+    rfmeterdata = {{"Name", "Average Flow", "Total Counter"}}
+    for oid, oob in pairs(slist["rfmeter"]) do
+        table.insert(rfmeterdata, {oob.name, oob.proxy.getAvg() .. " RF/t", oob.proxy.getCounterValue() .. "RF"})
+    end
 
-  tabledata = {{"Name", "Average Flow", "Total Counter"}}
-  for oid, oob in pairs(slist["rfmeter"]) do
-  	table.insert(tabledata, {oob.name, oob.proxy.getAvg(), oob.proxy.getCounterValue()})
-  end
-  if #slist["rfmeter"] > 0 then
-  	print("RF Meters")
-  	superlib.rendertable(tabledata)
-  	print("")
-  end
+    if #reactordata > 1 then
+        print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
+        superlib.rendertable(reactor)
+        print("")
+    end
 
-  buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")
+    if #turbinedata > 1 then
+        print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
+        superlib.rendertable(turbinedata)
+        print("")
+    end
+
+    if rfmeterdata > 1 then
+        print("RF Meters")
+        superlib.rendertable(rfmeterdata)
+        print("")
+    end
+
+    buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")
   
-  for lid in pairs(powerdb) do
-    first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-    middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
-    second_half = " ["..powerdb[lid]["name"].."]"
+    for lid in pairs(powerdb) do
+        first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
+        middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+        second_half = " ["..powerdb[lid]["name"].."]"
 
-    if config.display_units == false then output = first_half .. second_half end
-    if config.display_units == true then output = first_half .. middle .. second_half end
+        if config.display_units == false then output = first_half .. second_half end
+        if config.display_units == true then output = first_half .. middle .. second_half end
 
-    buffer(output)
-  end
+        buffer(output)
+    end
 
   print(text_buffer)
 

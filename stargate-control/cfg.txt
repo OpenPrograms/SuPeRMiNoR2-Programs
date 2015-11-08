@@ -1,0 +1,13 @@
+["stargate"] = {
+    files = {
+      ["master/stargate-control/stargate.lua"] = "/bin",
+    },
+    dependencies = {
+      ["superlib"] = "/",
+    },
+    name = "stargate",
+    description = "Stargatetech stargate dialer",
+    authors = "SuPeRMiNoR2",
+    note = "Alpha version",
+    repo = "tree/master/stargate-control",
+  },

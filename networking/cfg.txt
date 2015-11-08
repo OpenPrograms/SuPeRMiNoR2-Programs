@@ -1,0 +1,16 @@
+["super-dns"] = {
+    files = {
+      ["master/networking/dns.lua"] = "//usr/lib",
+      ["master/networking/dns"] = "//usr/man",
+      ["master/networking/dns-test.lua"] = "//usr/bin",
+      ["master/networking/95_dnsbind.lua"] = "//boot",
+    },
+    dependencies = {
+      ["superlib"] = "/",
+    },
+    name = "Super DNS",
+    description = "Basic DNS Client / Server",
+    authors = "SuPeRMiNoR2",
+    note = "Not really intended for use, mainly for testing on my programs",
+    repo = "tree/master/networking",
+  },

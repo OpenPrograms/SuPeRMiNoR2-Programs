@@ -154,7 +154,7 @@ local function removeCard()
     end
     superlib.addItem("Cancel", "c")
     card = superlib.runMenu("Please select the card you want to remove.")
-    if door ~= "c" then
+    if card ~= "c" then
         table.remove(ldb["registered"], card)
     end
     saveDB(ldb)

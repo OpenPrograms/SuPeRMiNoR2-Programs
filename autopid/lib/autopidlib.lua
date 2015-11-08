@@ -7,10 +7,10 @@ local component = require("component")
 local superlib = require("superlib")
 local shell = require("shell")
 
-controllers = {}
+local controllers = {}
 
-turbines = 0
-reactors = 0
+local turbines = 0
+local reactors = 0
 
 local function loadFile(file, cid, address, type)
   local controller={}
@@ -31,8 +31,6 @@ local function loadFile(file, cid, address, type)
   controller.log = log
   controller.type = type
 
-  controllers[#controllers + 1] = cid
-
   assert(loadfile(file, "t",env))()
 
   return pid.new(controller, cid, true)
@@ -50,13 +48,13 @@ function autopid.scan()
       loadFile("/usr/autopid/reactor.apid", "reactor"..tostring(reactors), address, type)
     end
   end
-  controllers = pid.dump()
+  controllers = pid.registry()
 end
 
 function autopid.shutdown()
   for _, controller in pairs(controllers) do
     controller.shutdown()
-    pid.remove(controller.id)
+    pid.remove(controller)
   end
 end
 

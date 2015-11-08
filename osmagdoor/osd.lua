@@ -71,7 +71,7 @@ end
 
 function check(maddr, paddr, dooraddr, doordb, username)
     if maddr == paddr then 
-        log("Door ".. doordb.name .. " Opened by " .. username .. "'s card")
+        log("Door ".. doordb["name"] .. " Opened by " .. username .. "'s card")
         toggleDoor(dooraddr)
     end
 end
@@ -96,11 +96,9 @@ function auth(_,addr, playerName, data, UUID, locked)
     end 
 end
 
-term.clear()
 print("OSd (OpenSecuritydoorDaemon) starting up...")
 print("Registering event handlers")
 event.listen("magData", auth)
 print("Event listeners registered")
 print("Do not run this program again, untill the next restart of this computer.")
 print("if you do, you will have multiple handlers running.")
-os.sleep(5)

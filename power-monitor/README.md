@@ -5,6 +5,7 @@ Run with: `power-monitor`
 Config file located at: `/etc/power-monitor.config`
 
 Currently supports:
+
 1. EnderIO Capacitors
 2. Thermal Expansion Cells
 3. IC2 MFSU / MFE / CESU / BatBox

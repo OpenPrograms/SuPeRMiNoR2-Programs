@@ -7,7 +7,6 @@ local keyboard = require("keyboard")
 local string = require("string")
 local math = require("math")
 local term = require("term")
-
 local superlib = require("superlib")
 
 dbfile = "/authdb.dat"
@@ -40,28 +39,6 @@ local function log(logdata)
     f = io.open(logfile, "a")
     f:write(logdata.."\n")
     f:close()
-end
-
-local function openDoor(door)
-    if door.isOpen() == false then
-        door.toggle()
-    end
-end
-
-closeList = {}
-local function closeDoor(doorad)
-    doorad = table.remove(closeList, 1)
-    door = component.proxy(doorad)
-    if door.isOpen() == true then
-        door.toggle()
-    end
-end
-
-local function toggleDoor(doorad)
-    door = component.proxy(doorad)
-    openDoor(door)
-    table.insert(closeList, doorad)
-    event.timer(3, closeDoor)
 end
 
 local function checkCard(UUID)
@@ -194,33 +171,6 @@ local function clearCards()
     saveDB(ldb)
 end
 
-function check(maddr, paddr, dooraddr, doordb, username)
-    if maddr == paddr then 
-        log("Door ".. doordb.name .. " Opened by " .. username .. "'s card")
-        toggleDoor(dooraddr)
-    end
-end
-
-function auth(_,addr, playerName, data, UUID, locked)
-    db = loadDB()
-
-    for i in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
-        if db["new"][i] == data then
-            table.insert(db["registered"], {username=playerName, uuid=UUID})
-            print("Registered card ".. UUID .. " to user ".. playerName)
-            table.remove(db["new"], i)
-            saveDB(db)
-        end
-    end
-
-    allowed, username = checkCard(UUID)
-    if allowed then
-        for u, d in ipairs(db["pairs"]) do
-            check(addr, d["mag"], d["door"], d, username)
-        end
-    end 
-end
-
 local function menus() 
     superlib.clearMenu()
     superlib.addItem("Register a card", "r")
@@ -244,18 +194,7 @@ local function menus()
 end
 
 function main()
-    print("OSMagDoor Starting Up")
-    event.ignore("magData", auth)
-    event.listen("magData", auth)
-    print("Event listeners registered")
-    print("For your information, this interface is only needed for adding new doors")
-    print("And adding new cards (and deleting both of those)")
-    print("You can shut this program down, and the event will keep running, and doors will still open")
-    print("Because of this, you need to restart the computer before starting this program again")
-    print("If you fail to do this, you will have multiple event listeners running, and you do not want that.")
-    os.sleep(5)
     term.clear()
-    
     while true do
         menus()
     end

@@ -169,6 +169,7 @@ local function clearCards()
         table.remove(ldb["new"], c)
     end
     saveDB(ldb)
+    os.sleep(1)
 end
 
 local function menus() 

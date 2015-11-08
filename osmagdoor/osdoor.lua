@@ -221,8 +221,18 @@ local function menus()
 end
 
 function main()
+    print("OSMagDoor Starting Up")
     event.ignore("magData", auth)
     event.listen("magData", auth)
+    print("Event listeners registered")
+    print("For your information, this interface is only needed for adding new doors")
+    print("And adding new cards (and deleting both of those)")
+    print("You can shut this program down, and the event will keep running, and doors will still open")
+    print("Because of this, you need to restart the computer before starting this program again")
+    print("If you fail to do this, you will have multiple event listeners running, and you do not want that.")
+    os.sleep(5)
+    term.clear()
+    
     while true do
         menus()
     end

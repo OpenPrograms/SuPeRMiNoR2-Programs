@@ -177,14 +177,13 @@ function auth(_,addr, playerName, data, UUID, locked)
 end
 
 local function menus() 
-    term.clear()
-
-    print("Super Security System [Beta]")
     superlib.clearMenu()
     superlib.addItem("Register a card", "r")
     superlib.addItem("Register a door", "d")
-
-    key = superlib.runMenu()
+    superlib.addItem("Remove a door", "rd")
+    superlib.addItem("Remove a card", "rc")
+    superlib.addItem("Clear waiting cards", "cc")
+    key = superlib.runMenu("Super Security System [Beta]")
 
     if key == "r" then
         registerCard()

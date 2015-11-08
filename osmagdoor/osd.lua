@@ -72,7 +72,7 @@ end
 function check(maddr, paddr, dooraddr, doordb, username)
     if maddr == paddr then 
         toggleDoor(dooraddr)
-        log("Door ".. doordb["name"] .. " Opened by " .. username .. "'s card")
+        log("Door ".. doordb["name"] .. " Opened by " .. username .. " card")
     end
 end
 

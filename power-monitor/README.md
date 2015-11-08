@@ -1,5 +1,5 @@
 # Power-Monitor
-Install with: `oppm install power-monitor
+Install with: `oppm install power-monitor`
 Run with: `power-monitor`
 
 Config file located at: `/etc/power-monitor.config`

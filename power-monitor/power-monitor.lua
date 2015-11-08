@@ -314,7 +314,7 @@ while true do
 
   tabledata = {{"Name", "Average Flow", "Total Counter"}}
   for oid, oob in pairs(slist["rfmeter"]) do
-  	table.insert(tabledata, {name, oob.getAvg(), oob.getCounterValue()})
+  	table.insert(tabledata, {oob.name, oob.proxy.getAvg(), oob.proxy.getCounterValue()})
   end
   if table.getn(slist["rfmeter"]) > 0 then
   	superlib.rendertable(tabledata)

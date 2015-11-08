@@ -305,7 +305,7 @@ while true do
 
     if #reactordata > 1 then
         print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
-        superlib.rendertable(reactor)
+        superlib.rendertable(reactordata)
         print("")
     end
 

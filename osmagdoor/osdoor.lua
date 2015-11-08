@@ -174,6 +174,7 @@ end
 
 local function menus() 
     superlib.clearMenu()
+    superlib.addItem("Exit", "e")
     superlib.addItem("Register a card", "r")
     superlib.addItem("Register a door", "d")
     superlib.addItem("Remove a door", "rd")
@@ -191,13 +192,18 @@ local function menus()
         removeCard()
     elseif key == "cc" then
         clearCards()
+    elseif key == "e" then
+        return "exit"
     end
 end
 
 function main()
     term.clear()
     while true do
-        menus()
+        r = menus()
+        if r == "exit" then
+            break
+        end
     end
 end
 main()

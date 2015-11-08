@@ -156,19 +156,42 @@ local function registerDoor()
 end
 
 local function removeDoor()
-
+    ldb = loadDB()
+    superlib.clearMenu()
+    for i, d in ipairs(db["pairs"]) do
+        superlib.addItem(d["name"], i)
+    end
+    superlib.addItem("Cancel", "c")
+    door = superlib.runMenu("Please select the door you want to remove.")
+    if door ~= "c" then
+        table.remove(db["pairs"], door)
+    end
+    saveDB(ldb)
 end
 
 local function removeCard()
-
+    ldb = loadDB()
+    superlib.clearMenu()
+    for i, d in ipairs(db["registered"]) do
+        superlib.addItem(d["username"] .. " ("..d["uuid"]..")", i)
+    end
+    superlib.addItem("Cancel", "c")
+    card = superlib.runMenu("Please select the card you want to remove.")
+    if door ~= "c" then
+        table.remove(db["registered"], card)
+    end
+    saveDB(ldb)
 end
 
 local function clearCards()
     fdb = loadDB()
-    for c in db["new"] do
+    term.clear()
+    print("Clearing all unregistered cards...")
+    for c, d in db["new"] do
+        print("Removing card: "..d)
         table.remove(db["new"], c)
     end
-
+    saveDB(fdb)
 end
 
 function check(maddr, paddr, dooraddr, doordb, username)

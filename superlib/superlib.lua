@@ -159,7 +159,7 @@ function rendermenu(mt, prompt)
   term.clear()
   print(prompt)
   for i=1, #mt do
-    print(" "..i.."  "..mt[i]["name"].." ("..mt[i]["addr"]..")")
+    print(" "..i.."  "..mt[i]["name"])
   end
 end
 
@@ -167,11 +167,11 @@ function updatemenu(mt, sel)
   if lastmenu ~= false then
     term.setCursor(1, lastmenu + 1) --Jump
     term.clearLine()
-    term.write(" "..lastmenu.."  "..mt[lastmenu]["name"].." ("..mt[lastmenu]["addr"]..")")
+    term.write(" "..lastmenu.."  "..mt[lastmenu]["name"])
   end
   term.setCursor(1, sel + 1) --Jump ahead one to skip prompt
   term.clearLine()
-  term.write("["..sel.."] "..mt[sel]["name"].." ("..mt[sel]["addr"]..")")
+  term.write("["..sel.."] "..mt[sel]["name"])
 end
 
 function m.addItem(name, data)

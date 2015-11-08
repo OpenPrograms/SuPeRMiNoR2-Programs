@@ -4,9 +4,9 @@ Here be random things
 
 About half the stuff here is abandoned, the only good projects are:
 
-1. [autopid](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/autopid)
-2. [osmagdoor](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/osmagdoor)
-3. [power-monitor](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/power-monitor)
+* [autopid](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/autopid)
+* [osmagdoor](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/osmagdoor)
+* [power-monitor](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/power-monitor)
 
 Everything else is either a library, not mine, or abandoned.
 

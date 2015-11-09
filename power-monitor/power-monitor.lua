@@ -1,4 +1,7 @@
---Made by SuPeRMiNoR2
+--SuPeRMiNoR2, 2015
+--Source  https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/power-monitor
+--License https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/blob/master/LICENSE.txt
+
 local version = "1.5.9"
 local supported_config_version = "0.7"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"

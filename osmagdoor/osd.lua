@@ -52,20 +52,29 @@ local function closeDoor(doorad)
     end
 end
 
-local function toggleDoor(doorad)
+local function toggleDoor(doorad, db)
     door = component.proxy(doorad)
     openDoor(door)
     table.insert(closeList, doorad)
     event.timer(3, closeDoor)
 end
 
-local function checkCard(UUID)
+local function checkCard(UUID, data)
     db = loadDB()
-    for i in ipairs(db["registered"]) do
-        if db["registered"][i]["uuid"] == UUID then
-            return true, db["registered"]["username"]
-        end
+    carddata = serialization.unserialize(data)
+    currenttime = os.time()
+
+    if carddata["t"] == "temp" then 
+    	if currenttime > carddata["e"] then
+    		return false
+    	end
     end
+
+	for i in ipairs(db["registered"]) do
+    	if db["registered"][i]["uuid"] == UUID then
+        	return true, db["registered"]["username"]
+    	end
+	end
     return false
 end
 
@@ -88,7 +97,7 @@ function auth(_,addr, playerName, data, UUID, locked)
         end
     end
 
-    allowed, username = checkCard(UUID)
+    allowed, username = checkCard(UUID, data)
     if allowed then
         for u, d in ipairs(db["pairs"]) do
             check(addr, d["mag"], d["door"], d, username)

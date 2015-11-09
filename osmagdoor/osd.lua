@@ -71,7 +71,7 @@ local function toggleDoor(doordb)
     pass = doordb["password"]
     door = component.proxy(doordb["door"])
     openDoor(door, pass)
-    table.insert(closeList, {addr=doordb["addr"], password=doordb["password"]})
+    table.insert(closeList, {addr=doordb["door"], password=doordb["password"]})
     event.timer(3, closeDoor)
 end
 

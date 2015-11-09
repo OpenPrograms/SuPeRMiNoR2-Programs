@@ -8,3 +8,5 @@ function m.makeCode()
     end
     return s
 end
+
+return m

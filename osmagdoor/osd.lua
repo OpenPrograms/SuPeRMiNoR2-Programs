@@ -75,10 +75,9 @@ local function toggleDoor(doordb)
     event.timer(3, closeDoor)
 end
 
-local function checkCard(UUID, data)
+local function checkCard(UUID, carddata)
     db = loadDB()
-    carddata = serialization.unserialize(data)
-
+    
     if carddata["t"] == "temp" then 
         currenttime = os.time()
         if currenttime > carddata["e"] then
@@ -104,8 +103,9 @@ end
 function auth(_,addr, playerName, data, UUID, locked)
     db = loadDB()
 
+    carddata = serialize.unserialize(data)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
-        if d["code"] == data then
+        if d["code"] == carddata["code"] then
             table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"]})
             print("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
@@ -113,7 +113,7 @@ function auth(_,addr, playerName, data, UUID, locked)
         end
     end
 
-    allowed, username = checkCard(UUID, data)
+    allowed, username = checkCard(UUID, carddata)
     if allowed then
         for u, d in ipairs(db["pairs"]) do
             check(addr, d, username)

@@ -59,9 +59,9 @@ local function openDoor(door, pass)
     end
 end
 
-local function closeDoor(doorad)
+local function closeDoor()
     doorad = table.remove(closeList, 1)
-    door = component.proxy(doorad["addr"])
+    door = component.proxy(doorad["door"])
     if door.isOpen() == true then
         door.toggle(doorad["password"])
     end
@@ -71,13 +71,13 @@ local function toggleDoor(doordb)
     pass = doordb["password"]
     door = component.proxy(doordb["door"])
     openDoor(door, pass)
-    table.insert(closeList, {addr=doorad, password=pass})
+    table.insert(closeList, {addr=doordb["addr"], password=doordb["password"]})
     event.timer(3, closeDoor)
 end
 
 local function checkCard(UUID, carddata)
     db = loadDB()
-    
+
     if carddata["t"] == "temp" then 
         currenttime = os.time()
         if currenttime > carddata["e"] then
@@ -103,7 +103,7 @@ end
 function auth(_,addr, playerName, data, UUID, locked)
     db = loadDB()
 
-    carddata = serialize.unserialize(data)
+    carddata = serialization.unserialize(data)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
         if d["code"] == carddata["code"] then
             table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"]})

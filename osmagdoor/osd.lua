@@ -31,16 +31,16 @@ function saveDB(ldb)
 end
 
 function updateDB()
-	db = loadDB()
-	print("Database updater scanning for things that need to be fixed...")
+    db = loadDB()
+    print("Database updater scanning for things that need to be fixed...")
 
-	for i, pair in ipairs(db["pairs"]) do
-    	if not pair["password"] then 
-    		newpass = osmag.makeCode()
-    		db["pairs"][i]["password"] = newpass
-    		doorc = component.proxy(pair["door"])
-    		doorc.setPassword(newpass)
-    		print("[DBUpdate] Added password to door "..d["name"])
+    for i, pair in ipairs(db["pairs"]) do
+        if not pair["password"] then 
+            newpass = osmag.makeCode()
+            db["pairs"][i]["password"] = newpass
+            doorc = component.proxy(pair["door"])
+            doorc.setPassword(newpass)
+            print("[DBUpdate] Added password to door "..pair["name"])
         end
     end
     print("Database update complete.")
@@ -68,7 +68,7 @@ local function closeDoor(doorad)
 end
 
 local function toggleDoor(doordb)
-	pass = doordb["password"]
+    pass = doordb["password"]
     door = component.proxy(doordb["door"])
     openDoor(door, pass)
     table.insert(closeList, {addr=doorad, password=pass})
@@ -80,17 +80,17 @@ local function checkCard(UUID, data)
     carddata = serialization.unserialize(data)
 
     if carddata["t"] == "temp" then 
-    	currenttime = os.time()
-    	if currenttime > carddata["e"] then
-    		return false
-    	end
+        currenttime = os.time()
+        if currenttime > carddata["e"] then
+            return false
+        end
     end
 
-	for i in ipairs(db["registered"]) do
-    	if db["registered"][i]["uuid"] == UUID then
-        	return true, db["registered"]["username"]
-    	end
-	end
+    for i in ipairs(db["registered"]) do
+        if db["registered"][i]["uuid"] == UUID then
+            return true, db["registered"]["username"]
+        end
+    end
     return false
 end
 

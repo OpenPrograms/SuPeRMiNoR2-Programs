@@ -8,6 +8,7 @@ local string = require("string")
 local math = require("math")
 local term = require("term")
 local superlib = require("superlib")
+local osmag = require("osmag")
 
 dbfile = "/authdb.dat"
 logfile = "/authlog.txt"
@@ -56,21 +57,14 @@ local function getUser(msg)
     return io.read()
 end
 
-local function makeCode(l)
-    local s = ""
-    for i = 1, l do
-        s = s .. string.char(math.random(32, 126))
-    end
-    return s
-end
-
 local function registerCard()
     db = loadDB()
     term.clear()
     print("Registering new card.")
-    cardcode = makeCode(10)
+    cardcode = osmag.makeCode()
     title = getUser("Enter the title for the card: ")
-    writer.write(cardcode, title, true)
+    carddata = serialization.serialize({type="full", code=cardcode})
+    writer.write(carddata, title, true)
     table.insert(db["new"], {code=cardcode, title=title})
     print("The card will be registered to the user who swipes it next.")
     saveDB(db)
@@ -126,7 +120,11 @@ local function registerDoor()
         if mag ~= "c" then
             term.clear()
             name = getUser("Enter a name for this pair: ")
-            table.insert(db["pairs"], {door=door, mag=mag, name=name})
+            print("Generating door password")
+            newpass = osmag.makeCode()
+            doorc = component.proxy(door)
+            doorc.setPassword(newpass)
+            table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
         end
     end
     saveDB(db)

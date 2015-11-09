@@ -5,6 +5,7 @@ local serialization = require("serialization")
 local filesystem = require("filesystem")
 local term = require("term")
 local superlib = require("superlib")
+local osmag = require("osmag")
 
 dbfile = "/authdb.dat"
 logfile = "/authlog.txt"
@@ -29,8 +30,22 @@ function saveDB(ldb)
     f:close()
 end
 
-rdb = loadDB()
-saveDB(rdb)
+function updateDB()
+	db = loadDB()
+	print("Database updater scanning for things that need to be fixed...")
+
+	for i, pair in ipairs(db["pairs"]) do
+    	if not pair["password"] then 
+    		newpass = osmag.makeCode()
+    		db["pairs"][i]["password"] = newpass
+    		doorc = component.proxy(pair["door"])
+    		doorc.setPassword(newpass)
+    		print("[DBUpdate] Added password to door "..d["name"])
+        end
+    end
+    print("Database update complete.")
+    saveDB(db)
+end
 
 function log(logdata)
     f = io.open(logfile, "a")
@@ -38,33 +53,34 @@ function log(logdata)
     f:close()
 end
 
-local function openDoor(door)
+local function openDoor(door, pass)
     if door.isOpen() == false then
-        door.toggle()
+        door.toggle(pass)
     end
 end
 
 local function closeDoor(doorad)
     doorad = table.remove(closeList, 1)
-    door = component.proxy(doorad)
+    door = component.proxy(doorad["addr"])
     if door.isOpen() == true then
-        door.toggle()
+        door.toggle(doorad["password"])
     end
 end
 
-local function toggleDoor(doorad, db)
-    door = component.proxy(doorad)
-    openDoor(door)
-    table.insert(closeList, doorad)
+local function toggleDoor(doordb)
+	pass = doordb["password"]
+    door = component.proxy(doordb["door"])
+    openDoor(door, pass)
+    table.insert(closeList, {addr=doorad, password=pass})
     event.timer(3, closeDoor)
 end
 
 local function checkCard(UUID, data)
     db = loadDB()
     carddata = serialization.unserialize(data)
-    currenttime = os.time()
 
     if carddata["t"] == "temp" then 
+    	currenttime = os.time()
     	if currenttime > carddata["e"] then
     		return false
     	end
@@ -78,10 +94,10 @@ local function checkCard(UUID, data)
     return false
 end
 
-function check(maddr, paddr, dooraddr, doordb, username)
-    if maddr == paddr then 
-        toggleDoor(dooraddr)
-        log("Door ".. doordb["name"] .. " Opened by " .. username .. " card")
+function check(maddr, d, username)
+    if maddr == d["mag"] then 
+        toggleDoor(d)
+        log("Door ".. d["name"] .. " Opened by " .. username .. " card")
     end
 end
 
@@ -100,12 +116,13 @@ function auth(_,addr, playerName, data, UUID, locked)
     allowed, username = checkCard(UUID, data)
     if allowed then
         for u, d in ipairs(db["pairs"]) do
-            check(addr, d["mag"], d["door"], d, username)
+            check(addr, d, username)
         end
     end 
 end
 
 print("OSd (OpenSecuritydoorDaemon) starting up...")
+updateDB()
 print("Registering event handlers")
 event.listen("magData", auth)
 print("Event listeners registered")

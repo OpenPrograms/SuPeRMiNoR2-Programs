@@ -61,7 +61,7 @@ end
 
 local function closeDoor()
     doorad = table.remove(closeList, 1)
-    door = component.proxy(doorad["door"])
+    door = component.proxy(doorad["addr"])
     if door.isOpen() == true then
         door.toggle(doorad["password"])
     end

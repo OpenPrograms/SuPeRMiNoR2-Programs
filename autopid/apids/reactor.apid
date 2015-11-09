@@ -13,15 +13,15 @@ end
 reactor = component.proxy(address)
 
 maxSafeFuelTemp = 2000
-resumeFuelTemp = 135
+resumeFuelTemp = 500
 
 status = {}
 status.eshutdown = false
 
 if reactor.isActivelyCooled() then
   status.activeCooling = true
-  sensor = reactor.getHotFluidAmount
-  target = reactor.getHotFluidAmountMax() / 2
+  sensor = reactor.getFuelTemperature
+  target = 500
   factors = {
     p = -13/target,
     i = -12/target,

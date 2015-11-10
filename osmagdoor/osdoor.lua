@@ -68,6 +68,7 @@ local function registerCard()
     if choice ~= "c" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
+        term.clear()
         title = getUser("Enter the title for the card: ")
         if choice == "full" then
             carddata["type"] = "full"
@@ -78,11 +79,12 @@ local function registerCard()
             days = tonumber(days)
             extratime = days * 86400
             expiretime = ctime + extratime
+            carddata["expire"] = expiretime
         end
 
         carddata = serialization.serialize(carddata)
         writer.write(carddata, title, true)
-        table.insert(db["new"], {code=cardcode, title=title})
+        table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"]})
         print("The card will be registered to the user who swipes it next.")
         saveDB(db)
         os.sleep(1)

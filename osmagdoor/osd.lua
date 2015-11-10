@@ -43,6 +43,18 @@ function updateDB()
             print("[DBUpdate] Added password to door "..pair["name"])
         end
     end
+
+    --Remove expired cards
+    print("Removing expired cards...")
+    currenttime = os.time()
+    for i, card in pairs(db["registered"]) do
+        if card["type"] == "temp" then
+            if currenttime > carddata["expire"] then
+                print("Removing expired card: "..card["title"])
+                table.remove(db["registered"], i)
+        end
+    end
+
     print("Database update complete.")
     saveDB(db)
 end
@@ -80,7 +92,7 @@ local function checkCard(UUID, carddata)
 
     if carddata["type"] == "temp" then 
         currenttime = os.time()
-        if currenttime > carddata["e"] then
+        if currenttime > carddata["expire"] then
             return false
         end
     end
@@ -106,7 +118,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     carddata = serialization.unserialize(data)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
         if d["code"] == carddata["code"] then
-            table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"]})
+            table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"], type=d["type"]})
             print("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
             saveDB(db)

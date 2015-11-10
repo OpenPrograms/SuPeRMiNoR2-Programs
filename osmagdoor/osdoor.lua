@@ -166,7 +166,7 @@ local function removeDoor()
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door you want to remove.")
     if door ~= "c" then
-        doorinfo = db["pairs"][door]
+        doorinfo = ldb["pairs"][door]
         m.tryToDeleteDoor(doorinfo["address"], doorinfo["password"])
         table.remove(ldb["pairs"], door)
     end

@@ -148,9 +148,10 @@ local function registerDoor()
             if success == "Password Changed" then
                 print("Door password set successfully.")
                 table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
-            else:
+            else
                 print("Failed to set door password, please break the door[s] and replace them to clear the password.")
                 os.sleep(2)
+            end
         end
     end
     osmag.saveDB(db)

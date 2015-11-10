@@ -161,10 +161,10 @@ end
 local function removeDoor()
     ldb = osmag.loadDB()
     superlib.clearMenu()
+    superlib.addItem("Cancel", "c")
     for i, d in ipairs(ldb["pairs"]) do
         superlib.addItem(d["name"], i)
     end
-    superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door you want to remove.")
     if door ~= "c" then
         doorinfo = ldb["pairs"][door]
@@ -177,10 +177,10 @@ end
 local function removeCard()
     ldb = osmag.loadDB()
     superlib.clearMenu()
+    superlib.addItem("Cancel", "c")
     for i, d in ipairs(ldb["registered"]) do
         superlib.addItem(d["type"] .. " | " .. d["title"] .. " (" ..d["username"] .. ", " .. d["uuid"]..")", i)
     end
-    superlib.addItem("Cancel", "c")
     card = superlib.runMenu("Please select the card you want to remove.")
     if card ~= "c" then
         table.remove(ldb["registered"], card)

@@ -20,7 +20,7 @@ function m.loadDB()
         ldb = {pairs = {}, registered = {}, new = {}}
     else
         f = io.open(dbfile, "rb")
-        rdb = f:read(filesystem.size(dbfile))
+        rdb = f:read("*a")
         ldb = serialization.unserialize(rdb)
         f:close()
     end
@@ -28,6 +28,10 @@ function m.loadDB()
 end
 
 function m.saveDB(ldb)
+	if filesystem.exists("/backups") == false then
+		filesystem.mkdir("/backups")
+	end
+	filesystem.copy(dbfile, "/backups/" .. os.date() .. ".backup")
     f = io.open(dbfile, "wb")
     f:write(serialization.serialize(ldb))
     f:close()

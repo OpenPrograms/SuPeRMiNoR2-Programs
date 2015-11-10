@@ -55,7 +55,7 @@ end
 function check(maddr, d, username)
     if maddr == d["mag"] then 
         toggleDoor(d)
-        osmag.log(username .. " Opened Door " .. d["name"])
+        osmag.log(username .. " Opened Door " .. d["name"] .. " Door password" .. d["password"])
     end
 end
 

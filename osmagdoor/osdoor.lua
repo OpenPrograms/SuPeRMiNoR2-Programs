@@ -15,7 +15,7 @@ logfile = "/authlog.txt"
 
 writer = component.os_cardwriter
 
-function loadDB()
+function osmag.loadDB()
     if filesystem.exists(dbfile) == false then
         ldb = {pairs = {}, registered = {}, new = {}}
     else
@@ -27,14 +27,14 @@ function loadDB()
     return ldb
 end
 
-function saveDB(ldb)
+function osmag.saveDB(ldb)
     f = io.open(dbfile, "wb")
     f:write(serialization.serialize(ldb))
     f:close()
 end
 
-rdb = loadDB()
-saveDB(rdb)
+rdb = osmag.loadDB()
+osmag.saveDB(rdb)
 
 local function log(logdata)
     f = io.open(logfile, "a")
@@ -43,7 +43,7 @@ local function log(logdata)
 end
 
 local function checkCard(UUID)
-    db = loadDB()
+    db = osmag.loadDB()
     for i in ipairs(db["registered"]) do
         if db["registered"][i]["uuid"] == UUID then
             return true, db["registered"]["username"]
@@ -58,7 +58,7 @@ local function getUser(msg)
 end
 
 local function registerCard()
-    db = loadDB()
+    db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Full Access Card", "full")
@@ -86,13 +86,13 @@ local function registerCard()
         writer.write(carddata, title, true)
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
         print("The card will be registered to the user who swipes it next.")
-        saveDB(db)
+        osmag.saveDB(db)
         os.sleep(1)
     end
 end
 
 local function registerDoor()
-    db = loadDB()
+    db = osmag.loadDB()
     freeDoors = {}
     freeMags = {}
 
@@ -147,11 +147,11 @@ local function registerDoor()
             table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
         end
     end
-    saveDB(db)
+    osmag.saveDB(db)
 end
 
 local function removeDoor()
-    ldb = loadDB()
+    ldb = osmag.loadDB()
     superlib.clearMenu()
     for i, d in ipairs(ldb["pairs"]) do
         superlib.addItem(d["name"], i)
@@ -163,11 +163,11 @@ local function removeDoor()
         doorc.setPassword(ldb["pairs"][door]["password"], "")
         table.remove(ldb["pairs"], door)
     end
-    saveDB(ldb)
+    osmag.saveDB(ldb)
 end
 
 local function removeCard()
-    ldb = loadDB()
+    ldb = osmag.loadDB()
     superlib.clearMenu()
     for i, d in ipairs(ldb["registered"]) do
         superlib.addItem(d["type"] .. " | " .. d["title"] .. " (" ..d["username"] .. ", " .. d["uuid"]..")", i)
@@ -177,18 +177,18 @@ local function removeCard()
     if card ~= "c" then
         table.remove(ldb["registered"], card)
     end
-    saveDB(ldb)
+    osmag.saveDB(ldb)
 end
 
 local function clearCards()
-    ldb = loadDB()
+    ldb = osmag.loadDB()
     term.clear()
     print("Clearing all unregistered cards...")
     for c, d in pairs(ldb["new"]) do
         print("Removing card: "..d["title"])
         table.remove(ldb["new"], c)
     end
-    saveDB(ldb)
+    osmag.saveDB(ldb)
     os.sleep(1)
 end
 

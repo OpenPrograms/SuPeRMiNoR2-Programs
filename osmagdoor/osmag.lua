@@ -17,18 +17,18 @@ end
 
 function m.loadDB()
     if filesystem.exists(dbfile) == false then
-        local ldb = {pairs = {}, registered = {}, new = {}}
+        ldb = {pairs = {}, registered = {}, new = {}}
     else
-        local f = io.open(dbfile, "rb")
-        local rdb = f:read(filesystem.size(dbfile))
-        local ldb = serialization.unserialize(rdb)
+        f = io.open(dbfile, "rb")
+        rdb = f:read(filesystem.size(dbfile))
+        ldb = serialization.unserialize(rdb)
         f:close()
     end
     return ldb
 end
 
 function m.saveDB(ldb)
-    local f = io.open(dbfile, "wb")
+    f = io.open(dbfile, "wb")
     f:write(serialization.serialize(ldb))
     f:close()
 end

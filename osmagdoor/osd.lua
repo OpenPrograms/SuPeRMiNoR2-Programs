@@ -66,7 +66,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
         if d["code"] == carddata["code"] then
             table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"], type=d["type"]})
-            log("Registered card ".. UUID .. " to user ".. playerName)
+            osmag.log("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
             osmag.saveDB(db)
         end
@@ -75,7 +75,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     allowed, username = checkCard(UUID, carddata)
     if allowed then
         for u, d in ipairs(db["pairs"]) do
-            check(addr, d, username)
+            check(addr, d, playerName)
         end
     end 
 end

@@ -147,6 +147,7 @@ local function registerDoor()
             success, msg = doorc.setPassword(newpass)
             if msg == nil then
                 msg = success
+            end
             if msg == "Password set" then
                 print("Door password set successfully.")
                 table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})

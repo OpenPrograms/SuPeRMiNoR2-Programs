@@ -92,15 +92,15 @@ local function registerCard()
 end
 
 local function registerDoor()
-    db = osmag.loadDB()
+    ddb = osmag.loadDB()
     freeDoors = {}
     freeMags = {}
 
     for address, ctype in component.list() do
         if ctype == "os_door" then
             reg = false
-            for raddr in ipairs(db["pairs"]) do
-                if address == db["pairs"][raddr]["door"] then
+            for raddr in ipairs(ddb["pairs"]) do
+                if address == ddb["pairs"][raddr]["door"] then
                     reg = true
                 end
             end
@@ -111,8 +111,8 @@ local function registerDoor()
 
         if ctype == "os_magreader" then
             reg = false
-            for raddr in ipairs(db["pairs"]) do
-                if address == db["pairs"][raddr]["mag"] then
+            for raddr in ipairs(ddb["pairs"]) do
+                if address == ddb["pairs"][raddr]["mag"] then
                     reg = true
                 end
             end
@@ -150,7 +150,8 @@ local function registerDoor()
             end
             if msg == "Password set" then
                 print("Door password set successfully.")
-                table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
+                table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass})
+                osmag.saveDB(ddb)
                 os.sleep(1)
             else
                 print("Failed to set door password, please break the door[s] and replace them to clear the password.")
@@ -158,7 +159,6 @@ local function registerDoor()
             end
         end
     end
-    osmag.saveDB(db)
 end
 
 local function removeDoor()

@@ -60,15 +60,33 @@ end
 local function registerCard()
     db = loadDB()
     term.clear()
-    print("Registering new card.")
-    cardcode = osmag.makeCode()
-    title = getUser("Enter the title for the card: ")
-    carddata = serialization.serialize({type="full", code=cardcode})
-    writer.write(carddata, title, true)
-    table.insert(db["new"], {code=cardcode, title=title})
-    print("The card will be registered to the user who swipes it next.")
-    saveDB(db)
-    os.sleep(1)
+    superlib.clearMenu()
+    superlib.addItem("Full Access Card", "full")
+    superlib.addItem("Temporary Card", "temp")
+    superlib.addItem("Cancel", "c")
+    choice = superlib.runMenu("Select new card type")
+    if not choice == "c" then
+        cardcode = osmag.makeCode()
+        carddata = {code=cardcode}
+        title = getUser("Enter the title for the card: ")
+        if choice == "full" then
+            carddata["type"] = "full"
+        elseif choice == "temp" then
+            carddata["type"] = "temp"
+            ctime = os.time()
+            days = getUser("Enter the amount of minecraft days you want the card to last: ")
+            days = tonumber(days)
+            extratime = days * 86400
+            expiretime = ctime + extratime
+        end
+
+        carddata = serialization.serialize(carddata)
+        writer.write(carddata, title, true)
+        table.insert(db["new"], {code=cardcode, title=title})
+        print("The card will be registered to the user who swipes it next.")
+        saveDB(db)
+        os.sleep(1)
+    end
 end
 
 local function registerDoor()

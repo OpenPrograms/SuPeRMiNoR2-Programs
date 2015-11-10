@@ -12,60 +12,6 @@ logfile = "/authlog.txt"
 
 closeList = {}
 
-function loadDB()
-    if filesystem.exists(dbfile) == false then
-        ldb = {pairs = {}, registered = {}, new = {}}
-    else
-        f = filesystem.open(dbfile, "rb")
-        rdb = f:read(filesystem.size(dbfile))
-        ldb = serialization.unserialize(rdb)
-        f:close()
-    end
-    return ldb
-end
-
-function saveDB(ldb)
-    f = io.open(dbfile, "wb")
-    f:write(serialization.serialize(ldb))
-    f:close()
-end
-
-function updateDB()
-    db = loadDB()
-    print("Database updater scanning for things that need to be fixed...")
-
-    for i, pair in ipairs(db["pairs"]) do
-        if not pair["password"] then 
-            newpass = osmag.makeCode()
-            db["pairs"][i]["password"] = newpass
-            doorc = component.proxy(pair["door"])
-            doorc.setPassword(newpass)
-            print("[DBUpdate] Added password to door "..pair["name"])
-        end
-    end
-
-    --Remove expired cards
-    print("Removing expired cards...")
-    currenttime = os.time()
-    for i, card in ipairs(db["registered"]) do
-        if card["type"] == "temp" then
-            if currenttime > card["expire"] then
-                print("Removing expired card: "..card["title"])
-                table.remove(db["registered"], i)
-            end
-        end
-    end
-
-    print("Database update complete.")
-    saveDB(db)
-end
-
-function log(logdata)
-    f = io.open(logfile, "a")
-    f:write(logdata .. "\n")
-    f:close()
-end
-
 local function openDoor(door, pass)
     if door.isOpen() == false then
         door.toggle(pass)
@@ -89,7 +35,7 @@ local function toggleDoor(doordb)
 end
 
 local function checkCard(UUID, carddata)
-    db = loadDB()
+    db = osmag.loadDB()
 
     if carddata["type"] == "temp" then 
         currenttime = os.time()
@@ -109,12 +55,12 @@ end
 function check(maddr, d, username)
     if maddr == d["mag"] then 
         toggleDoor(d)
-        log(username .. " Opened Door " .. d["name"])
+        osmag.log(username .. " Opened Door " .. d["name"])
     end
 end
 
 function auth(_,addr, playerName, data, UUID, locked)
-    db = loadDB()
+    db = osmag.loadDB()
 
     carddata = serialization.unserialize(data)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
@@ -122,7 +68,7 @@ function auth(_,addr, playerName, data, UUID, locked)
             table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"], type=d["type"]})
             log("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
-            saveDB(db)
+            osmag.saveDB(db)
         end
     end
 
@@ -134,8 +80,9 @@ function auth(_,addr, playerName, data, UUID, locked)
     end 
 end
 
+db = osmag.loadDB()
 print("OSd (OpenSecuritydoorDaemon) starting up...")
-updateDB()
+osmag.updateDB()
 print("Registering event handlers")
 event.listen("magData", auth)
 print("Event listeners registered")

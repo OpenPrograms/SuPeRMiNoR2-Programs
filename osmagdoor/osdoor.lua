@@ -145,9 +145,10 @@ local function registerDoor()
             doorc = component.proxy(door)
             print("Setting door password.")
             success = doorc.setPassword(newpass)
-            if success == "Password Set" then
+            if success == "Password set" then
                 print("Door password set successfully.")
                 table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
+                os.sleep(1)
             else
                 print("Failed to set door password, please break the door[s] and replace them to clear the password.")
                 os.sleep(2)

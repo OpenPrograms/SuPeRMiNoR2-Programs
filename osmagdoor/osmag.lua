@@ -29,7 +29,7 @@ end
 
 function m.saveDB(ldb)
 	if filesystem.exists("/backups") == false then
-		filesystem.mkdir("/backups")
+		filesystem.makeDirectory("/backups")
 	end
 	filesystem.copy(dbfile, "/backups/" .. os.date() .. ".backup")
     f = io.open(dbfile, "wb")

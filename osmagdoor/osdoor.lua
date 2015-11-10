@@ -65,7 +65,7 @@ local function registerCard()
     superlib.addItem("Temporary Card", "temp")
     superlib.addItem("Cancel", "c")
     choice = superlib.runMenu("Select new card type")
-    if not choice == "c" then
+    if choice ~= "c" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
         title = getUser("Enter the title for the card: ")

@@ -140,11 +140,17 @@ local function registerDoor()
         if mag ~= "c" then
             term.clear()
             name = getUser("Enter a name for this pair: ")
-            print("Generating door password")
+            print("Generating door password.")
             newpass = osmag.makeCode()
             doorc = component.proxy(door)
-            doorc.setPassword(newpass)
-            table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
+            print("Setting door password.")
+            success = doorc.setPassword(newpass)
+            if success == "Password Changed" then
+                print("Door password set successfully.")
+                table.insert(db["pairs"], {door=door, mag=mag, name=name, password=newpass})
+            else:
+                print("Failed to set door password, please break the door[s] and replace them to clear the password.")
+                os.sleep(2)
         end
     end
     osmag.saveDB(db)
@@ -159,8 +165,8 @@ local function removeDoor()
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door you want to remove.")
     if door ~= "c" then
-        doorc = component.proxy(ldb["pairs"][door]["door"])
-        doorc.setPassword(ldb["pairs"][door]["password"], "")
+        doorinfo = db["pairs"][door]
+        m.tryToDeleteDoor(doorinfo["address"], doorinfo["password"])
         table.remove(ldb["pairs"], door)
     end
     osmag.saveDB(ldb)

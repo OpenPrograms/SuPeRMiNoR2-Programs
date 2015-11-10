@@ -63,6 +63,15 @@ function m.updateDB()
     m.saveDB(db)
 end
 
+function killDoor(address, password)
+	local door = component.proxy(address)
+    door.setPassword(password, "")
+end
+
+function m.tryToDeleteDoor(address, password)
+	pcall(killDoor, address, password)
+end
+
 function m.log(logdata)
     local f = io.open(logfile, "a")
     f:write(logdata .. "\n")

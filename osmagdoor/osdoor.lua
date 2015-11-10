@@ -157,6 +157,8 @@ local function removeDoor()
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door you want to remove.")
     if door ~= "c" then
+        doorc = component.proxy(ldb["pairs"][door]["door"])
+        doorc.setPassword(ldb["pairs"][door]["password"], "")
         table.remove(ldb["pairs"], door)
     end
     saveDB(ldb)

@@ -78,7 +78,7 @@ end
 local function checkCard(UUID, carddata)
     db = loadDB()
 
-    if carddata["t"] == "temp" then 
+    if carddata["type"] == "temp" then 
         currenttime = os.time()
         if currenttime > carddata["e"] then
             return false

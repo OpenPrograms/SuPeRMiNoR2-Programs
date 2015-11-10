@@ -15,27 +15,6 @@ logfile = "/authlog.txt"
 
 writer = component.os_cardwriter
 
-function osmag.loadDB()
-    if filesystem.exists(dbfile) == false then
-        ldb = {pairs = {}, registered = {}, new = {}}
-    else
-        f = filesystem.open(dbfile, "rb")
-        rdb = f:read(filesystem.size(dbfile))
-        ldb = serialization.unserialize(rdb)
-        f:close()
-    end
-    return ldb
-end
-
-function osmag.saveDB(ldb)
-    f = io.open(dbfile, "wb")
-    f:write(serialization.serialize(ldb))
-    f:close()
-end
-
-rdb = osmag.loadDB()
-osmag.saveDB(rdb)
-
 local function log(logdata)
     f = io.open(logfile, "a")
     f:write(logdata.."\n")

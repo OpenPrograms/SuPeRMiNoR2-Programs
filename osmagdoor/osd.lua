@@ -52,6 +52,7 @@ function updateDB()
             if currenttime > carddata["expire"] then
                 print("Removing expired card: "..card["title"])
                 table.remove(db["registered"], i)
+            end
         end
     end
 
@@ -61,7 +62,7 @@ end
 
 function log(logdata)
     f = io.open(logfile, "a")
-    f:write(logdata)
+    f:write(logdata .. "\n")
     f:close()
 end
 
@@ -108,7 +109,7 @@ end
 function check(maddr, d, username)
     if maddr == d["mag"] then 
         toggleDoor(d)
-        log("Door ".. d["name"] .. " Opened by " .. username .. " card")
+        log(username .. " Opened Door " .. d["name"])
     end
 end
 
@@ -119,7 +120,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
         if d["code"] == carddata["code"] then
             table.insert(db["registered"], {username=playerName, uuid=UUID, title=d["title"], type=d["type"]})
-            print("Registered card ".. UUID .. " to user ".. playerName)
+            log("Registered card ".. UUID .. " to user ".. playerName)
             table.remove(db["new"], i)
             saveDB(db)
         end

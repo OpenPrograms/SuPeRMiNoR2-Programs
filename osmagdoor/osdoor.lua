@@ -84,7 +84,7 @@ local function registerCard()
 
         carddata = serialization.serialize(carddata)
         writer.write(carddata, title, true)
-        table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"]})
+        table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
         print("The card will be registered to the user who swipes it next.")
         saveDB(db)
         os.sleep(1)

@@ -47,9 +47,9 @@ function updateDB()
     --Remove expired cards
     print("Removing expired cards...")
     currenttime = os.time()
-    for i, card in pairs(db["registered"]) do
+    for i, card in ipairs(db["registered"]) do
         if card["type"] == "temp" then
-            if currenttime > carddata["expire"] then
+            if currenttime > card["expire"] then
                 print("Removing expired card: "..card["title"])
                 table.remove(db["registered"], i)
             end

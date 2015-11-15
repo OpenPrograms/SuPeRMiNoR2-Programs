@@ -61,8 +61,8 @@ local function registerCard()
             carddata["expire"] = expiretime
         end
 
-        carddata = serialization.serialize(carddata)
-        writer.write(carddata, title, true)
+        cardstring = serialization.serialize(carddata)
+        writer.write(cardstring, title, true)
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
         print("The card will be registered to the user who swipes it next.")
         osmag.saveDB(db)
@@ -161,7 +161,7 @@ local function removeCard()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
     for i, d in ipairs(ldb["registered"]) do
-        superlib.addItem(d["type"] .. " | " .. d["title"] .. " (" ..d["username"] .. ", " .. d["uuid"]..")", i)
+        superlib.addItem(d["title"] .. " (" ..d["username"] .. ", " .. d["uuid"]..")", i)
     end
     card = superlib.runMenu("Please select the card you want to remove.")
     if card ~= "c" then

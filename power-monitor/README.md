@@ -10,6 +10,6 @@ Config file located at: `/etc/power-monitor.config`
 1. EnderIO Capacitors
 2. Thermal Expansion Cells
 3. IC2 MFSU / MFE / CESU / BatBox
-4. Mekanism Storge
+4. Mekanism Storage
 5. BR Turbines and Activly cooled reactors (Through [autopid](https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/autopid))
 6. RFMeters

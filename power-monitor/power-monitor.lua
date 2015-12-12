@@ -139,7 +139,7 @@ local function scan()
   total_capacity = 0
   for address, ctype in component.list() do
     for stype in pairs(supported_types) do --Section for standard power storage blocks.
-      if stype == ctype then
+      if stype["id"] == ctype then
         t = component.proxy(address)
         ltype = supported_types[stype]["type"]
         name = supported_types[stype]["name"]

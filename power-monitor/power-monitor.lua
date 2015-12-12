@@ -78,11 +78,11 @@ end
 local function readCapacity(proxy, ltype)
   capacity = 0
    
-  if ltype == 1 then --FOr TE Blocks
+  if ltype == 1 then --For IC2
     capacity = proxy.getCapacity()
   end
    
-  if ltype == 2 then --For IC2 and older mek blocks
+  if ltype == 2 then --For TE and older mek blocks
     capacity = proxy.getMaxEnergyStored()
   end
 

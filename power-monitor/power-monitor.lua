@@ -200,9 +200,10 @@ tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"},
 tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
 mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
 name="CESU"}, batbox={type=1, name="BatBox"}, 
-capacitor_bank={type=2, name="Capacitor Bank"}, advanced_energy_cube={type=2, name="Mekanism Block"},
-basic_energy_cube={type=2, name="Mekanism Block"}, elite_energy_cube={type=2, name="Mekanism Block"},
-ultimate_energy_cube={type=2, name="Mekanism Block"}, creative_energy_cube={type=2, name="Mekanism Block"}}
+capacitor_bank={type=2, name="Capacitor Bank"}, advanced_energy_cube={type=2, name="Advanced Energy Cube"},
+basic_energy_cube={type=2, name="Basic Energy Cube"}, elite_energy_cube={type=2, name="Elite Enegy Cube"},
+ultimate_energy_cube={type=2, name="Ultimate Energy Cube"}, creative_energy_cube={type=2, name="Creative Energy Cube"},
+induction_matrix={type=2, name="Induction Matrix"}}
  
 --Program
 term.clear()

@@ -138,11 +138,11 @@ local function scan()
   slist = {rfmeter={}}
   total_capacity = 0
   for address, ctype in component.list() do
-    for stype in pairs(supported_types) do --Section for standard power storage blocks.
+    for _, stype in pairs(supported_types) do --Section for standard power storage blocks.
       if stype["id"] == ctype then
         t = component.proxy(address)
-        ltype = supported_types[stype]["type"]
-        name = supported_types[stype]["name"]
+        ltype = stype["type"]
+        name = stype["name"]
         c = readCapacity(t, ltype)
         mlist[unit_id] = {address=address, proxy=t, type=ltype, name=name, capacity=c} --New feature: Store max capacity in database to avoid reading it each loop.
                                                                               --This will slow down updating of things like capacitors which can change their size.

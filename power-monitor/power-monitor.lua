@@ -138,7 +138,7 @@ local function scan()
   slist = {rfmeter={}}
   total_capacity = 0
   for address, ctype in component.list() do
-    for _, stype in pairs(supported_types) do --Section for standard power storage blocks.
+    for sindex, stype in pairs(supported_types) do --Section for standard power storage blocks.
       if stype["id"] == ctype then
         t = component.proxy(address)
         ltype = stype["type"]

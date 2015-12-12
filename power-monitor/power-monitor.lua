@@ -77,20 +77,18 @@ end
 
 local function readCapacity(proxy, ltype)
   capacity = 0
-  stored = 0
    
-  if ltype == 1 then
+  if ltype == 1 then --FOr TE Blocks
     capacity = proxy.getCapacity()
   end
    
-  if ltype == 2 then
-    capacity = proxy.getMaxEnergy()
+  if ltype == 2 then --For IC2 and older mek blocks
+    capacity = proxy.getMaxEnergyStored()
   end
 
-  -- if ltype == 3 then
-  --   pts = proxy.getMaxEnergyStored()
-  --   capacity = pts * .4 --J to RF conversion
-  -- end
+  if ltype == 3 then --For newer mekanism blocks
+  	capacity = proxy.getMaxEnergy()
+  end
 
   return capacity
 end
@@ -103,13 +101,12 @@ local function readStored(proxy, ltype)
   end
    
   if ltype == 2 then
-    stored = proxy.getStored()
+    stored = proxy.getEnergyStored()
   end
 
-  -- if ltype == 3 then
-  --   pts = proxy.getEnergyStored()
-  --   stored = pts * .4 --J to RF conversion
-  -- end
+  if ltype == 3 then
+  	stored = proxy.getStored()
+  end
 
   return stored
 end
@@ -194,16 +191,23 @@ local function calculate_rate(last, current)
   return tostring(rate)
 end  
 
-supported_types = {tile_thermalexpansion_cell_basic_name={type=2, name="Leadstone Cell"}, 
-tile_thermalexpansion_cell_hardened_name={type=2, name="Hardened Cell"}, 
-tile_thermalexpansion_cell_reinforced_name={type=2, name="Redstone Cell"}, 
-tile_thermalexpansion_cell_resonant_name={type=2, name="Resonant Cell"}, 
-mfsu={type=1, name="MFSU"}, mfe={type=1, name="MFE"}, cesu={type=1, 
-name="CESU"}, batbox={type=1, name="BatBox"}, 
-capacitor_bank={type=2, name="Capacitor Bank"}, advanced_energy_cube={type=2, name="Advanced Energy Cube"},
-basic_energy_cube={type=2, name="Basic Energy Cube"}, elite_energy_cube={type=2, name="Elite Enegy Cube"},
-ultimate_energy_cube={type=2, name="Ultimate Energy Cube"}, creative_energy_cube={type=2, name="Creative Energy Cube"},
-induction_matrix={type=2, name="Induction Matrix"}}
+supported_types = {
+{id="tile_thermalexpansion_cell_basic_name", type=2, name="Leadstone Cell"}, 
+{id="tile_thermalexpansion_cell_hardened_name", type=2, name="Hardened Cell"},
+{id="tile_thermalexpansion_cell_reinforced_name", type=2, name="Redstone Cell"},
+{id="tile_thermalexpansion_cell_resonant_name", type=2, name="Resonant Cell"},
+{id="mfsu", type=1, name="MFSU"},
+{id="mfe", type=1, name="MFE"},
+{id="cesu", type=1, name="CESU"},
+{id="batbox", type=1, name="BatBox"},
+{id="capacitor_bank", type=2, name="Capacitor Bank"},
+{id="basic_energy_cube", type=3, name="Basic Energy Cube"},
+{id="advanced_energy_cube", type=3, name="Advanced Energy Cube"},
+{id="elite_energy_cube", type=3, name="Elite Enegy Cube"},
+{id="ultimate_energy_cube", type=3, name="Ultimate Energy Cube"},
+{id="creative_energy_cube", type=3, name="Creative Energy Cube"},
+{id="induction_matrix", type=2, name="Induction Matrix"}
+}
  
 --Program
 term.clear()

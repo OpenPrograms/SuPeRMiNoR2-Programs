@@ -1,6 +1,12 @@
 --Taken from https://github.com/alekso56/ComputercraftLua/tree/master/treasure/dan200/alongtimeago
 local component = require("component")
+local term = require("term")
+local filesystem = require("filesystem")
 local gpu = component.gpu
+
+local f = filesystem.open("/usr/movies/1.txt", "rb")
+local filmText = f:read("*a")
+f:close()
 
 local function iterator()
 	return coroutine.wrap( function()

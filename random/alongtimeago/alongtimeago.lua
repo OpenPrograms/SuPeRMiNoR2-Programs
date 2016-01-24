@@ -4,8 +4,9 @@ local term = require("term")
 local filesystem = require("filesystem")
 local gpu = component.gpu
 
-local f = filesystem.open("/usr/movies/1.txt", "rb")
-local filmText = f:read("*a")
+local moviefile = "/usr/movies/1.txt"
+local f = filesystem.open(moviefile, "rb")
+local filmText = f:read(filesystem.size(moviefile))
 f:close()
 
 local function iterator()

@@ -1,5 +1,6 @@
 --Taken from https://github.com/alekso56/ComputercraftLua/tree/master/treasure/dan200/alongtimeago
 local component = require("component")
+local term = require("term")
 local gpu = component.gpu
 
 local m1 = loadfile("/usr/movies/1.lua")

@@ -1,0 +1,5 @@
+---------------------------------
+-- SuPeRMiNoR2
+-- https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/place
+-- License: MIT https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/blob/master/LICENSE.txt
+---------------------------------

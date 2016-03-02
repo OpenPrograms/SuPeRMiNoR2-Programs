@@ -13,12 +13,15 @@ local turbines = 0
 local reactors = 0
 
 autopid.help = [[
-Usage: autopid [option] files or ids...
-  option     what it does
-  [none]       shows this
-  --scan (-s)      scans and starts all controllers
+Usage: autopid [option] [file or id to operate on]
+
+Machine startup / shutdown:
+  -s, --scan       scans and starts all controllers
   --shutdown       removes everything from pid and stops it
-  --restart (-r)   deactivate all, remove from pid, then scan again. (add new things?)
+  -r, --restart    deactivate all, remove from pid, then scan again. (add new things?)
+
+Miscellaneous:
+  --help           Show this help message and exit
 ]]
 
 local function loadFile(file, cid, address, type)

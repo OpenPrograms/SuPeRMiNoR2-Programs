@@ -10,17 +10,6 @@ turbines = 0
 reactors = 0
 
 local function main(parameters, options)
-  if #options == 0 then
-    print([[
-Usage: autopid [option] files or ids...
-  option     what it does
-  [none]       shows this
-  --scan (-s)      scans and starts all controllers
-  --shutdown       removes everything from pid and stops it
-  --restart (-r)   deactivate all, remove from pid, then scan again. (add new things?)
-]])
-  end
-  
   if options.scan or options.s then
     print("Scanning for machines.")
     autopid.scan()
@@ -40,6 +29,11 @@ Usage: autopid [option] files or ids...
     --runMonitor(loadedControllers, loadedIDs)
     t = 1
   end
+
+  else then
+    print(autopid.help)
+  end
+  
 end
 
 --parseing parameters and executing main function

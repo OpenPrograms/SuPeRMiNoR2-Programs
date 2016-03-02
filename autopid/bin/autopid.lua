@@ -29,7 +29,7 @@ local function main(parameters, options)
     --runMonitor(loadedControllers, loadedIDs)
     t = 1
 
-  else then
+  else
     print(autopid.help)
   end
 

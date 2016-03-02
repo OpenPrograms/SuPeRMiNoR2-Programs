@@ -13,7 +13,7 @@ local turbines = 0
 local reactors = 0
 
 autopid.help = [[
-Usage: autopid [option] [file or id to operate on]
+Usage: autopid [ -option ] [file or id to operate on]
 
 Machine startup / shutdown:
   -s, --scan       scans and starts all controllers

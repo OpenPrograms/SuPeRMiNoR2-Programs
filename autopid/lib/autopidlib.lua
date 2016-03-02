@@ -1,10 +1,10 @@
-local version = "0.1.2"
+local version = "0.1.3"
 
 local autopid = {} --Library 
 
 local pid = require("pid")
 local component = require("component")
-local superlib = require("superlib")
+--local superlib = require("superlib")
 local shell = require("shell")
 
 local controllers = {}

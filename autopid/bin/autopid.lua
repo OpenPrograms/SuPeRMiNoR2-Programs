@@ -1,8 +1,8 @@
-local version = "0.1.2.1"
+local version = "0.1.3"
 
 local pid = require("pid")
 local component = require("component")
-local superlib = require("superlib")
+--local superlib = require("superlib")
 local shell = require("shell")
 local autopid = require("autopidlib")
 
@@ -33,7 +33,7 @@ local function main(parameters, options)
   else then
     print(autopid.help)
   end
-  
+
 end
 
 --parseing parameters and executing main function

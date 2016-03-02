@@ -28,7 +28,6 @@ local function main(parameters, options)
     --operation "debug" displays the given controllers
     --runMonitor(loadedControllers, loadedIDs)
     t = 1
-  end
 
   else then
     print(autopid.help)

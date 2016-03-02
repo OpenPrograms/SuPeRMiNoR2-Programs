@@ -25,7 +25,7 @@ local function startup()
   end
 end
 
-status, perror = pcall(startup())
+status, perror = pcall(startup)
 if status == false then
   print("[autopid] Unknown error while running the startup script!")
   print(perror)

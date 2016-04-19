@@ -1,1 +1,0 @@
-The example programs will be overwritten if you oppm update, copy them to a different file before you edit.

@@ -105,7 +105,7 @@ local function readStored(proxy, ltype)
   end
 
   if ltype == 3 then
-  	stored = proxy.getStored()
+  	stored = proxy.getEnergy()
   end
 
   return stored
@@ -206,7 +206,7 @@ supported_types = {
 {id="elite_energy_cube", type=3, name="Elite Enegy Cube"},
 {id="ultimate_energy_cube", type=3, name="Ultimate Energy Cube"},
 {id="creative_energy_cube", type=3, name="Creative Energy Cube"},
-{id="induction_matrix", type=2, name="Induction Matrix"}
+{id="induction_matrix", type=3, name="Induction Matrix"}
 }
  
 --Program
@@ -351,5 +351,4 @@ while true do
   else
     os.sleep(config.loop_speed)
   end
-
 end

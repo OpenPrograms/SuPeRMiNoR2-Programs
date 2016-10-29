@@ -145,7 +145,7 @@ function m.rendertable(tabledata)
     for col, value in ipairs(row) do
       io.write("| " .. text.padRight(tostring(value), m[col] + 1))
     end
-    io.write("\n")
+    io.write("|\n")
     titlebar = false
   end
 

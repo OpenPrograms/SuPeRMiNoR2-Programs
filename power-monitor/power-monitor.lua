@@ -2,8 +2,8 @@
 --Source  https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/power-monitor
 --License https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/blob/master/LICENSE.txt
 
-local version = "1.5.9"
-local supported_config_version = "0.7"
+local version = "1.6.0"
+local supported_config_version = "0.8"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/etc/power-monitor.config"
 
@@ -29,23 +29,6 @@ comma = superlib.format_comma
 pretty = superlib.pretty
 
 local internet = require("internet")
-
-print("Checking for updates...")
-superlib_version = superlib.getVersion()
-versions = superlib.checkVersions()
-
-if versions == nil then 
-  print("Error checking versions.")
-else
-  if versions["superlib"] ~= superlib_version then 
-    print("An update is available for superlib")
-    os.sleep(2) 
-  end
-  if versions["powermonitor"] ~= version then 
-    print("An update is available for power-monitor")
-    os.sleep(2) 
-  end
-end
 
 if fs.exists(config_path) == false then
   print("Downloading config file to "..config_path)
@@ -120,7 +103,7 @@ local function getPower()
     ltype = mlist[uid]["type"]
     lname = mlist[uid]["name"]
     c = mlist[uid]["capacity"]
-    -- c, s = readPower(proxy, ltype) --Switching to reading just stored, and useing the db for max capacity (Will slow down updates of capacitor max energy changes)
+    -- c, s = readPower(proxy, ltype) --Switching to reading just stored, and useing the db for max capacity (Will slow down updates of capacitor max energy changes, make the loop run faster)
     s = readStored(proxy, ltype)
     if s > c then --Stupid IC2 Bug, full ic2 blocks read over their capacity sometimes
         s = c
@@ -177,11 +160,11 @@ local function scan()
   return mlist, total_capacity, total_units
 end
 
-local function buffer(text)
+local function buffer(text) --Currently unused, though I want to use it again.
   text_buffer = text_buffer .. text .. "\n"
 end
 
-local function calculate_rate(last, current)
+local function calculate_rate(last, current) --Calculates the flow of RF in or out of storage
   rate = current - last
   if config.estimate_ticks == true then
     ticks_per_loop = config.loop_speed * config.ticks_scaler
@@ -209,40 +192,31 @@ supported_types = {
 {id="induction_matrix", type=3, name="Induction Matrix"}
 }
  
---Program
+--Startup
 term.clear()
-print("SuPeRMiNoR2's Power Monitor version: "..version)
+print("Loading SuPeRMiNoR2's Power Monitor")
+print("Version: "..version)
 print("Applying scale of " .. config.scale)
 w, h = gpu.maxResolution()
-gpu.setResolution(w / config.scale, h / config.scale)
- 
+gpu.setResolution(w / config.scale, h / config.scale) 
 print("Scanning for energy storage units")
-if glasses_connected then
-  glasses_text.setText("Scanning.")
-end
 mlist, total_capacity, total_units = scan()
-
-if glasses_connected then
-  glasses_text.setText("Found "..total_units)
-  os.sleep(1)
-end
-
 print("Found ".. total_units .. " storage unit[s]")
 print("Total capacity detected: "..pretty(total_capacity))
 print("Press ctrl + alt + c to close the program")
 print("Waiting startup delay of: "..config.startup_delay)
 os.sleep(tonumber(config.startup_delay))
 
+--Initalize rate calculators
 total_last_amount = false
 total_rate = 0
 
+--Begin main loop
 while true do
-  text_buffer = ""
-
-  controllers = autopid.dump()
+  controllers = autopid.dump() --Get a list of devices from autopid
 
   success, powerdb, total_stored = pcall(getPower)
-  if success == false then
+  if success == false then --If this fails, that means a power storage device was removed, so I rescan the list of devices.
     mlist, total_capacity, total_units = scan()
     powerdb, total_stored = getPower()
   end
@@ -270,16 +244,7 @@ while true do
     if 
       total <= 25 then glasses_text.setColor(0.96,0.07,0.09,1) --glasses_text.setScale(2)
     end
-    glasses_buffer = "["..total_units.."] " .. total.."% ~" .. pretty(total_rate) .. "/t"
-
-    if config.glasses_banner ~= false then
-      glasses_buffer = config.glasses_banner .. glasses_buffer
-    end
-    glasses_text.setText(glasses_buffer)
-  end
-
-  if config.banner ~= false then
-    buffer(config.banner)
+    glasses_text.setText(total.."% " .. pretty(total_rate) .. "/t")
   end
 
   powerdata = {{"ID", "Level", "Type"}}

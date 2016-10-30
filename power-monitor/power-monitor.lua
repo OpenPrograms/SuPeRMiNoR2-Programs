@@ -327,7 +327,7 @@ while true do
       print("")
   end
   if #turbinedata > 1 then
-      print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
+      print(string.format("Turbine Total: %s RF/t", pretty(total_turbine_rate)))
       superlib.rendertable(turbinedata)
       print("")
   end
@@ -337,9 +337,5 @@ while true do
       print("")
   end
 
-  if total_units == 0 then
-    os.sleep(10)
-  else
-    os.sleep(config.loop_speed)
-  end
+  os.sleep(config.loop_speed)
 end

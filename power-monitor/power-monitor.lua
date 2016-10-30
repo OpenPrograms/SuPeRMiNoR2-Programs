@@ -282,12 +282,6 @@ while true do
     buffer(config.banner)
   end
 
-  term.clear()
-
-  --buffer("Currently monitoring ".. total_units .. " units") --This seems somewhat useless now
-
-  print(text_buffer) text_buffer = ""
-
   powerdata = {{"ID", "Level", "Type"}}
   for lid in pairs(powerdb) do
       table.insert(powerdata, {lid, percent_gen_db(powerdb, lid), powerdb[lid]["name"]})
@@ -320,8 +314,10 @@ while true do
       table.insert(rfmeterdata, {oob.name, oob.proxy.getAvg() .. " RF/t", oob.proxy.getCounterValue() .. "RF"})
   end
 
+  term.clear() --Until I add text buffering, this is the best place for the term clear.
+
   if #powerdata > 1 then
-      print(string.format("Storage Total: %s%%, Total Capacity: %s/%s,  Flow: %s RF/t", total, pretty(total_storage), pretty(total_capacity), pretty(total_rate)))
+      print(string.format("Storage Total: %s%%, Flow: %s RF/t", total, pretty(total_rate)))
       superlib.rendertable(powerdata)
       print("")
   end

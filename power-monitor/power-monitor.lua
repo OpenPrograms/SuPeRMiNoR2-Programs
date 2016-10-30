@@ -324,6 +324,7 @@ while true do
       print(string.format("Storage Total: %s%%, Total Capacity: %s/%s,  Flow: %s RF/t", total, pretty(total_storage), pretty(total_capacity), pretty(total_rate)))
       superlib.rendertable(powerdata)
       print("")
+  end
   if #reactordata > 1 then
       print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
       superlib.rendertable(reactordata)

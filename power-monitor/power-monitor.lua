@@ -284,67 +284,61 @@ while true do
 
   term.clear()
 
-  buffer("Currently monitoring ".. total_units .. " units")
+  --buffer("Currently monitoring ".. total_units .. " units") --This seems somewhat useless now
 
   print(text_buffer) text_buffer = ""
 
+  powerdata = {{"ID", "Level", "Type"}}
+  for lid in pairs(powerdb) do
+      table.insert(powerdata, {lid, percent_gen_db(powerdb, lid), powerdb[lid]["name"]})
+      --middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
+      --if config.display_units == false then output = first_half .. second_half end --Possibly add this back later, I don't want to right now though, see middle above this comment
+      --if config.display_units == true then output = first_half .. middle .. second_half end
+  end
+
   total_reactor_rate = 0
   total_turbine_rate = 0
-
   reactordata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
   turbinedata = {{"ID", "Active", "Coils", "Speed", "Energy Gen", "Steam", "Inductor Status"}}
 
-    for cid, cobj in pairs(controllers) do
-        local status = cobj.status
-        if cobj.type == "br_reactor" and status.activeCooling then
-            table.insert(reactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-              round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
-            total_reactor_rate = total_reactor_rate + status.rate
-        end
-        if cobj.type == "br_turbine" then
-            table.insert(turbinedata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
-              pad(pretty(status.energyProduced), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
-            total_turbine_rate = total_turbine_rate + status.energyProduced
-        end
-    end
+  for cid, cobj in pairs(controllers) do
+      local status = cobj.status
+      if cobj.type == "br_reactor" and status.activeCooling then
+          table.insert(reactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
+            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
+          total_reactor_rate = total_reactor_rate + status.rate
+      end
+      if cobj.type == "br_turbine" then
+          table.insert(turbinedata, {string.sub(cid, 8), status.active, status.inductor, round(status.rotorSpeed, 0) .. " RPM",
+            pad(pretty(status.energyProduced), 5) .. " RF/t", status.enoughSteam, status.inductor_msg})
+          total_turbine_rate = total_turbine_rate + status.energyProduced
+      end
+  end
 
-    rfmeterdata = {{"Name", "Average Flow", "Total Counter"}}
-    for oid, oob in pairs(slist["rfmeter"]) do
-        table.insert(rfmeterdata, {oob.name, oob.proxy.getAvg() .. " RF/t", oob.proxy.getCounterValue() .. "RF"})
-    end
+  rfmeterdata = {{"Name", "Average Flow", "Total Counter"}}
+  for oid, oob in pairs(slist["rfmeter"]) do
+      table.insert(rfmeterdata, {oob.name, oob.proxy.getAvg() .. " RF/t", oob.proxy.getCounterValue() .. "RF"})
+  end
 
-    if #reactordata > 1 then
-        print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
-        superlib.rendertable(reactordata)
-        print("")
-    end
-
-    if #turbinedata > 1 then
-        print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
-        superlib.rendertable(turbinedata)
-        print("")
-    end
-
-    if #rfmeterdata > 1 then
-        print("RF Meters")
-        superlib.rendertable(rfmeterdata)
-        print("")
-    end
-
-    buffer("Total".. ": ".. total .." [".. pretty(total_stored) .. "/" .. pretty(total_capacity) .."] Rate: ~".. pretty(total_rate).."/t")
-  
-    for lid in pairs(powerdb) do
-        first_half = superlib.pad("#"..lid.. ": ".. percent_gen_db(powerdb, lid), 10)
-        middle = superlib.pad(" [".. powerdb[lid]["stored"] .. "/" .. powerdb[lid]["capacity"] .. "] ", 30)
-        second_half = " ["..powerdb[lid]["name"].."]"
-
-        if config.display_units == false then output = first_half .. second_half end
-        if config.display_units == true then output = first_half .. middle .. second_half end
-
-        buffer(output)
-    end
-
-  print(text_buffer)
+  if #powerdata > 1 then
+      print(string.format("Storage Total: %s%%, Total Capacity: %s/%s,  Flow: %s RF/t", total, pretty(total_storage), pretty(total_capacity), pretty(total_rate)))
+      superlib.rendertable(powerdata)
+      print("")
+  if #reactordata > 1 then
+      print(string.format("Reactors Total: %s mB/t", round(total_reactor_rate, 0)))
+      superlib.rendertable(reactordata)
+      print("")
+  end
+  if #turbinedata > 1 then
+      print(string.format("\nTurbine Total: %s RF/t", pretty(total_turbine_rate)))
+      superlib.rendertable(turbinedata)
+      print("")
+  end
+  if #rfmeterdata > 1 then
+      print("RF Meters")
+      superlib.rendertable(rfmeterdata)
+      print("")
+  end
 
   if total_units == 0 then
     os.sleep(10)

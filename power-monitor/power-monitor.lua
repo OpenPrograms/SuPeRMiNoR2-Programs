@@ -2,7 +2,7 @@
 --Source  https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/tree/master/power-monitor
 --License https://github.com/OpenPrograms/SuPeRMiNoR2-Programs/blob/master/LICENSE.txt
 
-local version = "1.6.1"
+local version = "1.6.2"
 local supported_config_version = "0.9"
 local default_config_url = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/power-monitor/power-monitor.config"
 local config_path = "/etc/power-monitor.config"
@@ -215,7 +215,11 @@ total_rate = 0
 while true do
   controllers = autopid.dump() --Get a list of devices from autopid
 
-  success, powerdb, total_stored = pcall(getPower)
+  success, temp_powerdb, temp_total_stored = pcall(getPower)
+  if success == true then
+    powerdb = temp_powerdb
+    total_stored = temp_total_stored
+  end
   if success == false and config.nokeepalive == false then --If this fails, that means a power storage device was removed, so I rescan the list of devices.
     mlist, total_capacity, total_units = scan()
     powerdb, total_stored = getPower()

@@ -123,6 +123,7 @@ function m.register(name)
   -- end
   -- return false
 end
+end
 
 function m.server()
   print("Starting DNS Server")

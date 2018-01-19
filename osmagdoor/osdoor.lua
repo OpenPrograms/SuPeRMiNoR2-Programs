@@ -76,7 +76,7 @@ local function registerDoor()
     freeMags = {}
 
     for address, ctype in component.list() do
-        if ctype == "os_door" then
+        if ctype == "os_door" or ctype "os_doorcontroller" then
             reg = false
             for raddr in ipairs(ddb["pairs"]) do
                 if address == ddb["pairs"][raddr]["door"] then
@@ -190,7 +190,7 @@ local function menus()
     superlib.addItem("Remove a door", "rd")
     superlib.addItem("Remove a card", "rc")
     superlib.addItem("Clear waiting cards", "cc")
-    key = superlib.runMenu("Super Security System [Beta]")
+    key = superlib.runMenu("OpenSecurity Door Controller")
 
     if key == "r" then
         registerCard()

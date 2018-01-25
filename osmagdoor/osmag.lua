@@ -17,7 +17,8 @@ end
 
 function m.loadDB()
     if filesystem.exists(dbfile) == false then
-        ldb = {pairs = {}, registered = {}, new = {}}
+        ldb = {pairs = {}, registered = {}, new = {}, groups = {}}
+        table.insert[ldb["groups"], {"gid" = 1, "name" = "Default Group"}]
     else
         f = io.open(dbfile, "rb")
         rdb = f:read("*a")
@@ -49,6 +50,10 @@ function m.updateDB()
             doorc.setPassword(newpass)
             print("[DBUpdate] Added password to door "..pair["name"])
         end
+        if not pair["gid"] then
+            db["pairs"][i]["gid"] = 1
+            print("[DBUpdate] Added default group to door "..pair["name"])
+        end
     end
 
     --Remove expired cards
@@ -61,7 +66,18 @@ function m.updateDB()
                 table.remove(db["registered"], i)
             end
         end
+        if not card["groups"] then
+            db["registered"][i]["groups"] = {}
+            table.insert(db["registered"][i]["groups"], 1)
+            print("[DBUpdate] Added default group to card "..card["title"])
+        end
     end
+
+    --Add group structure if it doesn't exist
+    print("Adding default group structure")
+    if not db["groups"] then
+        db["groups"] = {}
+        table.insert(ldb["groups"], {"gid" = 1, "name" = "Default Group"})
 
     print("Database update complete.")
     m.saveDB(db)

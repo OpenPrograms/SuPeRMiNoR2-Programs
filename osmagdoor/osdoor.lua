@@ -40,21 +40,21 @@ local function registerCard()
     db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
+    superlib.addItem("Cancel", "c")
     superlib.addItem("Full Access Card", "full")
     superlib.addItem("Temporary Card", "temp")
-    superlib.addItem("Cancel", "c")
     choice = superlib.runMenu("Select new card type")
     if choice ~= "c" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
         term.clear()
-        title = getUser("Enter the title for the card: ")
+        title = getUser("Enter the name of the user who will use this card: ")
         if choice == "full" then
             carddata["type"] = "full"
         elseif choice == "temp" then
             carddata["type"] = "temp"
             ctime = os.time()
-            days = getUser("Enter the amount of minecraft days you want the card to last: ")
+            days = getUser("Enter the amount of minecraft days you want the card to last (currently broken): ")
             days = tonumber(days)
             extratime = days * 86400
             expiretime = ctime + extratime
@@ -62,13 +62,21 @@ local function registerCard()
         end
 
         cardstring = serialization.serialize(carddata)
+        print("Writing data to card...")
         writer.write(cardstring, title, true)
+        print("Adding card to database...")
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
-        print("The card will be registered to the user who swipes it next.")
+        print("Saving database....")
         osmag.saveDB(db)
         os.sleep(1)
     end
 end
+
+local function groupEditor()
+    db = osmag.loadDB()
+    term.clear()
+    superlib.addItem("Cancel", "c")
+    
 
 local function registerDoor()
     ddb = osmag.loadDB()

@@ -78,6 +78,7 @@ function m.updateDB()
     if not db["groups"] then
         db["groups"] = {}
         table.insert(ldb["groups"], {gid = 1, name = "Default Group"})
+    end
 
     print("Database update complete.")
     m.saveDB(db)

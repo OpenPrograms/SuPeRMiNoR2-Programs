@@ -18,7 +18,7 @@ end
 function m.loadDB()
     if filesystem.exists(dbfile) == false then
         ldb = {pairs = {}, registered = {}, new = {}, groups = {}}
-        table.insert(ldb["groups"], {"gid" = 1, "name" = "Default Group"})
+        table.insert(ldb["groups"], {gid = 1, name = "Default Group"})
     else
         f = io.open(dbfile, "rb")
         rdb = f:read("*a")
@@ -77,7 +77,7 @@ function m.updateDB()
     print("Adding default group structure")
     if not db["groups"] then
         db["groups"] = {}
-        table.insert(ldb["groups"], {"gid" = 1, "name" = "Default Group"})
+        table.insert(ldb["groups"], {gid = 1, name = "Default Group"})
 
     print("Database update complete.")
     m.saveDB(db)

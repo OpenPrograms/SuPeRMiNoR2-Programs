@@ -140,16 +140,21 @@ function groupEditor(db)
         superlib.addItem("Cancel", "c")
         superlib.addItem("Delete Group", "d")
         superlib.addItem("Rename Group", "r")
-        e = superlib.runMenu("Edit Group: "..db["groups"][i]["name"])
+        e = superlib.runMenu("Edit Group: "..db["groups"][c]["name"])
         if e == "c" then
             return db
         elseif e == "d" then
-            table.remove(db["groups"], i)
+            if db["groups"][c]["gid"] == 1 then
+                print("Sorry, you can't remove the default group")
+                os.sleep(1)
+                return db
+            end
+            table.remove(db["groups"], c)
             return db
         elseif e == "r" then
             term.clear()
             newname = getUser("Please enter the new group name: ")
-            db["groups"][i]["name"] = newname
+            db["groups"][c]["name"] = newname
             return db
         end
     end  

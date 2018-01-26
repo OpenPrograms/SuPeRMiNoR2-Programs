@@ -77,11 +77,11 @@ local function groupMenu()
     while true do
         term.clear()
         superlib.clearMenu()
-        superlib.addItem("Return to main menu saving changes", "s")
+        superlib.addItem("Exit and Save", "s")
         superlib.addItem("Edit Groups", "g")
         superlib.addItem("Edit door group", "d")
         superlib.addItem("Edit card group", "c")
-        superlib.addItem("Return to main menu discarding changes", "discard")
+        superlib.addItem("Exit and Discard", "discard")
         choice = superlib.runMenu("Group Menu")
         if choice == "s" then
             osmag.saveDB(db)
@@ -146,6 +146,7 @@ function groupEditor(db)
             return db
         elseif e == "d" then
             if db["groups"][c]["gid"] == 1 then
+                term.clear()
                 print("Sorry, you can't remove the default group")
                 os.sleep(1)
                 return db

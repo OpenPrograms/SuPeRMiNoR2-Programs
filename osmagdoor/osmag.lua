@@ -40,8 +40,10 @@ end
 
 function m.updateDB()
     local db = m.loadDB()
-    print("Database updater scanning for things that need to be fixed...")
+    print("[DBUpdate] Database update starting...")
 
+    --Make sure that all doors have passwords and groups set
+    --This allows updating from old databases that didn't have those features
     for i, pair in ipairs(db["pairs"]) do
         if not pair["password"] then 
             newpass = osmag.makeCode()
@@ -57,30 +59,29 @@ function m.updateDB()
     end
 
     --Remove expired cards
-    print("Removing expired cards...")
     currenttime = os.time()
     for i, card in ipairs(db["registered"]) do
         if card["type"] == "temp" then
             if currenttime > card["expire"] then
-                print("Removing expired card: "..card["title"])
+                print("[DBUpdate] Removing expired card: "..card["title"])
                 table.remove(db["registered"], i)
             end
         end
         if not card["groups"] then
             db["registered"][i]["groups"] = {}
-            table.insert(db["registered"][i]["groups"], 1)
+            table.insert(db["registered"][i]["groups"], {1})
             print("[DBUpdate] Added default group to card "..card["title"])
         end
     end
 
     --Add group structure if it doesn't exist
-    print("Adding default group structure")
     if not db["groups"] then
+        print("[DBUpdate]  Adding default group structure...")
         db["groups"] = {}
         table.insert(ldb["groups"], {gid = 1, name = "Default Group"})
     end
 
-    print("Database update complete.")
+    print("[DBUpdate] Database update complete.")
     m.saveDB(db)
 end
 

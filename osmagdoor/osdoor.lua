@@ -54,7 +54,7 @@ local function registerCard()
         elseif choice == "temp" then
             carddata["type"] = "temp"
             ctime = os.time()
-            days = getUser("Enter the amount of minecraft days you want the card to last (currently broken): ")
+            days = getUser("Enter the amount of minecraft days you want the card to last: ")
             days = tonumber(days)
             extratime = days * 86400
             expiretime = ctime + extratime
@@ -251,7 +251,7 @@ local function registerDoor()
             end
             if msg == "Password set" then
                 print("Door password set successfully.")
-                table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass})
+                table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass, gid=1})
                 osmag.saveDB(ddb)
                 os.sleep(1)
             else

@@ -77,11 +77,11 @@ local function groupMenu()
     while true do
         term.clear()
         superlib.clearMenu()
-        superlib.addItem("Return to main main saving changes", "s")
+        superlib.addItem("Return to main menu saving changes", "s")
         superlib.addItem("Edit group list", "g")
         superlib.addItem("Edit door group", "d")
         superlib.addItem("Edit card group", "c")
-        superlib.addItem("Return to main main discarding changes", "discard")
+        superlib.addItem("Return to main menu discarding changes", "discard")
         choice = superlib.runMenu("Group Editor")
         if choice == "s" then
             osmag.saveDB(db)
@@ -118,7 +118,7 @@ local function lookupGID(db, gid)
     return "Error"
 end    
 
-local function groupEditor(db)
+function groupEditor(db)
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
@@ -155,7 +155,7 @@ local function groupEditor(db)
     end  
 end 
 
-local function doorEditor(db)
+function doorEditor(db)
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
@@ -177,7 +177,7 @@ local function doorEditor(db)
     end
 end 
 
-local function cardEditor(db)
+function cardEditor(db)
     db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()

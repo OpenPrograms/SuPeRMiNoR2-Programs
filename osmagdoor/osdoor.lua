@@ -177,7 +177,7 @@ function doorEditor(db)
             superlib.addItem(d["name"], g)
         end
         term.clear()
-        cg = superlib.runMenu("Select new group for door: "..db["pairs"][c]["name"] .. " Current Group: ".. lookupGID(db, db["groups"][g]["gid"]))
+        cg = superlib.runMenu("Select new group for door: "..db["pairs"][c]["name"] .. " Current Group: ".. lookupGID(db, db["pairs"][c]["gid"]))
         db["pairs"][c]["gid"] = db["groups"][cg]["gid"]
         return db
     end
@@ -188,6 +188,7 @@ function cardEditor(db)
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
+    return db
 end 
 
 local function registerDoor()

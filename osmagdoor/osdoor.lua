@@ -124,7 +124,7 @@ function groupEditor(db)
     superlib.addItem("Cancel", "c")
     superlib.addItem("Add new group", "g")
     for i, d in ipairs(db["groups"]) do
-        superlib.addItem(d["name"] .. " " .. d["gid"], i)
+        superlib.addItem(d["name"] .. " (" .. d["gid"] .. ")", i)
     end
     c = superlib.runMenu("Group Editor")
     if c == "c" then
@@ -139,8 +139,8 @@ function groupEditor(db)
         term.clear()
         superlib.clearMenu()
         superlib.addItem("Cancel", "c")
-        superlib.addItem("Delete Group", "d")
         superlib.addItem("Rename Group", "r")
+        superlib.addItem("Delete Group", "d")
         e = superlib.runMenu("Edit Group: "..db["groups"][c]["name"])
         if e == "c" then
             return db

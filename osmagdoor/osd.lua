@@ -47,12 +47,12 @@ local function checkCard(UUID, carddata, doordata)
     for i in ipairs(db["registered"]) do
         if db["registered"][i]["uuid"] == UUID then
 
-        	for i, g in ipairs(db["registered"][i]["groups"]) do
-        		if g == doordata["gid"] then
-					return db["registered"][i]
-				end
+            for i, g in ipairs(db["registered"][i]["groups"]) do
+                if g == doordata["gid"] then
+                    return db["registered"][i]
+                end
 
-			end
+            end
 
         end
     end
@@ -60,12 +60,12 @@ local function checkCard(UUID, carddata, doordata)
 end
 
 function findDoor(addr) --Finds the door linked to the provided mag reader UUID, if any. Returns door table
-	for u, d in ipairs(db["pairs"]) do
-		if addr == d["mag"] then
-			return d
-		end
-	end
-	return false
+    for u, d in ipairs(db["pairs"]) do
+        if addr == d["mag"] then
+            return d
+        end
+    end
+    return false
 end
 
 function auth(_,addr, playerName, data, UUID, locked)
@@ -74,10 +74,10 @@ function auth(_,addr, playerName, data, UUID, locked)
     carddata = serialization.unserialize(data)
     for i, d in ipairs(db["new"]) do --Check for first swipe of newly registered card, and get its UUID
         if d["code"] == carddata["code"] then
-        	if d["type"] == "full" then
-            	table.insert(db["registered"], {uuid=UUID, title=d["title"], type=d["type"]})
+            if d["type"] == "full" then
+                table.insert(db["registered"], {uuid=UUID, title=d["title"], type=d["type"]})
             elseif d["type"] == "temp" then
-            	table.insert(db["registered"], {uuid=UUID, title=d["title"], type=d["type"], expire=d["expire"]})
+                table.insert(db["registered"], {uuid=UUID, title=d["title"], type=d["type"], expire=d["expire"]})
             end
             osmag.log("Registered card ".. UUID .. " to user ".. d["title"])
             table.remove(db["new"], i)
@@ -87,10 +87,10 @@ function auth(_,addr, playerName, data, UUID, locked)
 
     dresult = findDoor(addr)
     if dresult then
-    	cresult = checkCard(UUID, carddata, dresult)
-    	if cresult then
-    		toggleDoor(cresult)
-    	end
+        cresult = checkCard(UUID, carddata, dresult)
+        if cresult then
+            toggleDoor(cresult)
+        end
     end 
 end
 

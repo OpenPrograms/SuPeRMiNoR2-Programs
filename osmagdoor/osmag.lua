@@ -29,10 +29,10 @@ function m.loadDB()
 end
 
 function m.saveDB(ldb)
-	if filesystem.exists("/backups") == false then
-		filesystem.makeDirectory("/backups")
-	end
-	filesystem.copy(dbfile, "/backups/" .. os.date() .. ".backup")
+    if filesystem.exists("/backups") == false then
+        filesystem.makeDirectory("/backups")
+    end
+    filesystem.copy(dbfile, "/backups/" .. os.date() .. ".backup")
     f = io.open(dbfile, "wb")
     f:write(serialization.serialize(ldb))
     f:close()
@@ -85,12 +85,12 @@ function m.updateDB()
 end
 
 function killDoor(address, password)
-	local door = component.proxy(address)
+    local door = component.proxy(address)
     door.setPassword(password, "")
 end
 
 function m.tryToDeleteDoor(address, password)
-	pcall(killDoor, address, password)
+    pcall(killDoor, address, password)
 end
 
 function m.log(logdata)

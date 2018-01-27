@@ -201,14 +201,14 @@ end
 function doorEditor(db)
     term.clear()
     superlib.clearMenu()
-    superlib.addItem("Cancel", "c")
+    superlib.addItem("Return to main menu", "c")
     superlib.addItem("Add a new door", "d")
     for i, d in ipairs(db["pairs"]) do
         superlib.addItem("Edit Door: " .. d["name"] .. ", Current Group: " .. lookupGID(db, d["gid"]), i)
     end
     c = superlib.runMenu("[Door Editor] Select an option")
     if c == "c" then
-        return db
+        return db, true
     elseif c == "d" then
     	db = registerDoor(db)
     	return db
@@ -251,14 +251,14 @@ end
 function cardEditor(db)
     term.clear()
     superlib.clearMenu()
-    superlib.addItem("Cancel", "c")
+    superlib.addItem("Return to main menu", "c")
     superlib.addItem("Add a new card", "a")
     for i, c in ipairs(db["registered"]) do
     	superlib.addItem("Edit Card: " .. c["title"], i)
     end
     c = superlib.runMenu("[Card Editor] Select an option")
     if c == "c" then
-    	return db
+    	return db, true
     elseif c == "a" then
     	db = registerCard(db)
     else
@@ -280,13 +280,18 @@ function cardEditor(db)
     		db["registered"][c]["title"] = newname
     	elseif nc == "g" then
     		superlib.clearMenu()
+    		superlib.addItem("Cancel", "c")
     		for i, g in ipairs(db["groups"]) do
     			if m.checkCardMembership(db, c, g["gid"]) == false then
     				superlib.addItem(g["name"], g["gid"])
     			end
     		end
     		newgroup = superlib.runMenu("[Card: ".. db["registered"][c]["title"] .. "] Pick a group to add")
-    		table.insert(db["registered"][c]["groups"], newgroup)
+    		if newgroup == "c" then
+    			return db
+    		else
+    			table.insert(db["registered"][c]["groups"], newgroup)
+    		end
     	elseif nc == "d" then
     		table.remove(db["registered"], c)
 	    else
@@ -300,14 +305,14 @@ end
 function groupEditor(db)
     term.clear()
     superlib.clearMenu()
-    superlib.addItem("Cancel", "c")
+    superlib.addItem("Return to main menu", "c")
     superlib.addItem("Add new group", "g")
     for i, d in ipairs(db["groups"]) do
         superlib.addItem("Edit Group: " .. d["name"] .. " (" .. d["gid"] .. ")", i)
     end
     c = superlib.runMenu("Group Editor")
     if c == "c" then
-        return db
+        return db, true
     elseif c == "g" then
         term.clear()
         newname = getUser("Enter a name for the new group: ")
@@ -361,29 +366,37 @@ end
 
 
 local function menus()
-	local db = osmag.loadDB() 
-    superlib.clearMenu()
-    superlib.addItem("Exit", "e")
-    superlib.addItem("Door Editor", "d")
-    superlib.addItem("Card Editor", "c")
-    superlib.addItem("Group Editor", "g")
-    key = superlib.runMenu("OpenSecurity Door Controller")
+	local db = osmag.loadDB()
+	if returnToMain == true then
+	    superlib.clearMenu()
+	    superlib.addItem("Exit", "e")
+	    superlib.addItem("Door Editor", "d")
+	    superlib.addItem("Card Editor", "c")
+	    superlib.addItem("Group Editor", "g")
+	    key = superlib.runMenu("OpenSecurity Door Controller")
+	else
+		key = returnToMain
+	end	
 
     if key == "e" then
     	osmag.saveDB(db)
         return "exit"
     elseif key == "d" then
-        db = doorEditor(db)
+        db, r = doorEditor(db)
     elseif key == "c" then
-        db = cardEditor(db)
+        db, r = cardEditor(db)
     elseif key == "g" then
-        db = groupEditor(db)
+        db, r = groupEditor(db)
+    end
+    if r ~= true then
+    	returnToMain = key
     end
     osmag.saveDB(db)
 end
 
 function main()
     term.clear()
+    returnToMain = true
     while true do
         r = menus()
         if r == "exit" then

@@ -282,17 +282,35 @@ function groupEditor(db)
         superlib.addItem("Cancel", "c")
         superlib.addItem("Rename Group", "r")
         superlib.addItem("Delete Group", "d")
-        e = superlib.runMenu("Edit Group: "..db["groups"][c]["name"])
+        e = superlib.runMenu("[Group: "..db["groups"][c]["name"].."]")
         if e == "c" then
             return db
         elseif e == "d" then
-            if db["groups"][c]["gid"] == 1 then
+        	local gid = db["groups"][c]["gid"]
+            if gid == 1 then
                 term.clear()
                 print("Sorry, you can't remove the default group")
                 os.sleep(1)
                 return db
             end
+            print("Checking if any doors use this group...")
+            for i, dp in ipairs(db["pairs"]) do
+            	if dp["gid"] == gid then
+            		print("Resetting door ".. dp["name"] .. " to default group")
+            		db["pairs"][i]["gid"] = 1
+            	end
+            end
+            print("Checking if any cards use this group...")
+            for i, card in ipairs(db["registered"]) do
+            	for ii, cgid in ipairs(card["groups"]) do
+            		if cgid == gid then
+            			print("Removing group from card "..card["title"])
+            			table.remove(db["registered"][i]["groups"], i)
+            		end
+            	end
+            end
             table.remove(db["groups"], c)
+            os.sleep(1)
             return db
         elseif e == "r" then
             term.clear()

@@ -253,7 +253,7 @@ function cardEditor(db)
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
     superlib.addItem("Add a new card", "a")
-    for i, c in ipairs["registered"] do
+    for i, c in ipairs(db["registered"]) do
     	superlib.addItem("Edit Card: " .. c["title"], i)
     end
     c = superlib.runMenu("[Card Editor] Select an option")
@@ -303,7 +303,7 @@ function groupEditor(db)
     superlib.addItem("Cancel", "c")
     superlib.addItem("Add new group", "g")
     for i, d in ipairs(db["groups"]) do
-        superlib.addItem(d["name"] .. " (" .. d["gid"] .. ")", i)
+        superlib.addItem("Edit Group: " .. d["name"] .. " (" .. d["gid"] .. ")", i)
     end
     c = superlib.runMenu("Group Editor")
     if c == "c" then

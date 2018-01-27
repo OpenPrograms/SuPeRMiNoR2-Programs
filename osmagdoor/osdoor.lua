@@ -152,14 +152,13 @@ function registerDoor(ddb)
             if msg == "Password set" then
                 print("Door password set successfully.")
                 table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass, gid=1})
-                return ddb
-                os.sleep(1)
             else
                 print("Failed to set door password, please break the door[s] and replace them to clear the password.")
-                os.sleep(2)
+                os.sleep(5)
             end
         end
     end
+    return ddb
 end
 
 local function removeDoor(ldb)

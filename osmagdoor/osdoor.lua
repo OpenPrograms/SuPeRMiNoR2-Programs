@@ -267,7 +267,7 @@ function cardEditor(db)
     	superlib.addItem("Rename Card", "r")
     	superlib.addItem("Add Group", "g")
     	for i, gid in ipairs(db["registered"][c]["groups"]) do
-    		local groupname = lookupGID(gid)
+    		local groupname = lookupGID(db, gid)
     		superlib.addItem("Remove Group: " .. groupname, i)
     	end
     	superlib.addItem("Delete Card", "d")

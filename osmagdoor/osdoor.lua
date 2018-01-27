@@ -84,7 +84,7 @@ local function findNewGID(db)
     return last
 end
 
-local function lookupGID(db, gid)
+function lookupGID(db, gid)
     for i, d in ipairs(db["groups"]) do
         if gid == d["gid"] then
             return d["name"]
@@ -227,10 +227,14 @@ function doorEditor(db)
     	elseif nc == "g" then
 	        superlib.clearMenu()
 	        for g, d in ipairs(db["groups"]) do
-	            superlib.addItem(d["name"], g)
+	        	name = d["name"]
+	        	if d["gid"] == db["pairs"][c]["gid"] then
+	        		name = name .. " (Current Group)"
+	        	end
+	            superlib.addItem(name, g)
 	        end
 	        term.clear()
-	        cg = superlib.runMenu("[Door: ".. db["pairs"][c]["name"] .. "] Select new group (Current Group: ".. lookupGID(db, db["pairs"][c]["gid"]).. ")")
+	        cg = superlib.runMenu("[Door: ".. db["pairs"][c]["name"] .. "] Select new group")
 	        db["pairs"][c]["gid"] = db["groups"][cg]["gid"]
         	return db
         elseif nc == "r" then

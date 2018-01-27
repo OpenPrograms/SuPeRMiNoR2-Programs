@@ -90,6 +90,15 @@ function killDoor(address, password)
     door.setPassword(password, "")
 end
 
+function m.checkCardMembership(db, card, gid)
+    for i, d in ipairs(db["registered"][card]["groups"]) do
+        if d == gid then
+            return true
+        end
+    end
+    return false
+end
+
 function m.tryToDeleteDoor(address, password)
     pcall(killDoor, address, password)
 end

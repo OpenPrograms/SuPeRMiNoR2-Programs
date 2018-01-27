@@ -36,14 +36,13 @@ local function getUser(msg)
     return io.read()
 end
 
-local function registerCard()
-    db = osmag.loadDB()
+function registerCard(db)
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
     superlib.addItem("Full Access Card", "full")
     superlib.addItem("Temporary Card", "temp")
-    choice = superlib.runMenu("Select new card type")
+    choice = superlib.runMenu("[Card Editor] Select new card type")
     if choice ~= "c" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
@@ -66,10 +65,9 @@ local function registerCard()
         writer.write(cardstring, title, true)
         print("Adding card to database...")
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
-        print("Saving database....")
-        osmag.saveDB(db)
         os.sleep(1)
     end
+    return db
 end
 
 
@@ -206,7 +204,7 @@ function doorEditor(db)
     superlib.addItem("Cancel", "c")
     superlib.addItem("Add a new door", "d")
     for i, d in ipairs(db["pairs"]) do
-        superlib.addItem(d["name"] .. ", Current Group: " .. lookupGID(db, d["gid"]), i)
+        superlib.addItem("Edit Door: " .. d["name"] .. ", Current Group: " .. lookupGID(db, d["gid"]), i)
     end
     c = superlib.runMenu("[Door Editor] Select an option")
     if c == "c" then
@@ -251,10 +249,50 @@ function doorEditor(db)
 end 
 
 function cardEditor(db)
-    db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
+    superlib.addItem("Add a new card", "a")
+    for i, c in ipairs["registered"] do
+    	superlib.addItem("Edit Card: " .. c["title"], i)
+    end
+    c = superlib.runMenu("[Card Editor] Select an option")
+    if c == "c" then
+    	return db
+    elseif c == "a" then
+    	db = registerCard(db)
+    else
+    	superlib.clearMenu()
+    	superlib.addItem("Cancel", "c")
+    	superlib.addItem("Rename Card", "r")
+    	superlib.addItem("Add Group", "g")
+    	for i, gid in ipairs(db["registered"][c]["groups"]) do
+    		local groupname = lookupGID(gid)
+    		superlib.addItem("Remove Group: " .. groupname, i)
+    	end
+    	superlib.addItem("Delete Card", "d")
+    	nc = superlib.runMenu("[Card: ".. db["registered"][c]["title"] .. "]")
+    	if nc == "c" then
+    		return db
+    	elseif nc == "r" then
+    		term.clear()
+    		newname = getUser("Please enter new name: ")
+    		db["registered"][c]["title"] = newname
+    	elseif nc == "g" then
+    		superlib.clearMenu()
+    		for i, g in ipairs(db["groups"]) do
+    			if m.checkCardMembership(db, c, g["gid"]) == false then
+    				superlib.addItem(g["name"], g["gid"])
+    			end
+    		end
+    		newgroup = superlib.runMenu("[Card: ".. db["registered"][c]["title"] .. "] Pick a group to add")
+    		table.insert(db["registered"][c]["groups"], newgroup)
+    	elseif nc == "d" then
+    		table.remove(db["registered"], c)
+	    else
+	    	table.remove(db["registered"][c]["groups"], nc)
+	    end
+    end
     return db
 end 
 
@@ -310,7 +348,7 @@ function groupEditor(db)
             	end
             end
             table.remove(db["groups"], c)
-            os.sleep(1)
+            os.sleep(5)
             return db
         elseif e == "r" then
             term.clear()

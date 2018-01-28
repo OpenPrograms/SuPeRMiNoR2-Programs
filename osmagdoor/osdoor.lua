@@ -388,10 +388,10 @@ local function menus()
     elseif key == "g" then
         db, r = groupEditor(db)
     end
-    if r ~= true then
-    	returnToMain = key
-    else
+    if r == true then
     	returnToMain = true
+    else
+    	returnToMain = key
     end
     osmag.saveDB(db)
 end

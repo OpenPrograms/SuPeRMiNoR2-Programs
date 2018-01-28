@@ -46,7 +46,7 @@ function registerCard(db)
     superlib.addItem("Scan Existing Card", "s")
     superlib.addItem("Temporary Card", "temp")
     choice = superlib.runMenu("[Card Editor] Select new card type")
-    local db = osmag.loadDB()
+    db = osmag.loadDB()
     if choice == "temp" or choice == "full" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
@@ -315,8 +315,7 @@ function cardEditor()
     if c == "c" then
     	return true
     elseif c == "a" then
-    	db = registerCard(db)
-    	osmag.saveDB(db)
+    	registerCard(db)	
     else
     	superlib.clearMenu()
     	superlib.addItem("Cancel", "c")
@@ -433,7 +432,6 @@ end
 function doorMenu(db)
 	while true do
 		r = doorEditor()
-		osmag.saveDB(db)
 		if r == true then
 			break
 		end

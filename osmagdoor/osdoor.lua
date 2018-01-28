@@ -250,6 +250,7 @@ function doorEditor(db)
         superlib.addItem("Edit Door: " .. d["name"] .. ", Current Group: " .. lookupGID(db, d["gid"]), i)
     end
     c = superlib.runMenu("[Door Editor] Select an option")
+    db = osmag.loadDB()
     if c == "c" then
         return db, true
     elseif c == "d" then
@@ -300,6 +301,7 @@ function cardEditor(db)
     	superlib.addItem("Edit Card: " .. c["title"], i)
     end
     c = superlib.runMenu("[Card Editor] Select an option")
+    db = osmag.loadDB()
     if c == "c" then
     	return db, true
     elseif c == "a" then
@@ -353,7 +355,8 @@ function groupEditor(db)
     for i, d in ipairs(db["groups"]) do
         superlib.addItem("Edit Group: " .. d["name"] .. " (" .. d["gid"] .. ")", i)
     end
-    c = superlib.runMenu("Group Editor")
+    c = superlib.runMenu("[Group Editor] Select an option")
+    db = osmag.loadDB()
     if c == "c" then
         return db, true
     elseif c == "g" then
@@ -411,10 +414,11 @@ function doorMenu(db)
 	while true do
 		local db = osmag.loadDB()
 		db, r = doorEditor(db)
+		osmag.saveDB()
 		if r == true then
 			break
 		end
-		osmag.saveDB()
+		
 	end
 	return db
 end
@@ -426,6 +430,7 @@ function cardMenu(db)
 		if r == true then
 			break
 		end
+		osmag.saveDB()
 	end
 	return db
 end
@@ -451,7 +456,6 @@ local function menus()
     key = superlib.runMenu("OpenSecurity Door Controller")
 	
     if key == "e" then
-    	osmag.saveDB(db)
         return "exit"
     elseif key == "d" then
         db = doorMenu(db)

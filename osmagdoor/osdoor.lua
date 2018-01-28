@@ -63,10 +63,10 @@ function registerCard(db)
 
         superlib.clearMenu()
         for color=0,15 do
-        	superlib.addItem(color[color], color)
+        	superlib.addItem(colors[color], color)
         end
         color = superlib.runMenu("Pick a color for this card")
-
+        term.clear()
         cardstring = serialization.serialize(carddata)
         print("Writing data to card...")
         writer.write(cardstring, title, true, color)

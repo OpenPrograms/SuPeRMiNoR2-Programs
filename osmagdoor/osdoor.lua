@@ -78,7 +78,7 @@ function registerCard(db)
     elseif choice == "s" then
     	superlib.clearMenu()
     	superlib.addItem("Cancel", "c")
-    	for i, d in ipairs(db["pairs"] do
+    	for i, d in ipairs(db["pairs"]) do
     		superlib.addItem(d["name"], i)
     	end
     	choice = superlib.runMenu("Select a door to scan the card in")

@@ -366,7 +366,7 @@ end
 
 function doorMenu(db)
 	while true do
-		db, r == doorEditor(db)
+		db, r = doorEditor(db)
 		if r == true then
 			break
 		end
@@ -376,7 +376,7 @@ end
 
 function cardMenu(db)
 	while true do
-		db, r == cardEditor(db)
+		db, r = cardEditor(db)
 		if r == true then
 			break
 		end
@@ -386,7 +386,7 @@ end
 
 function groupMenu(db)
 	while true do
-		db, r == groupEditor(db)
+		db, r = groupEditor(db)
 		if r == true then
 			break
 		end

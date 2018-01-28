@@ -329,9 +329,9 @@ function groupEditor(db)
         if e == "c" then
             return db
         elseif e == "d" then
+        	term.clear()
         	local gid = db["groups"][c]["gid"]
             if gid == 1 then
-                term.clear()
                 print("Sorry, you can't remove the default group")
                 os.sleep(1)
                 return db

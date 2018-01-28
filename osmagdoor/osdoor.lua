@@ -374,7 +374,7 @@ function groupEditor()
     c = superlib.runMenu("[Group Editor] Select an option")
     db = osmag.loadDB()
     if c == "c" then
-        return db, true
+        return true
     elseif c == "g" then
         term.clear()
         newname = getUser("Enter a name for the new group: ")

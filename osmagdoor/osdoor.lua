@@ -390,6 +390,8 @@ local function menus()
     end
     if r ~= true then
     	returnToMain = key
+    else
+    	returnToMain = true
     end
     osmag.saveDB(db)
 end

@@ -364,42 +364,60 @@ function groupEditor(db)
     end  
 end 
 
+function doorMenu(db)
+	while true do
+		db, r == doorEditor(db)
+		if r == true then
+			break
+		end
+	end
+	return db
+end
+
+function cardMenu(db)
+	while true do
+		db, r == cardEditor(db)
+		if r == true then
+			break
+		end
+	end
+	return db
+end
+
+function groupMenu(db)
+	while true do
+		db, r == groupEditor(db)
+		if r == true then
+			break
+		end
+	end
+	return db
+end
 
 local function menus()
 	local db = osmag.loadDB()
-	if returnToMain == true then
-	    superlib.clearMenu()
-	    superlib.addItem("Exit", "e")
-	    superlib.addItem("Door Editor", "d")
-	    superlib.addItem("Card Editor", "c")
-	    superlib.addItem("Group Editor", "g")
-	    key = superlib.runMenu("OpenSecurity Door Controller")
-	end	
-
+    superlib.clearMenu()
+    superlib.addItem("Exit", "e")
+    superlib.addItem("Door Editor", "d")
+    superlib.addItem("Card Editor", "c")
+    superlib.addItem("Group Editor", "g")
+    key = superlib.runMenu("OpenSecurity Door Controller")
+	
     if key == "e" then
     	osmag.saveDB(db)
         return "exit"
     elseif key == "d" then
-        db, r = doorEditor(db)
+        db = doorMenu(db)
     elseif key == "c" then
-        db, r = cardEditor(db)
+        db = cardMenu(db)
     elseif key == "g" then
-        db, r = groupEditor(db)
-    end
-    if r == true then
-    	returnToMain = true
-    else
-    	if key == nil then
-    		key = returnToMain
-    	end
-    	returnToMain = key
+        db = groupMenu(db)
     end
     osmag.saveDB(db)
 end
 
 function main()
     term.clear()
-    returnToMain = true
     while true do
         r = menus()
         if r == "exit" then

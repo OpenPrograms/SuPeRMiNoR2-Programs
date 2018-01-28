@@ -348,7 +348,7 @@ function groupEditor(db)
             	for ii, cgid in ipairs(card["groups"]) do
             		if cgid == gid then
             			print("Removing group from card "..card["title"])
-            			table.remove(db["registered"][i]["groups"], i)
+            			table.remove(db["registered"][i]["groups"], ii)
             		end
             	end
             end

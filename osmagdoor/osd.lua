@@ -79,7 +79,7 @@ function auth(_,addr, playerName, data, UUID, locked)
             elseif d["type"] == "temp" then
                 table.insert(db["registered"], {uuid=UUID, title=d["title"], type=d["type"], groups={1}, expire=d["expire"]})
             end
-            osmag.log("Registered card ".. UUID .. " to user ".. d["title"])
+            osmag.log("Registered UUID: ".. UUID .. " to card ".. d["title"])
             table.remove(db["new"], i)
             osmag.saveDB(db)
         end

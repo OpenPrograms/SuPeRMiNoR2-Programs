@@ -543,7 +543,7 @@ local function updateListOnline()
         rdata = serial.unserialize(rdata)
         data.list = {}
         for a, v in pairs(rdata) do
-            if not v.address == laddress then
+            if v.address ~= laddress then
                 table.insert(data.list, v)
             end
         end

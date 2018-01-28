@@ -376,7 +376,9 @@ end
 
 function cardMenu(db)
 	while true do
+		local db = osmag.loadDB() --Loaded here to load registered cards from OSD
 		db, r = cardEditor(db)
+		osmag.saveDB(db)
 		if r == true then
 			break
 		end

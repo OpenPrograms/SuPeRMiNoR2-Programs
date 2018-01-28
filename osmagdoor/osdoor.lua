@@ -75,6 +75,7 @@ function registerCard(db)
         writer.write(cardstring, title, true, color)
         print("Adding card to database...")
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
+        os.saveDB(db)
         os.sleep(1)
     elseif choice == "s" then
     	superlib.clearMenu()

@@ -362,7 +362,7 @@ function cardEditor()
 end 
 
 
-function groupEditor(db)
+function groupEditor()
 	db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
@@ -471,11 +471,11 @@ local function menus()
     if key == "e" then
         return "exit"
     elseif key == "d" then
-        doorMenu(db)
+        doorMenu()
     elseif key == "c" then
-        cardMenu(db)
+        cardMenu()
     elseif key == "g" then
-        groupMenu(db)
+        groupMenu()
     end
 end
 

@@ -69,7 +69,7 @@ function m.updateDB()
         end
         if not card["groups"] then
             db["registered"][i]["groups"] = {}
-            table.insert(db["registered"][i]["groups"], {1})
+            table.insert(db["registered"][i]["groups"], 1)
             print("[DBUpdate] Added default group to card "..card["title"])
         end
     end

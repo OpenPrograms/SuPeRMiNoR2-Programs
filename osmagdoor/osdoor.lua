@@ -83,7 +83,7 @@ function registerCard(db)
     		superlib.addItem(d["name"], i)
     	end
     	choice = superlib.runMenu("Select a door to scan the card in")
-    	local db = osmag.loadDB()
+    	db = osmag.loadDB()
     	if choice == "c" then
     		return db
     	else
@@ -100,7 +100,7 @@ function registerCard(db)
         	os.sleep(1)
     	end
     end
-    return db
+    return 
 end
 
 magAddress = false

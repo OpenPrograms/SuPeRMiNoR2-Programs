@@ -11,6 +11,7 @@ local startArgs = {...}
 
 if startArgs[1] == "version_check" then return version end
 
+local superlib = require("superlib")
 local computer = require("computer")
 local component = require("component")
 local event = require("event")
@@ -71,7 +72,7 @@ local function loadConfig()
 			return false
 		end
 		rescan = startArgs[1]
-		if rescan == "scan" then
+		if rescan == "-scan" then
 			if component.isAvailable("stargate") then
 				data.address = component.getPrimary("stargate")["address"]
 				sg = component.proxy(data.address)
@@ -801,7 +802,7 @@ local function createUI()
 	addBar(53, 1, 15, false)
 	element.stargate = addStargate()
 	gui:addButton("right", 1, 10, 1, "Exit", function() gui:close() end)
-	gui:addButton("right", 1, 10, 1, "Update", updateListOnline)
+	gui:addButton("right", 3, 10, 1, "Update", updateListOnline)
 	gui:addLabel(56, 4, 22, "Address: " .. separateAddress(sg.localAddress()))
 	element.status = gui:addLabel(56, 5, 25, "Status: " .. sg.stargateState())
 	element.iris = gui:addLabel(56, 6, 25, "Iris: " .. sg.irisState())

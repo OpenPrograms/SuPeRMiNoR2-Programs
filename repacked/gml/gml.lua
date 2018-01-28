@@ -96,8 +96,8 @@ function gml.loadStyle(name)
 
   local filepath
 
-  --search for styles in working directory, running program directory, /lib /usr/lib. Just because.
-  local dirs={shell.getWorkingDirectory().."/", "/lib/", "/usr/lib/"}
+  --search for styles in /lib /usr/lib.
+  local dirs={"/lib/", "/usr/lib/"}
   for i=1,#dirs do
     if filesystem.exists(dirs[i]..fullname) and not filesystem.isDirectory(dirs[i]..fullname) then
       filepath=dirs[i]..fullname

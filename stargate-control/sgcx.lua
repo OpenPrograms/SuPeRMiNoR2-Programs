@@ -537,6 +537,7 @@ end
 
 local function updateListOnline()
 	laddress = sg.localAddress()
+	laddress = addressToChunk(laddress)
 	local rdata = superlib.download(listURL)
 	if rdata ~= nil then
 		rdata = serialization.unserialize(rdata)
@@ -552,6 +553,9 @@ local function updateListOnline()
 		end
 		element.list:updateList(list)
 		saveConfig()
+		GMLmessageBox("Stargate List Updated", {"OK"})
+	else
+		GMLmessageBox("Error downloading list file", {"OK"})
 	end
 end
 

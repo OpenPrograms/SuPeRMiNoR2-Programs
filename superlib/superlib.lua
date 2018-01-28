@@ -3,7 +3,7 @@ local m = {}
 
 local component = require("component")
 local serial = require("serialization")
-local internet = require("internet")
+local internetr = require("internet")
 local term = require("term")
 local keyboard = require("keyboard")
 local event = require("event")
@@ -16,10 +16,10 @@ if component.isAvailable("internet") then
   internet = true
 end
 
-local function downloadRaw(url)
+function downloadRaw(url)
   assert(internet)
   local sContent = ""
-  local result, response = pcall(internet.request, url)
+  local result, response = pcall(internetr.request, url)
   if not result then
     return nil
   end

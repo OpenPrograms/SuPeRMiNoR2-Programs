@@ -9,6 +9,7 @@ local math = require("math")
 local term = require("term")
 local superlib = require("superlib")
 local osmag = require("osmag")
+local colors = require("colors")
 
 dbfile = "/authdb.dat"
 logfile = "/authlog.txt"
@@ -60,9 +61,15 @@ function registerCard(db)
             carddata["expire"] = expiretime
         end
 
+        superlib.clearMenu()
+        for color=0,15 do
+        	superlib.addItem(color[color], color)
+        end
+        color = superlib.runMenu("Pick a color for this card")
+
         cardstring = serialization.serialize(carddata)
         print("Writing data to card...")
-        writer.write(cardstring, title, true)
+        writer.write(cardstring, title, true, color)
         print("Adding card to database...")
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
         os.sleep(1)

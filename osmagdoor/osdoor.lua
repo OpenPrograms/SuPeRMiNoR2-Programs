@@ -94,6 +94,7 @@ function registerCard(db)
     		title = getUser("Enter this cards name: ")
     		print("Adding card to database...")
         	table.insert(db["new"], {code=carddata["code"], title=title, type="full"})
+        	osmag.saveDB(db)
         	os.sleep(1)
     	end
     end
@@ -408,10 +409,12 @@ end
 
 function doorMenu(db)
 	while true do
+		local db = osmag.loadDB()
 		db, r = doorEditor(db)
 		if r == true then
 			break
 		end
+		osmag.saveDB()
 	end
 	return db
 end
@@ -420,7 +423,6 @@ function cardMenu(db)
 	while true do
 		local db = osmag.loadDB() --Loaded here to load registered cards from OSD
 		db, r = cardEditor(db)
-		osmag.saveDB(db)
 		if r == true then
 			break
 		end
@@ -430,7 +432,9 @@ end
 
 function groupMenu(db)
 	while true do
+		local db = osmag.loadDB()
 		db, r = groupEditor(db)
+		osmag.saveDB(db)
 		if r == true then
 			break
 		end
@@ -439,7 +443,6 @@ function groupMenu(db)
 end
 
 local function menus()
-	local db = osmag.loadDB()
     superlib.clearMenu()
     superlib.addItem("Exit", "e")
     superlib.addItem("Door Editor", "d")
@@ -457,7 +460,6 @@ local function menus()
     elseif key == "g" then
         db = groupMenu(db)
     end
-    osmag.saveDB(db)
 end
 
 function main()

@@ -374,8 +374,6 @@ local function menus()
 	    superlib.addItem("Card Editor", "c")
 	    superlib.addItem("Group Editor", "g")
 	    key = superlib.runMenu("OpenSecurity Door Controller")
-	else
-		key = returnToMain
 	end	
 
     if key == "e" then
@@ -391,6 +389,9 @@ local function menus()
     if r == true then
     	returnToMain = true
     else
+    	if key == nil then
+    		key = returnToMain
+    	end
     	returnToMain = key
     end
     osmag.saveDB(db)

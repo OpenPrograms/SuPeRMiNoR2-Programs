@@ -49,7 +49,7 @@ local function checkCard(UUID, carddata, doordata)
 
             for i, g in ipairs(db["registered"][i]["groups"]) do
                 if g == doordata["gid"] then
-                    return db["registered"][i]
+                    return doordata
                 end
 
             end
@@ -86,7 +86,7 @@ function auth(_,addr, playerName, data, UUID, locked)
     end
 
     dresult = findDoor(addr)
-    if dresult then
+    if dresult ~= false then
         cresult = checkCard(UUID, carddata, dresult)
         if cresult then
             toggleDoor(cresult)

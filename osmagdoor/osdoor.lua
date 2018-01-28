@@ -245,7 +245,8 @@ local function clearCards()
     os.sleep(1)
 end
 
-function doorEditor(db)
+function doorEditor()
+	db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Return to main menu", "c")
@@ -300,7 +301,8 @@ function doorEditor(db)
     end
 end 
 
-function cardEditor(db)
+function cardEditor()
+	db = osmag.loadDB()
     term.clear()
     superlib.clearMenu()
     superlib.addItem("Return to main menu", "c")

@@ -10,6 +10,7 @@ local term = require("term")
 local superlib = require("superlib")
 local osmag = require("osmag")
 local colors = require("colors")
+local event = require("event")
 
 dbfile = "/authdb.dat"
 logfile = "/authlog.txt"
@@ -42,9 +43,10 @@ function registerCard(db)
     superlib.clearMenu()
     superlib.addItem("Cancel", "c")
     superlib.addItem("Full Access Card", "full")
+    superlib.addItem("Scan Existing Card", "s")
     superlib.addItem("Temporary Card", "temp")
     choice = superlib.runMenu("[Card Editor] Select new card type")
-    if choice ~= "c" then
+    if choice == "temp" or choice == "full" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
         term.clear()
@@ -73,10 +75,43 @@ function registerCard(db)
         print("Adding card to database...")
         table.insert(db["new"], {code=cardcode, title=title, type=carddata["type"], expire=expiretime})
         os.sleep(1)
+    elseif choice == "s" then
+    	superlib.clearMenu()
+    	superlib.addItem("Cancel", "c")
+    	for i, d in ipairs(db["pairs"] do
+    		superlib.addItem(d["name"], i)
+    	end
+    	choice = superlib.runMenu("Select a door to scan the card in")
+    	if choice == "c" then
+    		return db
+    	else
+    		magAddress = db["pairs"][choice]["mag"]
+    		term.clear()
+    		print("Waiting for you to scan a card...")
+    		etype, addr, playerName, data, UUID, locked = event.pullFiltered(eventFilter)
+    		carddata = serialization.unserialize(data)
+    		print()
+    		title = getUser("Enter this cards name: ")
+    		print("Adding card to database...")
+        	table.insert(db["new"], {code=carddata["code"], title=title, type="full"})
+        	os.sleep(1)
+    	end
     end
     return db
 end
 
+magAddress = false
+function eventFilter(etype, addr, playerName, data, UUID, locked)
+	if etype == "magData" then
+		if addr == magAddress then
+			return true
+		else
+			return false
+		end
+	else
+		return false
+	end
+end
 
 local function findNewGID(db)
     last = 0

@@ -46,6 +46,7 @@ function registerCard(db)
     superlib.addItem("Scan Existing Card", "s")
     superlib.addItem("Temporary Card", "temp")
     choice = superlib.runMenu("[Card Editor] Select new card type")
+    local db = osmag.loadDB()
     if choice == "temp" or choice == "full" then
         cardcode = osmag.makeCode()
         carddata = {code=cardcode}
@@ -82,6 +83,7 @@ function registerCard(db)
     		superlib.addItem(d["name"], i)
     	end
     	choice = superlib.runMenu("Select a door to scan the card in")
+    	local db = osmag.loadDB()
     	if choice == "c" then
     		return db
     	else
@@ -170,6 +172,7 @@ function registerDoor(ddb)
     end
     superlib.addItem("Cancel", "c")
     door = superlib.runMenu("Please select the door uuid you want to add.")
+    local db = osmag.loadDB()
 
     if door ~= "c" then
         superlib.clearMenu()
@@ -178,10 +181,11 @@ function registerDoor(ddb)
         end
         superlib.addItem("Cancel", "c")
         mag = superlib.runMenu("Please select the mag reader uuid you want to pair to the door.")
-
+        local db = osmag.loadDB()
         if mag ~= "c" then
             term.clear()
             name = getUser("Enter a name for this pair: ")
+            local db = osmag.loadDB()
             print("Generating door password.")
             newpass = osmag.makeCode()
             doorc = component.proxy(door)
@@ -263,6 +267,7 @@ function doorEditor(db)
     	superlib.addItem("Rename door", "r")
     	superlib.addItem("Delete door", "d")
     	nc = superlib.runMenu("[Door: ".. db["pairs"][c]["name"] .. "]")
+    	local db = osmag.loadDB()
 
     	if nc == "c" then
     		return db
@@ -277,11 +282,13 @@ function doorEditor(db)
 	        end
 	        term.clear()
 	        cg = superlib.runMenu("[Door: ".. db["pairs"][c]["name"] .. "] Select new group")
+	        local db = osmag.loadDB()
 	        db["pairs"][c]["gid"] = db["groups"][cg]["gid"]
         	return db
         elseif nc == "r" then
         	term.clear()
         	local name = getUser("Enter the new name for this door: ")
+        	local db = osmag.loadDB()
         	db["pairs"][c]["name"] = name
         	return db
         elseif nc == "d" then
@@ -317,6 +324,7 @@ function cardEditor(db)
     	end
     	superlib.addItem("Delete Card", "d")
     	nc = superlib.runMenu("[Card: ".. db["registered"][c]["title"] .. "]")
+    	local db = osmag.loadDB()
     	if nc == "c" then
     		return db
     	elseif nc == "r" then
@@ -332,6 +340,7 @@ function cardEditor(db)
     			end
     		end
     		newgroup = superlib.runMenu("[Card: ".. db["registered"][c]["title"] .. "] Pick a group to add")
+    		local db = osmag.loadDB()
     		if newgroup == "c" then
     			return db
     		else
@@ -356,12 +365,13 @@ function groupEditor(db)
         superlib.addItem("Edit Group: " .. d["name"] .. " (" .. d["gid"] .. ")", i)
     end
     c = superlib.runMenu("[Group Editor] Select an option")
-    db = osmag.loadDB()
+    local db = osmag.loadDB()
     if c == "c" then
         return db, true
     elseif c == "g" then
         term.clear()
         newname = getUser("Enter a name for the new group: ")
+        local db = osmag.loadDB()
         newgid = findNewGID(db)
         table.insert(ldb["groups"], {gid = newgid, name = newname})
         return db
@@ -372,6 +382,7 @@ function groupEditor(db)
         superlib.addItem("Rename Group", "r")
         superlib.addItem("Delete Group", "d")
         e = superlib.runMenu("[Group: "..db["groups"][c]["name"].."]")
+        local db = osmag.loadDB()
         if e == "c" then
             return db
         elseif e == "d" then
@@ -404,6 +415,7 @@ function groupEditor(db)
         elseif e == "r" then
             term.clear()
             newname = getUser("Please enter the new group name: ")
+            local db = osmag.loadDB()
             db["groups"][c]["name"] = newname
             return db
         end
@@ -414,7 +426,7 @@ function doorMenu(db)
 	while true do
 		local db = osmag.loadDB()
 		db, r = doorEditor(db)
-		osmag.saveDB()
+		osmag.saveDB(db)
 		if r == true then
 			break
 		end
@@ -425,12 +437,12 @@ end
 
 function cardMenu(db)
 	while true do
-		local db = osmag.loadDB() --Loaded here to load registered cards from OSD
+		local db = osmag.loadDB()
 		db, r = cardEditor(db)
+		osmag.saveDB(db)
 		if r == true then
 			break
 		end
-		osmag.saveDB()
 	end
 	return db
 end
@@ -448,6 +460,7 @@ function groupMenu(db)
 end
 
 local function menus()
+	local db = osmag.loadDB()
     superlib.clearMenu()
     superlib.addItem("Exit", "e")
     superlib.addItem("Door Editor", "d")

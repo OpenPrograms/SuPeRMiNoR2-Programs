@@ -428,4 +428,9 @@ function main()
         end
     end
 end
+term.clear()
+print("Starting OpenSecurity Door Controller")
+osmag.updateDB()
+print("Don't forget to start osd if you didn't already!")
+os.sleep(1)
 main()

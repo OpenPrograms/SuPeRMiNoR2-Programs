@@ -977,6 +977,7 @@ local function __eventListener(...)
             element.stargate:lockSymbol(0)
         elseif ev[3] == "Connected" then
             if dialtrigger == true then
+                os.sleep(1)
                 sg.openIris()
                 dialtrigger = false
             end

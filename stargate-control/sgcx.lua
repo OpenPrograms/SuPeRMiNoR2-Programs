@@ -59,6 +59,8 @@ local MC = 279937
 local PC = 93563
 local QC = 153742
 
+local dialtrigger = falsee
+
 local function saveConfig()
     local plik = io.open("/etc/sg.cfg", "w")
     plik:write(serial.serialize(data))
@@ -561,6 +563,8 @@ end
 
 local function dial()
     if sg.stargateState() == "Idle" then
+        dialtrigger = true
+        sg.closeIris()
         local status, response = sg.dial(element.address["text"])
         if status then
             element.connectionType["text"] = "Outgoing connection"
@@ -972,6 +976,10 @@ local function __eventListener(...)
             element.stargate:draw()
             element.stargate:lockSymbol(0)
         elseif ev[3] == "Connected" then
+            if dialtrigger == true then
+                sg.openIris()
+                dialtrigger = false
+            end
             element.remoteAddress["text"] = "Remote address: " .. separateAddress(sg.remoteAddress())
             element.remoteAddress:show()
             element.timeout["text"] = "Remaining time: "

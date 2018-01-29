@@ -48,7 +48,7 @@ local irisTime = 0
 local irisTimer = nil
 local timeToClose = 0
 
-local listURL = "https://caitlynmainer.com/sgcraft/"
+local listURL = "https://caitlyn.superminor2.net/sgcraft/"
 
 -- Constants required for address calculation
 local SYMBOLS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'

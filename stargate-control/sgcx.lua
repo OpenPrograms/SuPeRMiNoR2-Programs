@@ -976,11 +976,6 @@ local function __eventListener(...)
             element.stargate:draw()
             element.stargate:lockSymbol(0)
         elseif ev[3] == "Connected" then
-            if dialtrigger == true then
-                os.sleep(1)
-                sg.openIris()
-                dialtrigger = false
-            end
             element.remoteAddress["text"] = "Remote address: " .. separateAddress(sg.remoteAddress())
             element.remoteAddress:show()
             element.timeout["text"] = "Remaining time: "
@@ -989,6 +984,13 @@ local function __eventListener(...)
             element.dial:draw()
             timerID = event.timer(1, countdown, 301)
             element.stargate:draw()
+            if dialtrigger == true then
+                os.sleep(2)
+                element.iris["text"] = "Iris: Waiting"
+                element.iris:draw()
+                sg.openIris()
+                dialtrigger = false
+            end
         end
     elseif ev[1] == "sgChevronEngaged" then
         element.stargate:lockSymbol(ev[3])

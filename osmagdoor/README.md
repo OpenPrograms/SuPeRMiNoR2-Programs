@@ -3,7 +3,7 @@ Open Security Mag Door
 
 install with: `oppm install osmagdoor`
 
-It will install an autostart script to /boot/99_osmagdoor.lua that will handle card events.
+It will install an autostart script to `/boot/99_osmagdoor.lua` that will handle card events.
 
 Run config tool with: `osdoor`
 

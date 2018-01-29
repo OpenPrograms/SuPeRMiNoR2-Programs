@@ -48,7 +48,7 @@ local irisTime = 0
 local irisTimer = nil
 local timeToClose = 0
 
-local listURL = "https://raw.githubusercontent.com/OpenPrograms/SuPeRMiNoR2-Programs/master/stargate-control/PC-Logix.cfg"
+local listURL = "https://caitlynmainer.com/sgcraft/"
 
 -- Constants required for address calculation
 local SYMBOLS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -543,6 +543,10 @@ local function updateListOnline()
     local rdata = superlib.download(listURL)
     if rdata ~= nil then
         rdata = serial.unserialize(rdata)
+        if rdata == nil then
+            GMLmessageBox("Error parsing the list file", {"OK"})
+            return
+        end
         data.list = {}
         for a, v in pairs(rdata) do
             if v.address ~= laddress then

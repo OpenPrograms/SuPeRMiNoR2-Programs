@@ -94,11 +94,9 @@ function auth(_,addr, playerName, data, UUID, locked)
     end 
 end
 
+event.ignore("magData", auth)
 db = osmag.loadDB()
-print("OSd (OpenSecuritydoorDaemon) starting up...")
+print("OpenSecurity Door Controller starting up...")
 osmag.updateDB()
-print("Registering event handlers")
 event.listen("magData", auth)
-print("Event listeners registered")
-print("Do not run this program again, untill the next restart of this computer.")
-print("if you do, you will have multiple handlers running.")
+print("OpenSecurity Door Controller startup complete")

@@ -275,7 +275,7 @@ while true do
       end
       if cobj.type == "br_reactor" and status.activeCooling == false then
           table.insert(preactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "RF/t"}, superlib.pgen(10000000, status.energyStored, config.display_precision) .. "%")
+            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "RF/t", superlib.pgen(10000000, status.energyStored, config.display_precision) .. "%"})
           total_reactor_rate = total_reactor_rate + status.rate
       end
       if cobj.type == "br_turbine" then

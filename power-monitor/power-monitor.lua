@@ -189,7 +189,8 @@ supported_types = {
 {id="elite_energy_cube", type=3, name="Elite Enegy Cube"},
 {id="ultimate_energy_cube", type=3, name="Ultimate Energy Cube"},
 {id="creative_energy_cube", type=3, name="Creative Energy Cube"},
-{id="induction_matrix", type=3, name="Induction Matrix"}
+{id="induction_matrix", type=3, name="Induction Matrix"},
+{id="energy_device", type=2, name="Energy Cell"}
 }
  
 --Startup
@@ -262,6 +263,7 @@ while true do
   total_reactor_rate = 0
   total_turbine_rate = 0
   reactordata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
+  preactordata = {{"ID", "Active", "Core", "Control", "Power Generated"}}
   turbinedata = {{"ID", "Active", "Coils", "Speed", "Energy Gen", "Steam", "Inductor Status"}}
 
   for cid, cobj in pairs(controllers) do
@@ -269,6 +271,11 @@ while true do
       if cobj.type == "br_reactor" and status.activeCooling then
           table.insert(reactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
             round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "mB/t"})
+          total_reactor_rate = total_reactor_rate + status.rate
+      end
+      if cobj.type == "br_reactor" and status.activeCooling == false then
+          table.insert(preactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
+            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "RF/t"})
           total_reactor_rate = total_reactor_rate + status.rate
       end
       if cobj.type == "br_turbine" then
@@ -288,6 +295,11 @@ while true do
   if #powerdata > 1 then
       print(string.format("Storage Total: %s%%, Flow: %s RF/t", total, pretty(total_rate)))
       superlib.rendertable(powerdata)
+      print("")
+  end
+  if #preactordata > 1 then
+      print(string.format("Passive Reactors Total: %s RF/t", round(total_reactor_rate, 0)))
+      superlib.rendertable(preactordata)
       print("")
   end
   if #reactordata > 1 then

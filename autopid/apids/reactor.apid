@@ -71,6 +71,7 @@ actuator = {
       status.rate = reactor.getHotFluidProducedLastTick()
     else
       status.rate = reactor.getEnergyProducedLastTick()
+      status.energyStored = reactor.getEnergyStored()
     end
 
     reactor.setAllControlRodLevels(value)

@@ -263,7 +263,7 @@ while true do
   total_reactor_rate = 0
   total_turbine_rate = 0
   reactordata = {{"ID", "Active", "Core", "Control", "Steam Gen"}}
-  preactordata = {{"ID", "Active", "Core", "Control", "Power Generated"}}
+  preactordata = {{"ID", "Active", "Core", "Control", "Power Generated", "Power Stored"}}
   turbinedata = {{"ID", "Active", "Coils", "Speed", "Energy Gen", "Steam", "Inductor Status"}}
 
   for cid, cobj in pairs(controllers) do
@@ -275,7 +275,7 @@ while true do
       end
       if cobj.type == "br_reactor" and status.activeCooling == false then
           table.insert(preactordata, {string.sub(cid, 8) , status.active, pad(round(status.fuelTemperature),4) .. "°C", 
-            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "RF/t"})
+            round(status.controlRodLevel) .. "%", pad(round(status.rate), 5).. "RF/t"}, superlib.pgen(10000000, status.energyStored, config.display_precision) .. "%")
           total_reactor_rate = total_reactor_rate + status.rate
       end
       if cobj.type == "br_turbine" then

@@ -164,7 +164,12 @@ function game()
     print("You lost!")
     print("Press any key to continue...")
     local e = event.pull()
+    e = event.pull()
   end
+end
+
+function time(s)
+  return string.format("%ds",s)
 end
 
 -- Program starts
@@ -177,7 +182,7 @@ while true do
   term.clear()
   print("New game? [y/n]: ")
   k = term.read()
-  if k ~= "y" then
+  if k ~= "y\n" then
     break
   end
 end

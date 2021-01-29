@@ -12,7 +12,9 @@ For the latest updates and documentations, check
 out the github repo and it's wiki at
 https://github.com/OpenPrograms/Gopher-Programs
 
-
+*************************************************
+Edited by Krutoy242
+Added unicode, color fixes and syntax improvments
 --***********************************************]]
 
 local event=require("event")
@@ -20,11 +22,13 @@ local component=require("component")
 local term=require("term")
 local computer=require("computer")
 local shell=require("shell")
-local process=require("process")
 local filesystem=require("filesystem")
 local keyboard=require("keyboard")
 local unicode=require("unicode")
 local gfxbuffer=require("gfxbuffer")
+local process = require("process")
+
+local len = unicode.len
 
 local doubleClickThreshold=.25
 
@@ -96,10 +100,13 @@ function gml.loadStyle(name)
 
   local filepath
 
-  --search for styles in /lib /usr/lib.
-  local dirs={"/lib/", "/usr/lib/"}
+  --search for styles in working directory, running program directory, /lib /usr/lib. Just because.
+  local dirs={shell.getWorkingDirectory(),shell.resolve(process.info().path, 'lua'):match("^(.*/).+$"), "/lib/", "/usr/lib/"}
+  if dirs[1]~="/" then
+    dirs[1]=dirs[1].."/"
+  end
   for i=1,#dirs do
-    if filesystem.exists(dirs[i]..fullname) and not filesystem.isDirectory(dirs[i]..fullname) then
+    if dirs[i] and filesystem.exists(dirs[i]..fullname) and not filesystem.isDirectory(dirs[i]..fullname) then
       filepath=dirs[i]..fullname
       break
     end
@@ -351,7 +358,7 @@ local function drawBorder(element,styles)
 
   local gpu=element.renderTarget
 
-  if border then 
+  if border then
     gpu.setBackground(borderBG)
     gpu.setForeground(borderFG)
 
@@ -471,7 +478,7 @@ local function restoreFrame(renderTarget,x,y,prevState)
       renderTarget.setForeground(fg)
       renderTarget.setBackground(bg)
       renderTarget.set(lx,ly+y-1,str)
-      lx=lx+unicode.len(str)
+      lx=lx+len(str)
     end
   end
 
@@ -488,7 +495,7 @@ end
 local function elementHide(element)
   if element.visible then
     element.visible=false
-    element.gui:redrawRect(element.posX,element.posY,element.width,element.height)
+    element.gui:redrawRect(element.posX,element.posY,element.width,1)
   end
   element.hidden=true
 end
@@ -507,7 +514,7 @@ local function drawLabel(label)
     local fg, bg=findStyleProperties(label,"text-color","text-background")
     label.renderTarget.setForeground(fg)
     label.renderTarget.setBackground(bg)
-    label.renderTarget.set(screenX,screenY,label.text:sub(1,label.width)..(" "):rep(label.width-#label.text))
+    label.renderTarget.set(screenX,screenY, unicode.sub(label.text, 1,label.width) .. (" "):rep(label.width-len(label.text)))
     label.visible=true
   end
 end
@@ -541,13 +548,12 @@ local function drawButton(button)
     local text=button.text
     local textX=bodyX
     local textY=bodyY+math.floor((bodyH-1)/2)
-    if #text>bodyW then
-      text=text:sub(1,bodyW)
+    if len(text)>bodyW then
+      text=unicode.sub(text, 1,bodyW)
     else
-      textX=bodyX+math.floor((bodyW-#text)/2)
+      textX=bodyX+math.floor((bodyW-len(text))/2)
     end
     gpu.set(textX,textY,text)
-	button.visible=true
   end
 end
 
@@ -562,8 +568,8 @@ local function drawTextField(tf)
     --grab the subset of text visible
     local text=tf.text
 
-    local visibleText=text:sub(tf.scrollIndex,tf.scrollIndex+tf.width-1)
-    visibleText=visibleText..(" "):rep(tf.width-#visibleText)
+    local visibleText=unicode.sub(text, tf.scrollIndex,tf.scrollIndex+tf.width-1)
+    visibleText=visibleText..(" "):rep(tf.width-len(visibleText))
     --this may be split into as many as 3 parts - pre-selection, selection, and post-selection
     --if there is any selection at all...
     if tf.state=="focus" and not tf.dragging then
@@ -574,14 +580,14 @@ local function drawTextField(tf)
       visSelStart=math.max(1,tf.selectStart-tf.scrollIndex+1)
       visSelEnd=math.min(tf.width,tf.selectEnd-tf.scrollIndex+1)
 
-      selText=visibleText:sub(visSelStart,visSelEnd)
+      selText=unicode.sub(visibleText, visSelStart,visSelEnd)
 
       if visSelStart>1 then
-        preSelText=visibleText:sub(1,visSelStart-1)
+        preSelText=unicode.sub(visibleText, 1,visSelStart-1)
       end
 
       if visSelEnd<tf.width then
-        postSelText=visibleText:sub(visSelEnd+1,tf.width)
+        postSelText=unicode.sub(visibleText, visSelEnd+1,tf.width)
       end
 
       gpu.setForeground(selectedFG)
@@ -608,7 +614,6 @@ local function drawTextField(tf)
       term.setCursor(screenX+tf.cursorIndex-tf.scrollIndex,screenY)
       term.setCursorBlink(true)
     end
-	tf.visible=true
   end
 end
 
@@ -855,7 +860,11 @@ local function runGui(gui)
       end
       draggingObj=nil
       dragging=false
-
+    elseif e[1]=="clipboard" then
+      local text = e[3]
+      if gui.focusElement and gui.focusElement.doPaste then
+          gui.focusElement:doPaste(text)
+      end
     elseif e[1]=="key_down" then
       local char,code=e[3],e[4]
       --tab
@@ -892,6 +901,9 @@ local function runGui(gui)
         gui.focusElement:keyHandler(char,code)
       end
 
+      if gui.focusElement and gui.focusElement.onKey then
+        gui.focusElement.onKey(char,code)
+      end
     end
   end
 
@@ -985,7 +997,7 @@ local function updateSelect(tf, prevCI )
 end
 
 local function removeSelectedTF(tf)
-  tf.text=tf.text:sub(1,tf.selectStart-1)..tf.text:sub(tf.selectEnd+1)
+  tf.text=unicode.sub(tf.text, 1,tf.selectStart-1) .. unicode.sub(tf.text, tf.selectEnd+1)
   tf.cursorIndex=tf.selectStart
   tf.selectEnd=0
 end
@@ -994,8 +1006,8 @@ local function insertTextTF(tf,text)
   if tf.selectEnd~=0 then
     tf:removeSelected()
   end
-  tf.text=tf.text:sub(1,tf.cursorIndex-1)..text..tf.text:sub(tf.cursorIndex)
-  tf.cursorIndex=tf.cursorIndex+#text
+  tf.text=unicode.sub(tf.text, 1,tf.cursorIndex-1)..text..unicode.sub(tf.text, tf.cursorIndex)
+  tf.cursorIndex=tf.cursorIndex+len(text)
   if tf.cursorIndex-tf.scrollIndex+1>tf.width then
     local ts=tf.scrollIndex+math.floor(tf.width/3)
     if tf.cursorIndex-ts+1>tf.width then
@@ -1023,7 +1035,7 @@ local function addTextField(gui,x,y,width,text)
     end
   tf.doCopy=function(tf)
       if tf.selectEnd~=0 then
-        return tf.text:sub(tf.selectStart,tf.selectEnd)
+        return unicode.sub(tf.text, tf.selectStart,tf.selectEnd)
       end
       return nil
     end
@@ -1036,14 +1048,14 @@ local function addTextField(gui,x,y,width,text)
 
   tf.onClick=function(tf,tx,ty,button)
       tf.selectEnd=0
-      tf.cursorIndex=math.min(tx+tf.scrollIndex-1,#tf.text+1)
+      tf.cursorIndex=math.min(tx+tf.scrollIndex-1,len(tf.text)+1)
       tf:draw()
     end
 
   tf.onBeginDrag=function(tf,tx,ty,button)
       --drag events are in gui coords, not component, so correct
       if button==0 then
-        tf.selectOrigin=math.min(tx+tf.scrollIndex,#tf.text+1)
+        tf.selectOrigin=math.min(tx+tf.scrollIndex,len(tf.text)+1)
         tf.dragging=tf.selectOrigin
         term.setCursorBlink(false)
 
@@ -1054,7 +1066,7 @@ local function addTextField(gui,x,y,width,text)
       if tf.dragging then
         local dragX=tx
         local prevCI=tf.cursorIndex
-        tf.cursorIndex=math.max(math.min(dragX+tf.scrollIndex-1,#tf.text+1),1)
+        tf.cursorIndex=math.max(math.min(dragX+tf.scrollIndex-1,len(tf.text)+1),1)
         if prevCI~=cursorIndex then
           updateSelect(tf,tf.selectOrigin)
           tf:draw()
@@ -1080,7 +1092,7 @@ local function addTextField(gui,x,y,width,text)
           end
           tf.dragTimer=event.timer(dragRate,function()
               assert(tf.gui.running)
-                tf.cursorIndex=math.max(math.min(tf.cursorIndex+dragStep,#tf.text+1),1)
+                tf.cursorIndex=math.max(math.min(tf.cursorIndex+dragStep,len(tf.text)+1),1)
               if tf.cursorIndex<tf.scrollIndex then
                 tf.scrollIndex=tf.cursorIndex
               elseif tf.cursorIndex>tf.scrollIndex+tf.width-2 then
@@ -1139,7 +1151,7 @@ local function addTextField(gui,x,y,width,text)
         end
       elseif code==keyboard.keys.right then
         local prevCI=tf.cursorIndex
-        if tf.cursorIndex<#tf.text+1 then
+        if tf.cursorIndex<len(tf.text)+1 then
           tf.cursorIndex=tf.cursorIndex+1
 
           if tf.cursorIndex>=tf.scrollIndex+tf.width then
@@ -1176,8 +1188,8 @@ local function addTextField(gui,x,y,width,text)
         end
       elseif code==keyboard.keys["end"] then
         local prevCI=tf.cursorIndex
-        if tf.cursorIndex~=#tf.text+1 then
-          tf.cursorIndex=#tf.text+1
+        if tf.cursorIndex~=len(tf.text)+1 then
+          tf.cursorIndex=len(tf.text)+1
           if tf.scrollIndex+tf.width-1<=tf.cursorIndex then
             tf.scrollIndex=tf.cursorIndex-tf.width+1
             dirty=true
@@ -1197,7 +1209,7 @@ local function addTextField(gui,x,y,width,text)
           tf:removeSelected()
           dirty=true
         elseif tf.cursorIndex>1 then
-          tf.text=tf.text:sub(1,tf.cursorIndex-2)..tf.text:sub(tf.cursorIndex)
+          tf.text=unicode.sub(tf.text,1,tf.cursorIndex-2)..unicode.sub(tf.text,tf.cursorIndex)
           tf.cursorIndex=tf.cursorIndex-1
           if tf.cursorIndex<tf.scrollIndex then
             tf.scrollIndex=math.max(1,tf.scrollIndex-math.floor(tf.width/3))
@@ -1208,8 +1220,8 @@ local function addTextField(gui,x,y,width,text)
         if tf.selectEnd~=0 then
           tf:removeSelected()
           dirty=true
-        elseif tf.cursorIndex<=#tf.text then
-          tf.text=tf.text:sub(1,tf.cursorIndex-1)..tf.text:sub(tf.cursorIndex+1)
+        elseif tf.cursorIndex<=len(tf.text) then
+          tf.text=unicode.sub(tf.text,1,tf.cursorIndex-1)..unicode.sub(tf.text,tf.cursorIndex+1)
           dirty=true
         end
       end
@@ -1223,12 +1235,12 @@ local function addTextField(gui,x,y,width,text)
     --we may want to scroll here, cursor to end of text on gaining focus
     local effText=tf.text
 
-    if #effText>tf.width then
-      tf.scrollIndex=#effText-tf.width+3
+    if len(effText)>tf.width then
+      tf.scrollIndex=len(effText)-tf.width+3
     else
       tf.scrollIndex=1
     end
-    tf.cursorIndex=#effText+1
+    tf.cursorIndex=len(effText)+1
     tf:draw()
   end
 
@@ -1400,6 +1412,7 @@ local function scrollListBox(sb)
   end
 end
 
+
 local function clickListBox(lb,tx,ty,button)
   if tx==lb.width then
     lb.scrollBar:_onClick(ty,button)
@@ -1410,7 +1423,6 @@ local function clickListBox(lb,tx,ty,button)
       --but is it valid?
       if ty<=#lb.list then
         lb:select(ty+lb.scrollBar.scrollPos-1)
-	  else
       end
     end
   end
@@ -1470,9 +1482,7 @@ local function updateListBoxList(lb,newList)
   lb.selectedLabel=1
   scrollListBox(lb.scrollBar)
   lb:draw()
-
 end
-
 
 local function addListBox(gui,x,y,width,height,list)
   local lb=compositeBase(gui,x,y,width,height,"listbox",true)
@@ -1482,7 +1492,7 @@ local function addListBox(gui,x,y,width,height,list)
   lb.scrollBar.class="listbox"
   lb.scrollBar.listBox=lb
 
-  lb.scrollBar.posY=0
+  lb.scrollBar.posY=lb.posY-lb.bodyY+1
   lb.scrollBar.height=lb.height
   lb.scrollBar.length=lb.height
 
@@ -1529,13 +1539,13 @@ local function addListBox(gui,x,y,width,height,list)
       for i=1,#lb.labels do
         lb.labels[i]:draw()
       end
-	  lb.visible=true
     end
   end
 
   gui:addComponent(lb)
   return lb
 end
+
 
 
 function gml.create(x,y,width,height,renderTarget)
@@ -1613,6 +1623,10 @@ function gml.create(x,y,width,height,renderTarget)
       for i=1,#gui.components do
         gui.components[i]:draw()
         gui.renderTarget:flush()
+      end
+
+      if gui.onDraw then
+        gui.onDraw()
       end
     end
 

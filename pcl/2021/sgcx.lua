@@ -552,6 +552,14 @@ local function updateListOnline()
             return
         end
         data.list = {}
+        -- Find the local gate and add it to the list first
+        for a, v in pairs(rdata) do
+            if v.address == laddress then
+                v.world = "This Gate"
+                table.insert(data.list, v)
+            end
+        end
+        -- Find all the entries that aren't the local gate and add them to the list
         for a, v in pairs(rdata) do
             if v.address ~= laddress then
                 table.insert(data.list, v)

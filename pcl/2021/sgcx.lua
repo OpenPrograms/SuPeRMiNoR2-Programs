@@ -6,6 +6,7 @@
 
 --Edited version for PC-Logix minecraft server, by superminor2
 --edited again in 2021 for yet another PCL server!
+--requires superlib and gml-super (this is gml repackaged with a fix that makes it work on modern OC)
 
 local listURL = "https://git.pc-logix.com/root/stargate-addresses/-/raw/master/gatelist.cfg"
 

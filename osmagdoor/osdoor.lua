@@ -191,7 +191,8 @@ function registerDoor(ddb)
             newpass = osmag.makeCode()
             doorc = component.proxy(door)
             print("Setting door password.")
-            success, msg = doorc.setPassword(newpass)
+            -- I added the empty string since OS seems to require a "old password" now, even if there wasn't a password set before.
+            success, msg = doorc.setPassword("", newpass)
             if msg == nil then
                 msg = success
             end

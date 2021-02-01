@@ -192,11 +192,9 @@ function registerDoor(ddb)
             doorc = component.proxy(door)
             print("Setting door password.")
             -- I added the empty string since OS seems to require a "old password" now, even if there wasn't a password set before.
-            success, msg = doorc.setPassword("", newpass)
-            if msg == nil then
-                msg = success
-            end
-            if msg == "Password set" then
+            msg = doorc.setPassword("", newpass)
+            returncode = msg[1][1]
+            if returncode == true then
                 print("Door password set successfully.")
                 table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass, gid=1})
             else

@@ -40,8 +40,7 @@ end
 
 function m.updateDB()
     local db = m.loadDB()
-    print("[DBUpdate] Database update starting...")
-
+    --print("[DBUpdate] Database update starting...")
     --Make sure that all doors have passwords and groups set
     --This allows updating from old databases that didn't have those features
     for i, pair in ipairs(db["pairs"]) do
@@ -81,7 +80,7 @@ function m.updateDB()
         table.insert(ldb["groups"], {gid = 1, name = "Default Group"})
     end
 
-    print("[DBUpdate] Database update complete.")
+    --print("[DBUpdate] Database update complete.")
     m.saveDB(db)
 end
 

@@ -13,17 +13,20 @@ logfile = "/authlog.txt"
 closeList = {}
 
 local function openDoor(door, pass)
-    if door.isOpen() == false then
-        door.toggle(pass)
-    end
+    -- if door.isOpen() == false then
+    --     door.toggle(pass)
+    -- end
+    -- This returns an array now instead of a boolean. I updated it to use the open and close methods since they exist now.
+    door.open(pass)
 end
 
 local function closeDoor()
     doorad = table.remove(closeList, 1)
     door = component.proxy(doorad["addr"])
-    if door.isOpen() == true then
-        door.toggle(doorad["password"])
-    end
+    -- if door.isOpen() == true then
+    --     door.toggle(doorad["password"])
+    -- end
+    door.close(doorad["password"])
 end
 
 local function toggleDoor(doordb)

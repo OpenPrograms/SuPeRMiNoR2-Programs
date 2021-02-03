@@ -193,7 +193,13 @@ function registerDoor(ddb)
             print("Setting door password.")
             -- I added the empty string since OS seems to require a "old password" now, even if there wasn't a password set before.
             msg = doorc.setPassword("", newpass)
-            returncode = msg[1][1]
+            returncode = false --set it to false if nothing matches ahead
+            if msg ~= false then
+                if #msg >= 1 then
+                    returncode = msg[1][1] --This only gets one door if there is two doors. Fix this sometime
+                end
+            end
+            
             if returncode == true then
                 print("Door password set successfully.")
                 table.insert(ddb["pairs"], {door=door, mag=mag, name=name, password=newpass, gid=1})
@@ -489,9 +495,8 @@ function main()
         end
     end
 end
+
+--Clear term and start main loop
 term.clear()
-print("Starting OpenSecurity Door Controller")
 osmag.updateDB()
-print("Don't forget to start osd if you didn't already!")
-os.sleep(3)
 main()

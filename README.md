@@ -1,4 +1,4 @@
-# SuPeRMiNoR2's Programs
+# superminor2's Programs
 
 Here be random things
 
@@ -10,4 +10,4 @@ About half the stuff here is abandoned, the only good projects are:
 
 Everything else is either a library, not mine, or abandoned.
 
-If you have questions you can find me in #oc on irc.esper.net. (My nick is SuPeRMiNoR2)
+If you have questions you can find me in #oc on irc.esper.net. (My nick is superminor2)
